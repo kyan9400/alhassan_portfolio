@@ -1,5 +1,6 @@
-# Alhassan Alfarran Portfolio
+# alhassan_portfolio
 
+Personal portfolio site for **Alhassan Alfarran** — Next.js, Tailwind CSS, Framer Motion.  
 Welcome to my portfolio! I am Alhassan Alfarran, a Fullstack Developer with over 4 years of experience in creating dynamic and responsive web applications. My expertise spans across various technologies and frameworks, and I have a proven track record of delivering high-quality, user-centric interfaces.
 
 ## Table of Contents
@@ -78,4 +79,4 @@ Experienced Fullstack Developer with over 4 years of expertise in creating dynam
 - **Email:** kyan775909@gmail.com
 - **Phone:** +7 919 399 749
 - **LinkedIn:** [Alhassan Alfarran](https://www.linkedin.com/in/alhassan-alfarran-880b00246/)
-- **
+- **GitHub:** [kyan9400](https://github.com/kyan9400)
