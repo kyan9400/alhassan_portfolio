@@ -32,7 +32,7 @@ export function AvailableCta({
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={`mx-auto max-w-6xl px-4 ${isHero ? "pb-4 pt-2" : "py-10"}`}
     >
-      <div className="flex flex-col gap-4 rounded-2xl border border-indigo-500/15 bg-gradient-to-br from-indigo-500/[0.06] via-transparent to-violet-500/[0.04] p-5 backdrop-blur-sm dark:border-indigo-400/12 dark:from-indigo-500/[0.08] sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 sm:py-5">
+      <div className="flex flex-col gap-4 rounded-2xl border border-indigo-500/15 bg-gradient-to-br from-indigo-500/[0.06] via-transparent to-violet-500/[0.04] p-4 backdrop-blur-sm dark:border-indigo-400/12 dark:from-indigo-500/[0.08] sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 sm:py-5">
         <div className="flex items-start gap-3">
           <span className="relative mt-1 flex h-2 w-2 flex-shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
@@ -44,21 +44,17 @@ export function AvailableCta({
           </div>
         </div>
 
-        <div className="flex flex-shrink-0 flex-wrap gap-2">
-          <MagneticButton href="#contact" className="pill pill-cta py-2 text-[12px]">
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
+          <MagneticButton href="#contact" className="pill pill-cta flex-1 justify-center py-2 text-[12px] sm:flex-none">
             {btnContact}
           </MagneticButton>
-          <a
-            href={cvFile}
-            download
-            className="pill py-2 text-[12px]"
-          >
+          <a href={cvFile} download className="pill flex-1 justify-center py-2 text-[12px] sm:flex-none">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" />
             </svg>
             {btnCv}
           </a>
-          <a href="#projects" className="pill py-2 text-[12px]">
+          <a href="#projects" className="pill flex-1 justify-center py-2 text-[12px] sm:flex-none">
             {btnProjects}
           </a>
         </div>

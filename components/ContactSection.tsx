@@ -73,7 +73,7 @@ export function ContactSection({
         <div className="pointer-events-none !absolute -right-20 -top-20 z-0 h-56 w-56 rounded-full bg-indigo-500/12 blur-3xl md:h-64 md:w-64" />
         <div className="pointer-events-none !absolute -left-16 bottom-0 z-0 h-48 w-48 rounded-full bg-cyan-400/10 blur-3xl md:h-56 md:w-56" />
 
-        <div className="relative z-[1] grid gap-8 lg:grid-cols-2 lg:gap-10">
+        <div className="relative z-[1] grid gap-8 md:grid-cols-2 md:gap-10">
           {/* Left: info + socials + CV */}
           <div>
             <SectionHeader spacing="compact" eyebrow={eyebrow} title={title} description={description} />

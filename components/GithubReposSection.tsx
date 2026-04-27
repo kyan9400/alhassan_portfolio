@@ -141,8 +141,8 @@ export function GithubReposSection({
       <SectionHeader eyebrow={eyebrow} title={title} description={description} />
 
       {/* Search + filter controls */}
-      <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-        <div className="relative flex-1">
+      <div className="mb-7 flex flex-col gap-3">
+        <div className="relative">
           <svg
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
             width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -155,17 +155,18 @@ export function GithubReposSection({
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full rounded-xl border border-black/[0.07] bg-card/60 py-2 pl-9 pr-4 text-sm text-text placeholder:text-muted/60 outline-none transition focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-400/20 dark:border-white/[0.09] dark:bg-card/35"
+            className="w-full rounded-xl border border-black/[0.07] bg-card/60 py-2.5 pl-9 pr-4 text-sm text-text placeholder:text-muted/60 outline-none transition focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-400/20 dark:border-white/[0.09] dark:bg-card/35"
           />
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        {/* Horizontally scrollable on mobile */}
+        <div className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1">
           {CATEGORY_KEYS.map((key, i) => (
             <button
               key={key}
               type="button"
               onClick={() => handleCategoryChange(key)}
-              className={`rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
+              className={`flex-shrink-0 rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
                 activeCategory === key
                   ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow shadow-indigo-500/25"
                   : "border border-black/[0.06] bg-surface/30 text-muted hover:text-text dark:border-white/[0.08] dark:bg-surface/10"
