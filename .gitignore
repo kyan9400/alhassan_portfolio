@@ -3,6 +3,10 @@ node_modules/
 out/
 dist/
 
+# build / tooling artifacts
+*.tsbuildinfo
+.vercel/
+
 # logs
 npm-debug.log*
 yarn-debug.log*
@@ -11,10 +15,11 @@ pnpm-debug.log*
 
 # env
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
 
 # local tooling
 .claude/

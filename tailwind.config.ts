@@ -21,7 +21,9 @@ const config: Config = {
           DEFAULT: "rgb(var(--accent) / <alpha-value>)",
           2: "rgb(var(--accent-2) / <alpha-value>)",
           ink: "rgb(var(--accent-ink) / <alpha-value>)"
-        }
+        },
+        danger: "rgb(var(--danger) / <alpha-value>)",
+        success: "rgb(var(--success) / <alpha-value>)"
       },
       borderRadius: {
         "4xl": "2rem"
@@ -38,9 +40,10 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" }
         },
+        // transform + opacity only: compositor-friendly, no paint per frame on phones
         rise: {
-          from: { opacity: "0", transform: "translateY(0.6em)", filter: "blur(8px)" },
-          to: { opacity: "1", transform: "translateY(0)", filter: "blur(0)" }
+          from: { opacity: "0", transform: "translate3d(0, 0.35em, 0)" },
+          to: { opacity: "1", transform: "translate3d(0, 0, 0)" }
         },
         wave: {
           "0%, 60%, 100%": { transform: "rotate(0deg)" },
@@ -54,7 +57,7 @@ const config: Config = {
         marquee: "marquee var(--marquee-duration, 40s) linear infinite",
         "spin-slow": "spin-slow 14s linear infinite",
         float: "float 6s ease-in-out infinite",
-        rise: "rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both",
+        rise: "rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         wave: "wave 2.4s ease-in-out 1s 2"
       }
     }

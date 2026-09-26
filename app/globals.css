@@ -19,6 +19,9 @@
   --accent-ink: 91 33 182;
   --glow: 124 58 237;
   --grain-opacity: 0.035;
+  --danger: 185 28 28; /* red-700: 6.2:1 on the paper background */
+  --success: 21 128 61; /* green-700: 4.8:1 on the paper background */
+  color-scheme: light;
 }
 
 .dark {
@@ -34,6 +37,9 @@
   --accent-ink: 196 181 253;
   --glow: 139 92 246;
   --grain-opacity: 0.06;
+  --danger: 248 113 113; /* red-400: 7.1:1 on the dark background */
+  --success: 74 222 128; /* green-400 */
+  color-scheme: dark;
 }
 
 @layer base {
@@ -72,6 +78,24 @@
     letter-spacing: 0;
   }
 
+  /*
+   * Script-aware font stacks. next/font's metric-adjusted fallbacks (local Arial) have no
+   * unicode-range, so with the default stacks Arabic text would render in "Inter Fallback" and
+   * Cyrillic headings in "Space Grotesk Fallback" instead of the real fonts. <html lang> is set
+   * before first paint (see app/layout.tsx), so these apply without a flash.
+   */
+  html[lang="ar"] body,
+  html[lang="ar"] .font-sans {
+    font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
+  }
+  html[lang="ar"] :is(h1, h2, h3, .font-display) {
+    font-family: var(--font-arabic), var(--font-display), system-ui, sans-serif;
+  }
+  /* Space Grotesk has no Cyrillic; Inter does. */
+  html[lang="ru"] :is(h1, h2, h3, .font-display) {
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
   img {
     user-select: none;
   }
@@ -95,11 +119,25 @@ html.lenis body {
   }
 
   .section {
-    @apply relative scroll-mt-24 py-20 md:py-28;
+    @apply relative scroll-mt-24 py-16 md:py-28;
   }
 
   .hairline {
     border-color: rgb(var(--line) / var(--line-alpha));
+  }
+
+  /*
+   * Below-the-fold home sections skip style, layout and paint until they near the viewport, so the
+   * first paint only lays out the hero. --cv-h is each section's measured height per breakpoint
+   * (the placeholder until it renders once; "auto" then remembers the real size).
+   * In-page jumps need real positions: scrollToId() and deep links add .cv-all, which renders all.
+   */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--cv-h, 1500px);
+  }
+  .cv-all .cv-auto {
+    content-visibility: visible;
   }
 
   .card {
@@ -109,10 +147,18 @@ html.lenis body {
       0 1px 0 rgb(255 255 255 / 0.04) inset,
       0 20px 50px -30px rgb(0 0 0 / 0.35);
   }
+  /* backdrop-filter on every card is the most expensive thing to scroll on phones. */
+  @media (max-width: 767px) {
+    .card {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      background-color: rgb(var(--card) / 0.92);
+    }
+  }
 
+  /* No transform transition: Framer Motion writes transforms on some of these (tilt, layout). */
   .card-hover {
     transition:
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
       border-color 0.3s ease,
       box-shadow 0.5s ease;
   }
@@ -159,7 +205,15 @@ html.lenis body {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: shine 8s linear infinite;
+  }
+  /*
+   * The shine animates background-position, which repaints the text on the main thread every frame:
+   * desktops (fine pointer) only. Phones keep the same gradient, still.
+   */
+  @media (hover: hover) and (pointer: fine) {
+    .gradient-text {
+      animation: shine 8s linear infinite;
+    }
   }
 
   .btn {
@@ -200,8 +254,21 @@ html.lenis body {
     box-shadow: 0 0 0 4px rgb(var(--accent) / 0.15);
   }
 
+  /* #6d28d9 (violet-700) keeps white text at 7.1:1 in both themes. */
   .skip-link {
-    @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition focus:translate-y-0;
+    @apply fixed start-4 top-4 z-[100] -translate-y-24 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-lg transition focus:translate-y-0;
+    background-color: #6d28d9;
+  }
+  .skip-link:focus-visible {
+    outline-color: #ffffff;
+  }
+
+  /* Inline error box (contact form fallback). Also: text-danger / text-success utilities. */
+  .alert-error {
+    @apply rounded-2xl border px-4 py-3 text-sm;
+    color: rgb(var(--danger));
+    border-color: rgb(var(--danger) / 0.35);
+    background-color: rgb(var(--danger) / 0.08);
   }
 
   .no-scrollbar {
@@ -218,41 +285,93 @@ html.lenis body {
   }
 }
 
-/* Film grain overlay — pure CSS/SVG, no image request */
+/*
+ * Film grain overlay — pure CSS/SVG, no image request. A small 2-octave tile keeps the one-time
+ * rasterisation cheap; phones skip it entirely (a full-screen fixed layer costs more than it adds
+ * on small, high-DPI screens).
+ */
 .grain {
   pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 60;
   opacity: var(--grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+@media (max-width: 767px) {
+  .grain {
+    display: none;
+  }
 }
 
-/* Kinetic headline words: pure CSS so the hero is visible before hydration */
+/*
+ * Kinetic headline words: pure CSS so the hero is visible before hydration.
+ * Transform + opacity only (compositor-friendly); no filter: blur, which forced a paint per frame
+ * and delayed the first contentful paint on phones.
+ */
 .kinetic > span {
   display: inline-block;
-  animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms + 80ms);
 }
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(0.5em);
-    filter: blur(8px);
+    transform: translate3d(0, 0.35em, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 .fade-in {
-  animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--d, 0ms);
 }
 
+/*
+ * Scroll reveal (Reveal in components/ui/primitives.tsx): a shared IntersectionObserver sets
+ * data-reveal="shown". Hidden only when JS runs (html.js is set before first paint), so content never
+ * stays invisible without it. The border/shadow transitions keep .card-hover working on the same element.
+ */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 24px), 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    border-color 0.3s ease,
+    box-shadow 0.5s ease;
+}
+.js [data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media print {
+  .js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/*
+ * Soft fade at the start; at the end the words are fully gone before they reach the pause button
+ * (which sits on the end side: the right in LTR, the left in RTL).
+ */
 .marquee-mask {
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
+  mask-image: linear-gradient(to right, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
+}
+[dir="rtl"] .marquee-mask {
+  -webkit-mask-image: linear-gradient(to left, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
+  mask-image: linear-gradient(to left, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -268,9 +387,5 @@ html.lenis body {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-  .kinetic > span,
-  .fade-in {
-    filter: none;
   }
 }

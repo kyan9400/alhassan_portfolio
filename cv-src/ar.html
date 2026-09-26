@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الحسن الفران — السيرة الذاتية، مهندس برمجيات (أنظمة الويب والذكاء الاصطناعي)</title>
+<meta name="author" content="الحسن الفران (Alhassan Alfarran)">
+<meta name="description" content="السيرة الذاتية: مهندس برمجيات — أنظمة الويب والذكاء الاصطناعي. Python/FastAPI وRAG وReact/TypeScript وNode.js. موسكو.">
+<style>
+  :root {
+    --ink: #17151f;
+    --text: #2a2833;
+    --muted: #5d5a69;
+    --accent: #6d28d9;
+    --accent-soft: #f4effd;
+    --line: #e3dcf3;
+  }
+
+  @page { size: A4; }
+
+  * { box-sizing: border-box; }
+
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    font-size: 9.8pt;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------- Header ---------- */
+  header {
+    padding-bottom: 9pt;
+    margin-bottom: 2pt;
+    border-bottom: 2pt solid var(--accent);
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 23pt;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .role-title {
+    margin: 3pt 0 7pt;
+    color: var(--accent);
+    font-size: 12.5pt;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .contacts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 8.9pt;
+    color: var(--text);
+  }
+
+  .contacts li { display: inline; white-space: nowrap; }
+  .contacts li + li::before {
+    content: "·";
+    margin: 0 5pt;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .contacts + .contacts { margin-top: 1.5pt; }
+  .contacts .label { color: var(--muted); }
+  .contacts a { color: var(--accent); }
+
+  .availability {
+    display: inline-block;
+    margin-top: 7pt;
+    padding: 2.5pt 8pt;
+    border-radius: 3pt;
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-size: 8.9pt;
+    font-weight: 600;
+  }
+
+  .availability span + span::before {
+    content: "·";
+    margin: 0 5pt;
+    color: var(--accent);
+  }
+
+  /* ---------- Sections ---------- */
+  section { margin-top: 11pt; }
+
+  h2 {
+    margin: 0 0 5pt;
+    padding-bottom: 2.5pt;
+    border-bottom: 0.75pt solid var(--line);
+    color: var(--accent);
+    font-size: 9.6pt;
+    font-weight: 700;
+    letter-spacing: 0.035em; /* wider tracking makes some PDF parsers split words */
+    text-transform: uppercase;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  p { margin: 0; }
+
+  .nw { white-space: nowrap; }
+
+  /* ---------- Skills ---------- */
+  /* Inline "Label: values" rows (no column gap) so ATS parsers never split
+     labels from values; a small hanging indent keeps wrapped rows tidy. */
+  .skills p {
+    margin-top: 2.2pt;
+    padding-inline-start: 10pt;
+    text-indent: -10pt;
+  }
+
+  .skills p:first-child { margin-top: 0; }
+
+  .skills .k {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* ---------- Entries (jobs, education) ---------- */
+  .entry {
+    margin-top: 8pt;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .entry:first-of-type { margin-top: 0; }
+
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10pt;
+  }
+
+  .entry-head h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 10.2pt;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .entry-head h3 .org {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .dates {
+    flex: none;
+    color: var(--muted);
+    font-size: 9pt;
+    white-space: nowrap;
+  }
+
+  .meta {
+    margin: 0.5pt 0 2.5pt;
+    color: var(--muted);
+    font-size: 8.9pt;
+  }
+
+  ul.points {
+    margin: 0;
+    padding-inline-start: 12pt;
+  }
+
+  ul.points li {
+    margin-top: 1.6pt;
+    padding-inline-start: 2pt;
+  }
+
+  ul.points li::marker {
+    color: var(--accent);
+    font-size: 0.9em;
+  }
+
+  strong.metric {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* ---------- Certifications & languages ---------- */
+  ul.plain {
+    margin: 0;
+    padding-inline-start: 12pt;
+  }
+
+  ul.plain li { margin-top: 1.4pt; }
+  ul.plain li::marker { color: var(--accent); font-size: 0.9em; }
+  ul.plain .src { color: var(--muted); }
+
+  .langs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .langs li { display: inline; }
+  .langs li + li::before {
+    content: "·";
+    margin: 0 6pt;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .langs b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Arabic ---------- */
+  body {
+    font-family: "Segoe UI", Tahoma, "Noto Naskh Arabic", "Noto Sans Arabic", Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.6;
+  }
+  /* Letter-spacing breaks Arabic letter joining; Arabic has no capitals either. */
+  h1, h2 { letter-spacing: 0; text-transform: none; }
+  h2 { font-size: 10.5pt; }
+  .latin-name {
+    margin: -3pt 0 7pt;
+    color: var(--muted);
+    font-size: 8.9pt;
+    text-align: right;
+  }
+  bdi { unicode-bidi: isolate; }
+  ul.plain[dir="ltr"] { text-align: left; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>الحسن الفران</h1>
+  <p class="role-title">مهندس برمجيات — أنظمة الويب والذكاء الاصطناعي</p>
+  <p class="latin-name" dir="ltr" lang="en">Alhassan Alfarran · Software Engineer — Web &amp; AI Systems</p>
+
+  <ul class="contacts">
+    <li>موسكو، روسيا (إقامة)</li>
+    <li><bdi><a href="tel:+79193999749">+7 919 399 97 49</a></bdi></li>
+    <li><bdi><a href="mailto:kyan775909@gmail.com">kyan775909@gmail.com</a></bdi></li>
+    <li><span class="label">تيليغرام:</span> <bdi><a href="https://t.me/hassan775775">@hassan775775</a></bdi></li>
+  </ul>
+  <ul class="contacts">
+    <li><span class="label">الموقع:</span> <bdi><a href="https://alhassan-portfolio-sigma.vercel.app">alhassan-portfolio-sigma.vercel.app</a></bdi></li>
+    <li><bdi><a href="https://github.com/kyan9400">github.com/kyan9400</a></bdi></li>
+    <li><bdi><a href="https://www.linkedin.com/in/alhassan-alfarran-880b00246/">linkedin.com/in/alhassan-alfarran-880b00246</a></bdi></li>
+  </ul>
+
+  <p class="availability">
+    <span>جاهز للبدء فوراً</span><span>من المكتب أو بنظام هجين أو عن بُعد</span><span>دوام كامل أو بعقد</span>
+  </p>
+</header>
+
+<main>
+
+  <section>
+    <h2>الملخص المهني</h2>
+    <p>
+      مهندس برمجيات متخصص في أنظمة الويب والذكاء الاصطناعي، أبني أنظمة إنتاجية منذ عام 2020. أعمل حالياً على تطوير
+      أنظمة بحث في المستندات وأنظمة <bdi>RAG</bdi> باستخدام <bdi>Python</bdi> و<bdi>FastAPI</bdi>: التعرّف الضوئي على النصوص (<bdi>OCR</bdi>) وبحث دلالي هجين
+      باستخدام <bdi class="nw">sentence-transformers + FAISS</bdi>. سبق أن صممت وبنيت منصة تشغيلية متكاملة من الصفر باستخدام <bdi>React</bdi>
+      و<bdi>TypeScript</bdi> و<bdi>Node.js</bdi> و<bdi>PostgreSQL</bdi> و<bdi>MongoDB</bdi>، من تصميم الواجهات البرمجية ونمذجة البيانات حتى النشر ودعم بيئة الإنتاج.
+      أركّز على حدود واضحة بين الواجهة والخدمات وطبقة الذكاء الاصطناعي، وعلى ميزات تعمل في سير العمل الحقيقي لا في العروض التجريبية فقط.
+    </p>
+  </section>
+
+  <section>
+    <h2>المهارات التقنية</h2>
+    <div class="skills">
+      <p><span class="k">لغات البرمجة:</span> <bdi>Python, JavaScript, TypeScript, SQL, PHP, C++, C</bdi></p>
+      <p><span class="k">الواجهات الخلفية:</span> <bdi>FastAPI, Node.js, Express, REST APIs, Async Python</bdi>، المصادقة، الصلاحيات حسب الأدوار، سجل التدقيق</p>
+      <p><span class="k">الواجهات الأمامية:</span> <bdi>React, Next.js, Angular, Tailwind CSS, HTML5/CSS3, Vite, Figma</bdi></p>
+      <p><span class="k">الذكاء الاصطناعي والبيانات:</span> <bdi>RAG, LLM, sentence-transformers, FAISS, OCR, Pandas, NumPy</bdi>، البحث الهجين، تحليل ملفات <bdi>PDF/Word/Excel</bdi></p>
+      <p><span class="k">قواعد البيانات:</span> <bdi>PostgreSQL, MongoDB, Redis</bdi></p>
+      <p><span class="k">الأدوات والممارسات:</span> <bdi>Git, GitHub, JIRA, Agile/Scrum, Code Review, Cloudinary</bdi></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>الخبرة العملية</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>مطوّر <bdi>Python / Full-Stack</bdi> <span class="org">— <bdi>Elektroservis</bdi> (Электросервис)</span></h3>
+        <span class="dates">يناير 2026 — حتى الآن</span>
+      </div>
+      <p class="meta">موسكو، روسيا</p>
+      <ul class="points">
+        <li>بناء نظام بحث و<bdi>RAG</bdi> في الوثائق الهندسية (القسم الفني <bdi>PTO</bdi>): فهرسة ملفات <bdi>PDF</bdi> و<bdi>Word</bdi> و<bdi>Excel</bdi>، بما فيها المستندات الممسوحة ضوئياً عبر <bdi>OCR</bdi>.</li>
+        <li>تطبيق بحث هجين يجمع بين البحث بالكلمات المفتاحية والبحث الدلالي (<bdi class="nw">sentence-transformers + FAISS</bdi>) لتحسين صلة الإجابات بالسؤال.</li>
+        <li>تطوير مسارات <bdi>FastAPI</bdi> لاستقبال المستندات والاستعلام، تربط التحليل والفهرسة والاسترجاع بإجابات مدعومة بنماذج <bdi>LLM</bdi>.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>كبير مطوري <bdi>Full-Stack</bdi> <span class="org">— <bdi>Avenue Group</bdi></span></h3>
+        <span class="dates">يناير 2025 — ديسمبر 2025</span>
+      </div>
+      <p class="meta">موسكو، روسيا · من المكتب</p>
+      <ul class="points">
+        <li>تصميم منصة <bdi>OKKP</bdi> لإدارة العمليات وإطلاقها من الصفر، بحدود واضحة بين الواجهة ومنطق الأعمال وطبقة البيانات.</li>
+        <li>بناء البنية من طرف إلى طرف: تطبيق <bdi>SPA</bdi> بـ <bdi>React + TypeScript</bdi>، وواجهة <bdi>REST API</bdi> بـ <bdi>Node.js / Express</bdi>، وطبقة بيانات على <bdi>PostgreSQL</bdi> و<bdi>MongoDB</bdi>.</li>
+        <li>بناء وحدات إدارة الموظفين وتتبّع المخالفات ولوحات التقارير، مع صلاحيات حسب الأدوار وسجل تدقيق.</li>
+        <li>رفع آمن للوسائط عبر <bdi>Cloudinary</bdi> و<bdi>Multer</bdi>، وتصدير التقارير إلى <bdi>Excel</bdi> ليُعدّ الموظفون غير التقنيين بيانات جاهزة للتدقيق بأنفسهم.</li>
+        <li>تولّي النشر ودعم بيئة الإنتاج، وواجهة متجاوبة بالكامل مبنية بـ <bdi>Tailwind CSS</bdi>.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>مطوّر ويب <bdi>Full-Stack</bdi> <span class="org">— <bdi>Junzi Tech Solutions</bdi></span></h3>
+        <span class="dates">أكتوبر 2024 — يوليو 2025</span>
+      </div>
+      <p class="meta">دوام كامل</p>
+      <ul class="points">
+        <li>تطوير ميزات متكاملة لتطبيقات ويب خاصة بالعملاء باستخدام <bdi>Node.js</bdi> و<bdi>Express</bdi> و<bdi>MongoDB</bdi> و<bdi>React</bdi> ضمن فرق <bdi>Agile</bdi>.</li>
+        <li>تحسين نقطة <bdi>API</bdi> حرجة عبر طبقة تخزين مؤقت وإعادة هيكلة الاستعلامات، مما خفّض متوسط زمن الاستجابة <strong class="metric">بنحو 60%</strong>.</li>
+        <li>تصميم واجهات <bdi>REST API</bdi> بتحقق موحّد ومعالجة متسقة للأخطاء وعقود استجابة ثابتة؛ والمشاركة في مراجعة الكود وتخطيط السبرنتات.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>مطوّر <bdi>Full-Stack</bdi> مستقل <span class="org">— عمل حر</span></h3>
+        <span class="dates">يناير 2020 — حتى الآن</span>
+      </div>
+      <p class="meta">عن بُعد · مشاريع للعملاء بالتوازي مع العمل بدوام كامل</p>
+      <ul class="points">
+        <li>بناء تطبيقات ويب ولوحات تحكم بـ <bdi>React/TypeScript</bdi> وخدمات خلفية بـ <bdi>Python/FastAPI</bdi> لعملاء دوليين.</li>
+        <li>مشروع <bdi>Pathwise</bdi>: تطبيق <bdi>FastAPI + PostgreSQL</bdi> بخدمة خلفية غير متزامنة (<bdi>async</bdi>).</li>
+        <li>إدارة دورة العمل كاملة مع العميل: تحديد النطاق والتقدير والتسليم والدعم بعد الإطلاق.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section>
+    <h2>التعليم</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>ماجستير <span class="org">— الجامعة الوطنية للعلوم والتكنولوجيا <bdi>MISIS</bdi>، موسكو</span></h3>
+        <span class="dates">2024 — 2026</span>
+      </div>
+      <p class="meta">علوم الحاسوب والمعلومات</p>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>بكالوريوس <span class="org">— جامعة الأورال الفيدرالية، يكاترينبورغ</span></h3>
+        <span class="dates">2020 — 2024</span>
+      </div>
+      <p class="meta">علوم الحاسوب</p>
+    </article>
+  </section>
+
+  <section>
+    <h2>الشهادات (مختارة)</h2>
+    <ul class="plain" dir="ltr" lang="en">
+      <li>Full-Stack Web Development with Angular <span class="src">— Coursera, HKUST</span></li>
+      <li>Server-side Development with Node.js, Express and MongoDB <span class="src">— Coursera</span></li>
+      <li>Introduction to SQL; Understanding and Visualizing Data with Python <span class="src">— Coursera, University of Michigan</span></li>
+      <li>Machine Learning for All <span class="src">— Coursera, University of London</span></li>
+      <li>Programming with Google Go Specialization <span class="src">— Coursera</span></li>
+      <li>JavaScript Algorithms and Data Structures; Data Visualization <span class="src">— freeCodeCamp</span></li>
+      <li>ICDL <span class="src">— International Computer Driving Licence</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>اللغات</h2>
+    <ul class="langs">
+      <li><b>العربية</b> — اللغة الأم</li>
+      <li><b>الإنجليزية</b> — <bdi>C1</bdi> (مستوى مهني)</li>
+      <li><b>الروسية</b> — مستوى محادثة</li>
+    </ul>
+  </section>
+
+</main>
+
+</body>
+</html>

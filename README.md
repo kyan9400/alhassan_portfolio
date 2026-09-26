@@ -1,82 +1,60 @@
-# alhassan_portfolio
+# alhassan-portfolio
 
-Personal portfolio site for **Alhassan Alfarran** — Next.js, Tailwind CSS, Framer Motion.  
-Welcome to my portfolio! I am Alhassan Alfarran, a Fullstack Developer with over 4 years of experience in creating dynamic and responsive web applications. My expertise spans across various technologies and frameworks, and I have a proven track record of delivering high-quality, user-centric interfaces.
+Source of [alhassan-portfolio-sigma.vercel.app](https://alhassan-portfolio-sigma.vercel.app) — the portfolio of Alhassan Alfarran, Software Engineer (Web & AI Systems).
 
-## Table of Contents
+A trilingual (English / Russian / Arabic with RTL) single-page portfolio with project case studies, a curated GitHub showcase and a contact form.
 
-- [About Me](#about-me)
-- [Resume](#resume)
-- [Projects](#projects)
-- [Contact](#contact)
+## Stack
 
-## About Me
+- **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
+- **Tailwind CSS 3** with theme tokens in `app/globals.css` (dark by default, light variant)
+- **Framer Motion**, **Lenis** (smooth scroll), **lucide-react**, **zustand** (locale / UI state)
+- `next/og` for Open Graph images, `next/font` for self-hosted fonts
+- **Vercel Analytics** + **Speed Insights**; contact email via the **Resend** HTTP API
 
-With over 4 years of experience in frontend development, I bring a strong foundation in creating dynamic and responsive web applications. My expertise spans across HTML, CSS, JavaScript, and modern frameworks like Vue.js and React. I have a proven track record of delivering high-quality, user-centric interfaces and am proficient in utilizing tools such as Git, Webpack, and Vite to streamline development processes.
+## Structure
 
-In addition to frontend development, I have extensive experience in blockchain development, including smart contract development, DeFi protocols, and NFTs. I have worked on various blockchain projects, integrating with DeFi platforms and creating NFT marketplaces.
+```
+app/                  routes, root layout, metadata (OG images, sitemap, robots), error pages
+app/api/contact/      contact form endpoint (validation, spam checks, Resend)
+app/projects/[slug]/  statically generated case-study pages
+components/app/       chrome: navbar, command palette, cursor, background, toasts
+components/sections/  home page sections and the project detail view
+lib/copy.ts           long-form copy (en / ru / ar)
+lib/ui-copy.ts        UI strings and site-wide constants (URLs, email)
+lib/projects.ts       project catalogue + translations
+lib/github.ts         curated repository showcase (static data, enriched by the GitHub API)
+public/               CVs, images, repository screenshots
+```
 
-### Profile
+## Scripts
 
-- **Name:** Alhassan Alfarran
-- **Job Role:** Fullstack Developer
-- **Experience:** 4 Years 3 Months
-- **Address:** Russia, Moscow
+| Command                 | What it does                                                    |
+| ----------------------- | --------------------------------------------------------------- |
+| `npm run dev`           | Dev server on http://localhost:3000 (Turbopack)                 |
+| `npm run build`         | Production build                                                |
+| `npm start`             | Serve the production build                                      |
+| `npm run lint`          | ESLint (`eslint-config-next`, core web vitals)                  |
+| `npx tsc --noEmit`      | Type-check                                                      |
+| `npm run capture:repos` | Capture repository screenshots into `public/repo-screenshots/` (Playwright) |
 
-### Skills and Technologies
+Requires Node.js 20.9 or newer.
 
-- **Languages:** JavaScript, Python, C++, C
-- **Frameworks:** React.js, Vue.js, Next.js, AngularJS
-- **Databases:** PostgreSQL, MongoDB, Redis
-- **Tools:** Git, Webpack, Vite, Figma, Tailwind CSS, Bootstrap
-- **Blockchain:** Solidity, Web3, Truffle, Hardhat, MetaMask, Infura, Alchemy
-- **Analytics:** Google Analytics, SEO
-- **Other Skills:** Responsive Design, Cross-Browser Compatibility, State Management, API Integration
+## Environment variables
 
-## Resume
+All optional — the site builds and runs without any of them.
 
-Experienced Fullstack Developer with over 4 years of expertise in creating dynamic and responsive web applications. Proficient in frontend development with a strong command of HTML, CSS, JavaScript, and modern frameworks like Vue.js and React. Skilled in creating user-centric interfaces and optimizing performance for seamless user experiences.
+| Variable             | Used by              | Purpose                                                                                     |
+| -------------------- | -------------------- | ------------------------------------------------------------------------------------------- |
+| `RESEND_API_KEY`     | `/api/contact`       | Sends contact-form email. Without it the endpoint answers `{ ok: false, error: "not_configured" }` and the form shows the direct email fallback. |
+| `CONTACT_FROM_EMAIL` | `/api/contact`       | Sender, e.g. `Portfolio <hello@your-domain>` (must be a Resend-verified domain). Defaults to `onboarding@resend.dev`. |
+| `CONTACT_TO_EMAIL`   | `/api/contact`       | Recipient. Defaults to the address in `lib/ui-copy.ts`.                                     |
+| `GITHUB_TOKEN`       | `lib/github.ts`      | Read-only token for the GitHub REST API (raises the rate limit). The showcase falls back to baked-in data if the API is unavailable. |
 
-## Education
+For local development put them in `.env.local` (git-ignored).
 
-- **Master in Computer Science** (2024-2026)
-  - University of Science and Technology MISIS, Moscow, Russia
-- **Bachelor in Computer Science** (2020-2024)
-  - Ural Federal University, Yekaterinburg, Sverdlovsk Oblast
+## Deployment
 
-## Certificates
+Vercel builds and deploys every push to `main`. Set the environment variables in the Vercel project settings.
 
-- **Concurrency in Go** (2023) - Coursera
-- **Data Visualization** (2023) - freeCodeCamp
-- **Functions, Methods, and Interfaces in Go** (2023) - Coursera
-- **Getting Started with Go** (2023) - Coursera
-- **Programming with Google Go Specialization** (2023) - Coursera
-- **Front End Development Libraries** (2023) - freeCodeCamp
-- **JavaScript Algorithms and Data Structures** (2023) - freeCodeCamp
-- **Responsive Web Design** (2023) - freeCodeCamp
-- **Multi-threaded Programming in C/C++** (2022) - Stepik
-- **Front-End JavaScript Frameworks: Angular** (2022) - Coursera
-- **Front-End Web UI Frameworks and Tools: Bootstrap 4** (2022) - Coursera
-- **Full Stack Web Development with Angular Specialization** (2022) - Coursera
-- **Server-side Development with NodeJS, Express and MongoDB** (2022) - Coursera
-- **Building Web Applications in PHP** (2022) - Coursera
-- **Introduction to Structured Query Language (SQL)** (2022) - Coursera
-- **Machine Learning for All** (2022) - Coursera
-- **Understanding and Visualizing Data with Python** (2022) - Coursera
-
-## Projects
-
-- [To-do App](https://github.com/kyan9400/todo-app)
-- [naumen.scala.course](https://github.com/kyan9400/naumen.scala.course.2023.spring)
-- [Responsive Pricing Page](https://github.com/kyan9400/pricing_page)
-- [Simple E-commerce Website](https://shop-website-sable.vercel.app/)
-- [RentHouse Website](https://real-estate-website-ten-lyart.vercel.app/)
-- [Educal - Online Learning Platform](https://ak-edu-pearl.vercel.app/)
-- [Musicax](https://music-app-eight-liart.vercel.app/)
-
-## Contact
-
-- **Email:** kyan775909@gmail.com
-- **Phone:** +7 919 399 749
-- **LinkedIn:** [Alhassan Alfarran](https://www.linkedin.com/in/alhassan-alfarran-880b00246/)
-- **GitHub:** [kyan9400](https://github.com/kyan9400)
+Security headers (nosniff, referrer policy, permissions policy, frame blocking, COOP, HSTS) are configured in `next.config.mjs`.

@@ -1,50 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" fill="none" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-labelledby="rag-t rag-d" font-family="Inter, Segoe UI, system-ui, sans-serif">
+  <title id="rag-t">Document Intelligence (RAG) — pipeline</title>
+  <desc id="rag-d">Ingestion: PDF, Word and Excel documents go through OCR, chunking with metadata and sentence-transformers embeddings into a FAISS vector index and a keyword index. Query: a client sends a question to a FastAPI service, hybrid retrieval pulls the best chunks from both indexes, and an LLM writes an answer from the retrieved context.</desc>
   <defs>
-    <linearGradient id="rag-bg" x1="1200" y1="0" x2="0" y2="750" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#042f2e"/>
-      <stop offset="0.5" stop-color="#0f766e"/>
-      <stop offset="1" stop-color="#134e4a"/>
+    <pattern id="rag-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
+    <pattern id="rag-grid-major" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M200 0H0V200" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="rag-fade" cx="50%" cy="48%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.7" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.1"/>
+    </radialGradient>
+    <mask id="rag-fade-mask"><rect width="1600" height="900" fill="url(#rag-fade)"/></mask>
+    <radialGradient id="rag-glow-v" cx="260" cy="110" r="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="rag-glow-c" cx="1440" cy="880" r="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06b6d4" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rag-flow" x1="96" y1="0" x2="1504" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
     </linearGradient>
-    <linearGradient id="rag-node" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#2dd4bf"/>
-      <stop offset="1" stop-color="#0d9488"/>
+    <linearGradient id="rag-node" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1b2b"/>
+      <stop offset="1" stop-color="#131320"/>
     </linearGradient>
+    <linearGradient id="rag-title" x1="96" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e4e4f0"/>
+    </linearGradient>
+    <filter id="rag-blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
   </defs>
-  <rect width="1200" height="750" fill="url(#rag-bg)"/>
-  <circle cx="600" cy="360" r="280" fill="#0f172a" fill-opacity="0.2" stroke="#5eead4" stroke-opacity="0.12" stroke-width="1"/>
-  <!-- documents left -->
-  <rect x="80" y="180" width="200" height="260" rx="10" fill="#0f172a" fill-opacity="0.55" stroke="#99f6e4" stroke-opacity="0.4" stroke-width="1.5" transform="rotate(-6 180 310)"/>
-  <rect x="110" y="200" width="160" height="12" rx="3" fill="#ccfbf1" fill-opacity="0.2"/>
-  <rect x="110" y="224" width="140" height="8" rx="2" fill="#94a3b8" fill-opacity="0.2"/>
-  <rect x="110" y="244" width="148" height="8" rx="2" fill="#94a3b8" fill-opacity="0.12"/>
-  <rect x="110" y="280" width="160" height="100" rx="6" fill="#134e4a" fill-opacity="0.4"/>
-  <rect x="120" y="140" width="200" height="260" rx="10" fill="#0f172a" fill-opacity="0.45" stroke="#5eead4" stroke-opacity="0.35" stroke-width="1.5"/>
-  <rect x="150" y="168" width="140" height="10" rx="3" fill="#e2e8f0" fill-opacity="0.18"/>
-  <rect x="150" y="188" width="120" height="8" rx="2" fill="#64748b" fill-opacity="0.2"/>
-  <rect x="150" y="220" width="160" height="140" rx="8" fill="#115e59" fill-opacity="0.35"/>
-  <!-- center retrieval nodes -->
-  <line x1="380" y1="320" x2="520" y2="280" stroke="#34d399" stroke-opacity="0.35" stroke-width="1.5"/>
-  <line x1="380" y1="380" x2="520" y2="360" stroke="#34d399" stroke-opacity="0.28" stroke-width="1.5"/>
-  <line x1="380" y1="440" x2="520" y2="440" stroke="#34d399" stroke-opacity="0.22" stroke-width="1.5"/>
-  <circle cx="520" cy="280" r="14" fill="url(#rag-node)" fill-opacity="0.85"/>
-  <circle cx="520" cy="360" r="14" fill="#2dd4bf" fill-opacity="0.7"/>
-  <circle cx="520" cy="440" r="14" fill="#14b8a6" fill-opacity="0.55"/>
-  <rect x="560" y="200" width="480" height="360" rx="20" fill="#0f172a" fill-opacity="0.5" stroke="#5eead4" stroke-opacity="0.3" stroke-width="1.5"/>
-  <rect x="592" y="236" width="360" height="14" rx="4" fill="#e2e8f0" fill-opacity="0.12"/>
-  <rect x="592" y="264" width="280" height="10" rx="3" fill="#94a3b8" fill-opacity="0.15"/>
-  <!-- answer block -->
-  <rect x="592" y="300" width="416" height="120" rx="12" fill="#134e4a" fill-opacity="0.45" stroke="#5eead4" stroke-opacity="0.25" stroke-width="1"/>
-  <rect x="612" y="320" width="320" height="8" rx="2" fill="#ccfbf1" fill-opacity="0.25"/>
-  <rect x="612" y="338" width="360" height="8" rx="2" fill="#99f6e4" fill-opacity="0.15"/>
-  <rect x="612" y="356" width="240" height="8" rx="2" fill="#99f6e4" fill-opacity="0.12"/>
-  <!-- citations -->
-  <rect x="592" y="440" width="120" height="36" rx="8" fill="#0d9488" fill-opacity="0.35" stroke="#99f6e4" stroke-opacity="0.35" stroke-width="1"/>
-  <rect x="724" y="440" width="120" height="36" rx="8" fill="#0f766e" fill-opacity="0.4" stroke="#5eead4" stroke-opacity="0.3" stroke-width="1"/>
-  <rect x="856" y="440" width="120" height="36" rx="8" fill="#115e59" fill-opacity="0.45" stroke="#5eead4" stroke-opacity="0.25" stroke-width="1"/>
-  <rect x="592" y="496" width="200" height="10" rx="3" fill="#64748b" fill-opacity="0.25"/>
-  <rect x="592" y="514" width="160" height="10" rx="3" fill="#64748b" fill-opacity="0.15"/>
-  <!-- vector hint -->
-  <path d="M1000 200 L1080 200 L1040 280 Z" stroke="#99f6e4" stroke-opacity="0.4" stroke-width="1.5" fill="#0f172a" fill-opacity="0.35"/>
-  <circle cx="1040" cy="480" r="56" stroke="#34d399" stroke-opacity="0.35" stroke-width="2" fill="none"/>
-  <circle cx="1040" cy="480" r="28" fill="#2dd4bf" fill-opacity="0.25"/>
+  <style>
+    .rag-flow { opacity: 0; }
+    @keyframes rag-dash { to { stroke-dashoffset: -32; } }
+    @keyframes rag-dash-async { to { stroke-dashoffset: -36; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .rag-flow { opacity: 1; animation: rag-dash 1.8s linear infinite; }
+      .rag-async { animation: rag-dash-async 2.4s linear infinite; }
+    }
+  </style>
+  <rect width="1600" height="900" fill="#0f0f17"/>
+  <g mask="url(#rag-fade-mask)">
+    <rect width="1600" height="900" fill="url(#rag-grid)"/>
+    <rect width="1600" height="900" fill="url(#rag-grid-major)"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#rag-glow-v)"/>
+  <rect width="1600" height="900" fill="url(#rag-glow-c)"/>
+  <g>
+    <rect x="96" y="96" width="44" height="4" rx="2" fill="url(#rag-flow)"/>
+    <text x="96" y="152" font-size="40" font-weight="700" fill="url(#rag-title)" letter-spacing="-0.5">Document Intelligence (RAG) — pipeline</text>
+    <text x="96" y="192" font-size="22" fill="#a1a1aa">Simplified pipeline view · ingestion above, query below</text>
+  </g>
+  <g font-size="22" fill="#a1a1aa">
+    <line x1="1196" y1="139" x2="1238" y2="139" stroke="#39b9f0" stroke-width="2.5"/>
+    <path d="M1248 139l-12 -6.5v13z" fill="#35bdef"/>
+    <text x="1264" y="147">request / data flow</text>
+    <line x1="1196" y1="181" x2="1238" y2="181" stroke="#39b9f0" stroke-width="2.5" stroke-dasharray="8 8"/>
+    <path d="M1248 181l-12 -6.5v13z" fill="#35bdef"/>
+    <text x="1264" y="189">async / background</text>
+  </g><text x="96" y="246" font-size="22" font-weight="600" letter-spacing="2.5" fill="#a78bfa">INGESTION<tspan fill="#71717a" font-weight="400" letter-spacing="0.5">  ·  background, when documents are added</tspan></text><text x="96" y="626" font-size="22" font-weight="600" letter-spacing="2.5" fill="#67e8f9">QUERY<tspan fill="#71717a" font-weight="400" letter-spacing="0.5">  ·  per question</tspan></text><g><path d="M386 338L457 338" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-dasharray="8 10" stroke-linecap="round" class="rag-async"/><path d="M0 0l-14 -7.5v15z" fill="#6f7bf4" transform="translate(468 338) rotate(0.00)"/><circle cx="386" cy="338" r="5" fill="#0f0f17" stroke="#7575f4" stroke-width="2.5"/></g><g><path d="M718 338L789 338" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-dasharray="8 10" stroke-linecap="round" class="rag-async"/><path d="M0 0l-14 -7.5v15z" fill="#5798f2" transform="translate(800 338) rotate(0.00)"/><circle cx="718" cy="338" r="5" fill="#0f0f17" stroke="#5d91f2" stroke-width="2.5"/></g><g><path d="M1090 338L1161 338" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-dasharray="8 10" stroke-linecap="round" class="rag-async"/><path d="M0 0l-14 -7.5v15z" fill="#3bb7f0" transform="translate(1172 338) rotate(0.00)"/><circle cx="1090" cy="338" r="5" fill="#0f0f17" stroke="#41b0f0" stroke-width="2.5"/></g><g><path d="M945 406L945 475" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-dasharray="8 10" stroke-linecap="round" class="rag-async"/><path d="M0 0l-14 -7.5v15z" fill="#4ca4f1" transform="translate(945 486) rotate(90.00)"/><circle cx="945" cy="406" r="5" fill="#0f0f17" stroke="#4ca4f1" stroke-width="2.5"/><text x="961" y="446" font-size="22" fill="#c4c4cf" text-anchor="start">chunks</text></g><g><path d="M1338 406L1338 475" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-dasharray="8 10" stroke-linecap="round" class="rag-async"/><path d="M0 0l-14 -7.5v15z" fill="#2ec5ef" transform="translate(1338 486) rotate(90.00)"/><circle cx="1338" cy="406" r="5" fill="#0f0f17" stroke="#2ec5ef" stroke-width="2.5"/><text x="1354" y="446" font-size="22" fill="#c4c4cf" text-anchor="start">vectors</text></g><g><path d="M945 550L945 633" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M945 550L945 633" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="rag-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#4ca4f1" transform="translate(945 644) rotate(90.00)"/><circle cx="945" cy="550" r="5" fill="#0f0f17" stroke="#4ca4f1" stroke-width="2.5"/></g><g><path d="M1338 550L1338.0 590.0Q1338 606 1322.0 606.0L1043.5 606.0Q1030 606 1030.0 619.5L1030 633" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1338 550L1338.0 590.0Q1338 606 1322.0 606.0L1043.5 606.0Q1030 606 1030.0 619.5L1030 633" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="rag-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#45abf1" transform="translate(1030 644) rotate(90.00)"/><circle cx="1338" cy="550" r="5" fill="#0f0f17" stroke="#2ec5ef" stroke-width="2.5"/></g><g><path d="M336 712L429 712" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M336 712L429 712" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="rag-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#7179f4" transform="translate(440 712) rotate(0.00)"/><circle cx="336" cy="712" r="5" fill="#0f0f17" stroke="#7970f5" stroke-width="2.5"/><text x="388" y="698" font-size="22" fill="#c4c4cf" text-anchor="middle">question</text></g><g><path d="M700 712L769 712" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M700 712L769 712" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="rag-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#5896f2" transform="translate(780 712) rotate(0.00)"/><circle cx="700" cy="712" r="5" fill="#0f0f17" stroke="#5e8ff3" stroke-width="2.5"/><text x="740" y="698" font-size="22" fill="#c4c4cf" text-anchor="middle">query</text></g><g><path d="M1070 712L1169 712" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1070 712L1169 712" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="rag-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#3ab8f0" transform="translate(1180 712) rotate(0.00)"/><circle cx="1070" cy="712" r="5" fill="#0f0f17" stroke="#42aef0" stroke-width="2.5"/><text x="1125" y="698" font-size="22" fill="#c4c4cf" text-anchor="middle">context</text></g><g><path d="M1342 780L1342.0 802.0Q1342 818 1326.0 818.0L229.5 818.0Q216 818 216.0 804.5L216 791" fill="none" stroke="url(#rag-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1342 780L1342.0 802.0Q1342 818 1326.0 818.0L229.5 818.0Q216 818 216.0 804.5L216 791" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="rag-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#8266f5" transform="translate(216 780) rotate(-90.00)"/><circle cx="1342" cy="780" r="5" fill="#0f0f17" stroke="#2ec5ef" stroke-width="2.5"/><rect x="628.48" y="796" width="303.04" height="38" rx="19" fill="#141421" stroke="#ffffff" stroke-opacity="0.12"/>
+    <text x="780" y="823" font-size="22" fill="#d4d4dc" text-anchor="middle">answer</text></g><g><rect x="96" y="270" width="290" height="136" rx="20" fill="url(#rag-node)" stroke="#8068f5" stroke-opacity="0.6" stroke-width="2"/><rect x="98" y="272" width="286" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="122" y="310" font-size="22" font-weight="600" letter-spacing="2" fill="#8068f5">01 · SOURCE</text><text x="122" y="348" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Documents</text><text x="122" y="382" font-size="22" fill="#a1a1aa">PDF · Word · Excel</text><g transform="translate(324 290) scale(1)" fill="none" stroke="#8068f5" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#8068f5" opacity="0.95"><path d="M8 2h13l8 8v24H8z"/><path d="M21 2v8h8M13 18h11M13 24h11M13 30h7"/></g></g><g><rect x="468" y="270" width="250" height="136" rx="20" fill="url(#rag-node)" stroke="#6686f3" stroke-opacity="0.6" stroke-width="2"/><rect x="470" y="272" width="246" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="494" y="310" font-size="22" font-weight="600" letter-spacing="2" fill="#6686f3">02 · SCAN</text><text x="494" y="348" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">OCR</text><text x="494" y="382" font-size="22" fill="#a1a1aa">scans → text</text><g transform="translate(656 290) scale(1)" fill="none" stroke="#6686f3" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#6686f3" opacity="0.95"><path d="M2 11V5a3 3 0 0 1 3-3h6M25 2h6a3 3 0 0 1 3 3v6M34 25v6a3 3 0 0 1-3 3h-6M11 34H5a3 3 0 0 1-3-3v-6"/><path d="M8 18h20"/></g></g><g><rect x="800" y="270" width="290" height="136" rx="20" fill="url(#rag-node)" stroke="#4ca4f1" stroke-opacity="0.6" stroke-width="2"/><rect x="802" y="272" width="286" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="826" y="310" font-size="22" font-weight="600" letter-spacing="2" fill="#4ca4f1">03 · SPLIT</text><text x="826" y="348" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Chunking</text><text x="826" y="382" font-size="22" fill="#a1a1aa">+ source metadata</text><g transform="translate(1028 290) scale(1)" fill="none" stroke="#4ca4f1" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#4ca4f1" opacity="0.95"><rect x="3" y="3" width="30" height="8" rx="2"/><rect x="3" y="14" width="30" height="8" rx="2"/><rect x="3" y="25" width="30" height="8" rx="2"/></g></g><g><rect x="1172" y="270" width="332" height="136" rx="20" fill="url(#rag-node)" stroke="#2ec5ef" stroke-opacity="0.6" stroke-width="2"/><rect x="1174" y="272" width="328" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="1198" y="310" font-size="22" font-weight="600" letter-spacing="2" fill="#2ec5ef">04 · EMBED</text><text x="1198" y="348" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Embeddings</text><text x="1198" y="382" font-size="22" fill="#a1a1aa">sentence-transformers</text><g transform="translate(1442 290) scale(1)" fill="none" stroke="#2ec5ef" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#2ec5ef" opacity="0.95"><circle cx="7" cy="27" r="3"/><circle cx="18" cy="9" r="3"/><circle cx="29" cy="22" r="3"/><path d="M9.3 24.5l7-13M20.6 10.8l6.5 9M10 26.5l16-3.6"/></g></g><g>
+    <rect x="800" y="466" width="704" height="104" rx="24" fill="#ffffff" fill-opacity="0.015" stroke="#3cb5f0" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="6 7"/>
+    <rect x="1002" y="450" width="278.24" height="32" rx="10" fill="#0f0f17"/>
+    <text x="1016" y="474" font-size="22" font-weight="600" letter-spacing="2" fill="#3cb5f0">05 · INDEX STORE</text>
+  </g><rect x="820" y="486" width="250" height="64" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><g transform="translate(834 505) scale(0.7222222222222222)" fill="none" stroke="#4ca4f1" stroke-width="2.77" stroke-linecap="round" stroke-linejoin="round" color="#4ca4f1" opacity="0.95"><rect x="2" y="4" width="32" height="28" rx="4"/><path d="M2 13h32M2 22h32M13 13v19"/></g><text x="872" y="526" font-size="22" fill="#e4e4e7">Keyword index</text><rect x="1192" y="486" width="292" height="64" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><g transform="translate(1206 505) scale(0.7222222222222222)" fill="none" stroke="#2ec5ef" stroke-width="2.77" stroke-linecap="round" stroke-linejoin="round" color="#2ec5ef" opacity="0.95"><path d="M18 3l15 8-15 8-15-8z"/><path d="M3 18l15 8 15-8"/><path d="M3 25l15 8 15-8"/></g><text x="1244" y="526" font-size="22" fill="#e4e4e7">FAISS vectors</text><g font-size="22" fill="#8b8b96">
+  <rect x="96" y="486" width="3" height="66" rx="1.5" fill="url(#rag-flow)"/>
+  <text x="118" y="510">Hybrid retrieval = semantic similarity (FAISS)</text>
+  <text x="118" y="542">+ exact-term matches (keyword index)</text>
+</g><g><rect x="96" y="644" width="240" height="136" rx="20" fill="url(#rag-node)" stroke="#8266f5" stroke-opacity="0.6" stroke-width="2"/><rect x="98" y="646" width="236" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="122" y="684" font-size="22" font-weight="600" letter-spacing="2" fill="#8266f5">CLIENT</text><text x="122" y="722" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">User question</text><text x="122" y="756" font-size="22" fill="#a1a1aa">search request</text><g transform="translate(274 664) scale(1)" fill="none" stroke="#8266f5" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#8266f5" opacity="0.95"><rect x="1" y="4" width="34" height="28" rx="5"/><path d="M1 12h34"/><circle cx="6.5" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="10.5" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="8" r="1.2" fill="currentColor" stroke="none"/><path d="M8 20h10M8 25h6M22 18h6v8h-6z"/></g></g><g><rect x="440" y="644" width="260" height="136" rx="20" fill="url(#rag-node)" stroke="#6884f3" stroke-opacity="0.6" stroke-width="2"/><rect x="442" y="646" width="256" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="466" y="684" font-size="22" font-weight="600" letter-spacing="2" fill="#6884f3">API</text><text x="466" y="722" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">FastAPI</text><text x="466" y="756" font-size="22" fill="#a1a1aa">Python service</text><g transform="translate(638 664) scale(1)" fill="none" stroke="#6884f3" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#6884f3" opacity="0.95"><path d="M12 8L3 18l9 10M24 8l9 10-9 10M21 5l-6 26"/></g></g><g><rect x="800" y="664" width="250" height="96" rx="24" fill="#4da2f1" opacity="0.14" filter="url(#rag-blur)"/><rect x="780" y="644" width="290" height="136" rx="20" fill="url(#rag-node)" stroke="#4da2f1" stroke-opacity="0.6" stroke-width="2"/><rect x="782" y="646" width="286" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="806" y="684" font-size="22" font-weight="600" letter-spacing="2" fill="#4da2f1">RETRIEVE</text><text x="806" y="722" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Hybrid search</text><text x="806" y="756" font-size="22" fill="#a1a1aa">vector + keyword</text><g transform="translate(1008 664) scale(1)" fill="none" stroke="#4da2f1" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#4da2f1" opacity="0.95"><circle cx="15" cy="15" r="11"/><path d="M23.5 23.5L33 33"/><path d="M10 15h10M15 10v10"/></g></g><g><rect x="1200" y="664" width="284" height="96" rx="24" fill="#2ec5ef" opacity="0.14" filter="url(#rag-blur)"/><rect x="1180" y="644" width="324" height="136" rx="20" fill="url(#rag-node)" stroke="#2ec5ef" stroke-opacity="0.6" stroke-width="2"/><rect x="1182" y="646" width="320" height="132" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="1206" y="684" font-size="22" font-weight="600" letter-spacing="2" fill="#2ec5ef">GENERATE</text><text x="1206" y="722" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">LLM answer</text><text x="1206" y="756" font-size="22" fill="#a1a1aa">from retrieved context</text><g transform="translate(1442 664) scale(1)" fill="none" stroke="#2ec5ef" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#2ec5ef" opacity="0.95"><path d="M18 2c1.4 7.6 5.2 11.4 13 13-7.8 1.6-11.6 5.4-13 13-1.4-7.6-5.2-11.4-13-13 7.8-1.6 11.6-5.4 13-13z"/><path d="M30 26c.5 2.6 1.6 3.7 4 4-2.4.5-3.5 1.6-4 4-.5-2.4-1.6-3.5-4-4 2.4-.3 3.5-1.4 4-4z"/></g></g>
 </svg>

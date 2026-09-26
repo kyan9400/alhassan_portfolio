@@ -1,49 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" fill="none" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-labelledby="okkp-t okkp-d" font-family="Inter, Segoe UI, system-ui, sans-serif">
+  <title id="okkp-t">OKKP Operations Platform — architecture</title>
+  <desc id="okkp-d">React and TypeScript single-page app with role-aware dashboards calls a Node.js / Express API with auth, RBAC and modules for employees, violations, reporting and the audit log. The API stores operational and reporting data in PostgreSQL, documents in MongoDB and media in Cloudinary.</desc>
   <defs>
-    <linearGradient id="okkp-bg" x1="0" y1="0" x2="1200" y2="750" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0c1222"/>
-      <stop offset="0.45" stop-color="#1e1b4b"/>
-      <stop offset="1" stop-color="#312e81"/>
+    <pattern id="okkp-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
+    <pattern id="okkp-grid-major" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M200 0H0V200" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="okkp-fade" cx="50%" cy="48%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.7" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.1"/>
+    </radialGradient>
+    <mask id="okkp-fade-mask"><rect width="1600" height="900" fill="url(#okkp-fade)"/></mask>
+    <radialGradient id="okkp-glow-v" cx="260" cy="110" r="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="okkp-glow-c" cx="1440" cy="880" r="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06b6d4" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="okkp-flow" x1="96" y1="0" x2="1504" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
     </linearGradient>
-    <linearGradient id="okkp-glow" x1="900" y1="80" x2="400" y2="600" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6366f1" stop-opacity="0.35"/>
-      <stop offset="1" stop-color="#6366f1" stop-opacity="0"/>
+    <linearGradient id="okkp-node" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1b2b"/>
+      <stop offset="1" stop-color="#131320"/>
     </linearGradient>
-    <linearGradient id="okkp-chart-fill" x1="320" y1="440" x2="320" y2="640" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#818cf8"/>
-      <stop offset="1" stop-color="#312e81" stop-opacity="0"/>
+    <linearGradient id="okkp-title" x1="96" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e4e4f0"/>
     </linearGradient>
+    <filter id="okkp-blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
   </defs>
-  <rect width="1200" height="750" fill="url(#okkp-bg)"/>
-  <rect width="1200" height="750" fill="url(#okkp-glow)"/>
-  <rect x="48" y="56" width="200" height="646" rx="14" fill="#0f172a" fill-opacity="0.55" stroke="#818cf8" stroke-opacity="0.35" stroke-width="1.5"/>
-  <circle cx="108" cy="120" r="8" fill="#6366f1" fill-opacity="0.9"/>
-  <rect x="132" y="112" width="88" height="16" rx="4" fill="#e2e8f0" fill-opacity="0.12"/>
-  <rect x="88" y="168" width="120" height="10" rx="3" fill="#94a3b8" fill-opacity="0.2"/>
-  <rect x="88" y="192" width="96" height="10" rx="3" fill="#64748b" fill-opacity="0.15"/>
-  <rect x="88" y="216" width="108" height="10" rx="3" fill="#64748b" fill-opacity="0.12"/>
-  <rect x="276" y="56" width="876" height="52" rx="12" fill="#0f172a" fill-opacity="0.4" stroke="#6366f1" stroke-opacity="0.25" stroke-width="1.2"/>
-  <rect x="300" y="74" width="180" height="16" rx="4" fill="#c7d2fe" fill-opacity="0.15"/>
-  <rect x="980" y="72" width="148" height="20" rx="6" fill="#4f46e5" fill-opacity="0.55"/>
-  <rect x="276" y="132" width="268" height="118" rx="14" fill="#1e1b4b" fill-opacity="0.85" stroke="#a5b4fc" stroke-opacity="0.35" stroke-width="1.2"/>
-  <rect x="300" y="156" width="72" height="10" rx="3" fill="#94a3b8" fill-opacity="0.35"/>
-  <rect x="300" y="186" width="140" height="36" rx="6" fill="#e0e7ff" fill-opacity="0.12"/>
-  <rect x="564" y="132" width="268" height="118" rx="14" fill="#1e1b4b" fill-opacity="0.75" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1.2"/>
-  <rect x="588" y="156" width="88" height="10" rx="3" fill="#94a3b8" fill-opacity="0.3"/>
-  <rect x="588" y="186" width="120" height="36" rx="6" fill="#c7d2fe" fill-opacity="0.1"/>
-  <rect x="852" y="132" width="300" height="118" rx="14" fill="#1e1b4b" fill-opacity="0.65" stroke="#818cf8" stroke-opacity="0.28" stroke-width="1.2"/>
-  <rect x="876" y="156" width="100" height="10" rx="3" fill="#94a3b8" fill-opacity="0.28"/>
-  <rect x="876" y="186" width="132" height="36" rx="6" fill="#a5b4fc" fill-opacity="0.08"/>
-  <rect x="276" y="270" width="876" height="432" rx="16" fill="#0f172a" fill-opacity="0.45" stroke="#6366f1" stroke-opacity="0.22" stroke-width="1.2"/>
-  <rect x="308" y="306" width="812" height="36" rx="8" fill="#312e81" fill-opacity="0.35"/>
-  <rect x="324" y="318" width="120" height="12" rx="3" fill="#e2e8f0" fill-opacity="0.2"/>
-  <rect x="520" y="318" width="200" height="12" rx="3" fill="#e2e8f0" fill-opacity="0.12"/>
-  <rect x="780" y="318" width="160" height="12" rx="3" fill="#e2e8f0" fill-opacity="0.1"/>
-  <rect x="308" y="358" width="812" height="1" fill="#818cf8" fill-opacity="0.15"/>
-  <rect x="308" y="378" width="812" height="28" rx="6" fill="#1e293b" fill-opacity="0.5"/>
-  <rect x="308" y="418" width="812" height="28" rx="6" fill="#1e293b" fill-opacity="0.35"/>
-  <rect x="308" y="458" width="812" height="28" rx="6" fill="#1e293b" fill-opacity="0.25"/>
-  <rect x="308" y="498" width="812" height="28" rx="6" fill="#1e293b" fill-opacity="0.2"/>
-  <path d="M320 620 L380 560 L460 590 L560 480 L680 520 L780 440 L900 500 L980 460 L1020 500 V640 H320 Z" fill="url(#okkp-chart-fill)" opacity="0.35"/>
-  <path d="M320 620 L380 560 L460 590 L560 480 L680 520 L780 440 L900 500 L980 460 L1020 500" stroke="#a5b4fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9"/>
+  <style>
+    .okkp-flow { opacity: 0; }
+    @keyframes okkp-dash { to { stroke-dashoffset: -32; } }
+    @keyframes okkp-dash-async { to { stroke-dashoffset: -36; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .okkp-flow { opacity: 1; animation: okkp-dash 1.8s linear infinite; }
+      .okkp-async { animation: okkp-dash-async 2.4s linear infinite; }
+    }
+  </style>
+  <rect width="1600" height="900" fill="#0f0f17"/>
+  <g mask="url(#okkp-fade-mask)">
+    <rect width="1600" height="900" fill="url(#okkp-grid)"/>
+    <rect width="1600" height="900" fill="url(#okkp-grid-major)"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#okkp-glow-v)"/>
+  <rect width="1600" height="900" fill="url(#okkp-glow-c)"/>
+  <g>
+    <rect x="96" y="96" width="44" height="4" rx="2" fill="url(#okkp-flow)"/>
+    <text x="96" y="152" font-size="40" font-weight="700" fill="url(#okkp-title)" letter-spacing="-0.5">OKKP Operations Platform — architecture</text>
+    <text x="96" y="192" font-size="22" fill="#a1a1aa">Simplified system view · request flow left → right</text>
+  </g>
+  <g font-size="22" fill="#a1a1aa">
+    <line x1="1196" y1="139" x2="1238" y2="139" stroke="#39b9f0" stroke-width="2.5"/>
+    <path d="M1248 139l-12 -6.5v13z" fill="#35bdef"/>
+    <text x="1264" y="147">request / data flow</text>
+  </g><g transform="translate(0 70)"><g><path d="M456 400L589 400" fill="none" stroke="url(#okkp-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M456 400L589 400" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="okkp-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#6587f3" transform="translate(600 400) rotate(0.00)"/><circle cx="456" cy="400" r="5" fill="#0f0f17" stroke="#707af4" stroke-width="2.5"/><text x="528" y="386" font-size="22" fill="#c4c4cf" text-anchor="middle">REST</text></g><g><path d="M1050 284L1179 284" fill="none" stroke="url(#okkp-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1050 284L1179 284" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="okkp-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#39b8f0" transform="translate(1190 284) rotate(0.00)"/><circle cx="1050" cy="284" r="5" fill="#0f0f17" stroke="#44adf1" stroke-width="2.5"/><text x="1120" y="270" font-size="22" fill="#c4c4cf" text-anchor="middle">media</text></g><g><path d="M1050 424L1179 424" fill="none" stroke="url(#okkp-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1050 424L1179 424" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="okkp-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#39b8f0" transform="translate(1190 424) rotate(0.00)"/><circle cx="1050" cy="424" r="5" fill="#0f0f17" stroke="#44adf1" stroke-width="2.5"/><text x="1120" y="410" font-size="22" fill="#c4c4cf" text-anchor="middle">documents</text></g><g><path d="M1050 540L1179 540" fill="none" stroke="url(#okkp-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1050 540L1179 540" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="okkp-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#39b8f0" transform="translate(1190 540) rotate(0.00)"/><circle cx="1050" cy="540" r="5" fill="#0f0f17" stroke="#44adf1" stroke-width="2.5"/><text x="1120" y="526" font-size="22" fill="#c4c4cf" text-anchor="middle">SQL</text></g><g><rect x="116" y="270" width="320" height="302" rx="24" fill="#8b5cf6" opacity="0.14" filter="url(#okkp-blur)"/><rect x="96" y="250" width="360" height="342" rx="20" fill="url(#okkp-node)" stroke="#8b5cf6" stroke-opacity="0.6" stroke-width="2"/><rect x="98" y="252" width="356" height="338" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="122" y="294" font-size="22" font-weight="600" letter-spacing="2" fill="#8b5cf6">FRONTEND</text><text x="122" y="334" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">React + TypeScript</text><text x="122" y="370" font-size="22" fill="#a1a1aa">Single-page app</text><g transform="translate(394 270) scale(1)" fill="none" stroke="#8b5cf6" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#8b5cf6" opacity="0.95"><rect x="1" y="4" width="34" height="28" rx="5"/><path d="M1 12h34"/><circle cx="6.5" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="10.5" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="8" r="1.2" fill="currentColor" stroke="none"/><path d="M8 20h10M8 25h6M22 18h6v8h-6z"/></g><rect x="122" y="400" width="308" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="142" cy="424" r="4" fill="#8b5cf6"/><text x="158" y="432" font-size="22" fill="#e4e4e7">Dashboards per role</text><rect x="122" y="460" width="308" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="142" cy="484" r="4" fill="#8b5cf6"/><text x="158" y="492" font-size="22" fill="#e4e4e7">Workflows &amp; forms</text><rect x="122" y="520" width="308" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="142" cy="544" r="4" fill="#8b5cf6"/><text x="158" y="552" font-size="22" fill="#e4e4e7">Reporting views</text></g><g><rect x="620" y="248" width="410" height="300" rx="24" fill="#a78bfa" opacity="0.16" filter="url(#okkp-blur)"/><rect x="600" y="228" width="450" height="340" rx="20" fill="url(#okkp-node)" stroke="#a78bfa" stroke-opacity="0.6" stroke-width="2"/><rect x="602" y="230" width="446" height="336" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="626" y="272" font-size="22" font-weight="600" letter-spacing="2" fill="#a78bfa">BACKEND</text><text x="626" y="314" font-size="30" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Node.js / Express API</text><text x="626" y="350" font-size="22" fill="#a1a1aa">REST · modular domain services</text><g transform="translate(988 248) scale(1)" fill="none" stroke="#a78bfa" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#a78bfa" opacity="0.95"><rect x="2" y="3" width="32" height="12" rx="3"/><rect x="2" y="21" width="32" height="12" rx="3"/><circle cx="8" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="8" cy="27" r="1.4" fill="currentColor" stroke="none"/><path d="M15 9h13M15 27h13"/></g><rect x="626" y="374" width="398" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><g transform="translate(640 385) scale(0.7222222222222222)" fill="none" stroke="#22d3ee" stroke-width="2.77" stroke-linecap="round" stroke-linejoin="round" color="#22d3ee" opacity="0.95"><path d="M18 2l13 5v10c0 8-5.6 14-13 17C10.6 31 5 25 5 17V7z"/><path d="M12.5 18l4 4 7-8"/></g><text x="678" y="406" font-size="22" fill="#e4e4e7">Auth · RBAC middleware</text><rect x="626" y="434" width="193" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="646" cy="458" r="4" fill="#a78bfa"/><text x="662" y="466" font-size="22" fill="#e4e4e7">Employees</text><rect x="831" y="434" width="193" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="851" cy="458" r="4" fill="#a78bfa"/><text x="867" y="466" font-size="22" fill="#e4e4e7">Reporting</text><rect x="626" y="494" width="193" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="646" cy="518" r="4" fill="#a78bfa"/><text x="662" y="526" font-size="22" fill="#e4e4e7">Violations</text><rect x="831" y="494" width="193" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="851" cy="518" r="4" fill="#a78bfa"/><text x="867" y="526" font-size="22" fill="#e4e4e7">Audit log</text></g><g><rect x="1190" y="228" width="314" height="112" rx="20" fill="url(#okkp-node)" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="2"/><rect x="1192" y="230" width="310" height="108" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="1216" y="278" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Cloudinary</text><text x="1216" y="314" font-size="22" fill="#a1a1aa">images &amp; media files</text><g transform="translate(1442 248) scale(1)" fill="none" stroke="#22d3ee" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#22d3ee" opacity="0.95"><path d="M10.5 29h16a7.5 7.5 0 0 0 .6-15 10 10 0 0 0-19.2 2.7A6.2 6.2 0 0 0 10.5 29z"/></g></g><g><rect x="1190" y="368" width="314" height="112" rx="20" fill="url(#okkp-node)" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="2"/><rect x="1192" y="370" width="310" height="108" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="1216" y="418" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">MongoDB</text><text x="1216" y="454" font-size="22" fill="#a1a1aa">document data</text><g transform="translate(1442 388) scale(1)" fill="none" stroke="#22d3ee" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#22d3ee" opacity="0.95"><ellipse cx="18" cy="8" rx="14" ry="5"/><path d="M4 8v20c0 2.8 6.3 5 14 5s14-2.2 14-5V8"/><path d="M4 18c0 2.8 6.3 5 14 5s14-2.2 14-5"/></g></g><g><rect x="1210" y="528" width="274" height="152" rx="24" fill="#22d3ee" opacity="0.12" filter="url(#okkp-blur)"/><rect x="1190" y="508" width="314" height="192" rx="20" fill="url(#okkp-node)" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="2"/><rect x="1192" y="510" width="310" height="188" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="1216" y="552" font-size="22" font-weight="600" letter-spacing="2" fill="#22d3ee">RELATIONAL</text><text x="1216" y="592" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">PostgreSQL</text><text x="1216" y="628" font-size="22" fill="#a1a1aa">operational data</text><text x="1216" y="660" font-size="22" fill="#a1a1aa">reporting queries</text><g transform="translate(1442 528) scale(1)" fill="none" stroke="#22d3ee" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#22d3ee" opacity="0.95"><ellipse cx="18" cy="8" rx="14" ry="5"/><path d="M4 8v20c0 2.8 6.3 5 14 5s14-2.2 14-5V8"/><path d="M4 18c0 2.8 6.3 5 14 5s14-2.2 14-5"/></g></g></g>
 </svg>

@@ -1,177 +1,334 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Search, Star } from "lucide-react";
-import type { GithubRepo } from "@/lib/github";
+import { ArrowUpRight, BrainCircuit, LayoutTemplate, Search, Server, Star, Workflow, type LucideIcon } from "lucide-react";
+import type { GithubRepo, RepoCategory } from "@/lib/github";
 import { GITHUB_URL } from "@/lib/ui-copy";
 import { useCopy } from "@/lib/hooks";
-import { SectionHeader, GithubIcon } from "@/components/ui/primitives";
+import { usePortfolioStore } from "@/store/portfolioStore";
+import { Bidi, SectionHeader, GithubIcon } from "@/components/ui/primitives";
 
-const CATEGORY_KEYS = ["all", "frontend", "fullstack", "ai", "dashboard", "backend", "blockchain"] as const;
-type Category = (typeof CATEGORY_KEYS)[number];
+/** Web and AI work first; platform tooling last. */
+const FILTERS = ["all", "ai", "backend", "frontend", "platform"] as const;
+type Filter = (typeof FILTERS)[number];
 
-const CATEGORY_KEYWORDS: Record<Exclude<Category, "all">, string[]> = {
-  frontend: ["frontend", "react", "vue", "html", "css", "landing", "website", "portfolio", "ui", "javascript", "typescript"],
-  fullstack: ["fullstack", "full-stack", "next", "node", "express", "platform", "saas", "app"],
-  ai: ["ai", "llm", "rag", "gpt", "ml", "python", "gradio", "openai"],
-  dashboard: ["dashboard", "admin", "analytics", "crm", "panel"],
-  backend: ["backend", "api", "server", "node", "express", "django", "fastapi", "java"],
-  blockchain: ["blockchain", "web3", "solidity", "crypto", "nft"]
+/**
+ * Cards shown before "View all": fewer on phones so the section doesn't turn into a long scroll.
+ * The phone limit is CSS (cards past it get `max-sm:hidden`), not a matchMedia re-render: the server
+ * HTML is already right on every screen, and nothing is removed (and exit-animated) after hydration.
+ */
+const INITIAL_DESKTOP = 6;
+const INITIAL_MOBILE = 3;
+const MOBILE_QUERY = "(max-width: 639px)";
+
+/** Header art for repos without a screenshot: one icon and tint per category. */
+const CATEGORY_ART: Record<RepoCategory, { icon: LucideIcon; tint: string; ink: string }> = {
+  platform: { icon: Workflow, tint: "from-violet-500/25 via-violet-500/[0.06]", ink: "text-violet-600 dark:text-violet-300" },
+  backend: { icon: Server, tint: "from-cyan-500/25 via-cyan-500/[0.06]", ink: "text-cyan-700 dark:text-cyan-300" },
+  ai: { icon: BrainCircuit, tint: "from-fuchsia-500/25 via-fuchsia-500/[0.06]", ink: "text-fuchsia-600 dark:text-fuchsia-300" },
+  frontend: { icon: LayoutTemplate, tint: "from-sky-500/25 via-blue-500/[0.06]", ink: "text-sky-700 dark:text-sky-300" }
 };
 
-const INITIAL_VISIBLE = 6;
+/** GitHub's linguist colours for the languages in the curated list. */
+const LANGUAGE_COLORS: Record<string, string> = {
+  TypeScript: "#3178c6",
+  JavaScript: "#f1e05a",
+  Python: "#3572A5",
+  Go: "#00ADD8",
+  HCL: "#844FBA"
+};
 
-function matches(repo: GithubRepo, cat: Category) {
-  if (cat === "all") return true;
-  const hay = [repo.name, repo.description ?? "", repo.language ?? "", ...(repo.topics ?? [])].join(" ").toLowerCase();
-  return CATEGORY_KEYWORDS[cat].some((k) => hay.includes(k));
+const GRID_STYLE: React.CSSProperties = {
+  backgroundImage:
+    "linear-gradient(rgb(var(--line) / 0.07) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--line) / 0.07) 1px, transparent 1px)",
+  backgroundSize: "24px 24px",
+  maskImage: "radial-gradient(ellipse at 30% 25%, black 15%, transparent 70%)",
+  WebkitMaskImage: "radial-gradient(ellipse at 30% 25%, black 15%, transparent 70%)"
+};
+
+const norm = (s: string) => s.trim().toLowerCase();
+
+function hasOwnDescription(repo: GithubRepo) {
+  if (!repo.description?.trim()) return false;
+  const d = norm(repo.description);
+  return d !== norm(repo.name) && d !== norm(repo.displayName);
 }
 
-const prettyName = (name: string) => name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+function LanguageLabel({ language }: { language: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5" dir="ltr">
+      <span className="h-2.5 w-2.5 rounded-full" style={{ background: LANGUAGE_COLORS[language] ?? "rgb(var(--accent))" }} aria-hidden="true" />
+      {language}
+    </span>
+  );
+}
 
-export function GithubRepos({ repos }: { repos: GithubRepo[] | null }) {
+/** Text-only header for repos without a committed screenshot. */
+function RepoArt({ repo }: { repo: GithubRepo }) {
+  const art = CATEGORY_ART[repo.category];
+  const Icon = art.icon;
+  return (
+    <>
+      <div className={`absolute inset-0 bg-gradient-to-br ${art.tint} to-transparent`} aria-hidden="true" />
+      <div className="absolute inset-0" style={GRID_STYLE} aria-hidden="true" />
+      <Icon
+        className="absolute -bottom-8 -end-8 h-44 w-44 text-text/[0.05] transition-transform duration-700 ease-out group-hover:-rotate-6 group-hover:scale-110"
+        strokeWidth={1}
+        aria-hidden="true"
+      />
+      <span className="absolute start-5 top-5 flex h-11 w-11 items-center justify-center rounded-2xl border hairline bg-card/70 shadow-sm">
+        <Icon className={`h-5 w-5 ${art.ink}`} aria-hidden="true" />
+      </span>
+      <div className="absolute inset-x-5 bottom-5 font-mono" aria-hidden="true">
+        <p className="text-[11px] text-muted">
+          <bdi>kyan9400 /</bdi>
+        </p>
+        <p className="mt-0.5 truncate text-[17px] font-medium text-text">
+          <bdi>{repo.name}</bdi>
+        </p>
+      </div>
+    </>
+  );
+}
+
+/**
+ * A repo card. The title link is "stretched" over the whole card (its ::after), opening the live demo
+ * when there is one and the repository otherwise; the GitHub link sits above that overlay as a sibling,
+ * so no interactive element is nested in another.
+ */
+function RepoCard({ repo }: { repo: GithubRepo }) {
   const copy = useCopy();
-  const [category, setCategory] = useState<Category>("all");
-  const [query, setQuery] = useState("");
-  const [visible, setVisible] = useState(INITIAL_VISIBLE);
-
-  const filtered = useMemo(() => {
-    if (!repos) return [];
-    const q = query.trim().toLowerCase();
-    return repos.filter(
-      (r) =>
-        matches(r, category) &&
-        (!q || [r.name, r.description ?? "", r.language ?? "", ...(r.topics ?? [])].join(" ").toLowerCase().includes(q))
-    );
-  }, [repos, category, query]);
+  const { ui } = copy;
+  const locale = usePortfolioStore((s) => s.locale);
+  const primaryHref = repo.homepage ?? repo.html_url;
+  const translated = locale === "en" ? undefined : repo.descriptionI18n?.[locale];
 
   return (
-    <section id="github-repos" className="section">
+    <>
+      {/* Text-only headers are shorter on phones, where the cards stack in one column. */}
+      <div className={`relative overflow-hidden border-b hairline bg-surface ${repo.previewImage ? "aspect-[16/10]" : "aspect-[5/2] sm:aspect-[16/10]"}`}>
+        {repo.previewImage ? (
+          <Image
+            src={repo.previewImage}
+            alt={`${repo.displayName} ${ui.previewAlt}`}
+            fill
+            sizes="(min-width: 1152px) 360px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
+          />
+        ) : (
+          <RepoArt repo={repo} />
+        )}
+        {repo.homepage ? (
+          <span className="absolute end-3 top-3 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-300 backdrop-blur rtl:tracking-normal">
+            <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgb(52_211_153/0.9)]" aria-hidden="true" />
+            {ui.liveBadge}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-lg font-semibold leading-snug transition-colors group-hover:text-accent-ink">
+          <a
+            href={primaryHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor={ui.cursorOpen}
+            className="after:absolute after:inset-0 after:rounded-3xl after:content-['']"
+          >
+            <bdi>{repo.displayName}</bdi>
+            {repo.homepage ? <span className="sr-only"> ({ui.liveBadge})</span> : null}
+          </a>
+        </h3>
+        {translated ? (
+          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+            <Bidi text={translated} />
+          </p>
+        ) : hasOwnDescription(repo) ? (
+          // English (no translation yet): marked as such for screen readers, aligned to its own start.
+          <p lang="en" dir="auto" className="mt-2 line-clamp-3 text-start text-sm leading-relaxed text-muted">
+            {repo.description}
+          </p>
+        ) : null}
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs text-muted">
+          <div className="flex min-w-0 items-center gap-3">
+            {repo.language ? <LanguageLabel language={repo.language} /> : null}
+            {repo.stargazers_count > 0 ? (
+              <span className="inline-flex items-center gap-1 tabular-nums">
+                <Star className="h-3.5 w-3.5" aria-hidden="true" />
+                {repo.stargazers_count}
+              </span>
+            ) : null}
+          </div>
+          {repo.homepage ? (
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${copy.projectViewGithubLabel}: ${repo.displayName}`}
+              className="relative z-10 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border hairline px-3 font-medium transition hover:border-accent/40 hover:text-text"
+            >
+              <GithubIcon className="h-3.5 w-3.5" />
+              {copy.projectViewGithubLabel}
+            </a>
+          ) : (
+            // The whole card already opens the repository; this is only the visual cue.
+            <span className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border hairline px-3 font-medium transition group-hover:border-accent/40 group-hover:text-text" aria-hidden="true">
+              <GithubIcon className="h-3.5 w-3.5" />
+              {copy.projectViewGithubLabel}
+              <ArrowUpRight className="h-3 w-3 rtl:-scale-x-100" />
+            </span>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
+  const copy = useCopy();
+  const { ui } = copy;
+  const [filter, setFilter] = useState<Filter>("all");
+  const [query, setQuery] = useState("");
+  const [expanded, setExpanded] = useState(false);
+
+  const counts = useMemo(() => {
+    const c: Record<Filter, number> = { all: repos.length, platform: 0, backend: 0, ai: 0, frontend: 0 };
+    for (const r of repos) c[r.category] += 1;
+    return c;
+  }, [repos]);
+
+  const filtered = useMemo(() => {
+    const q = norm(query);
+    return repos.filter(
+      (r) =>
+        (filter === "all" || r.category === filter) &&
+        (!q ||
+          norm(
+            [r.displayName, r.name, r.description ?? "", r.descriptionI18n?.ru ?? "", r.descriptionI18n?.ar ?? "", r.language ?? "", ...r.topics].join(" ")
+          ).includes(q))
+    );
+  }, [repos, filter, query]);
+
+  const shown = expanded ? filtered : filtered.slice(0, INITIAL_DESKTOP);
+  const remainingDesktop = filtered.length - shown.length;
+  const remainingMobile = expanded ? 0 : Math.max(0, filtered.length - INITIAL_MOBILE);
+  const showingEverything = filter === "all" && !query.trim();
+
+  // "View all" disappears once used, so keyboard focus moves to the first newly shown card.
+  const gridRef = useRef<HTMLUListElement>(null);
+  const focusIndex = useRef<number | null>(null);
+  const expand = () => {
+    focusIndex.current = window.matchMedia(MOBILE_QUERY).matches ? INITIAL_MOBILE : shown.length;
+    setExpanded(true);
+  };
+  useEffect(() => {
+    if (!expanded || focusIndex.current === null) return;
+    const index = focusIndex.current;
+    focusIndex.current = null;
+    gridRef.current?.querySelectorAll<HTMLAnchorElement>("h3 a")[index]?.focus();
+  }, [expanded]);
+
+  return (
+    <section id="github-repos" className="section cv-auto [--cv-h:1980px] md:[--cv-h:1940px] lg:[--cv-h:1430px]">
       <div className="shell">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <SectionHeader eyebrow={copy.githubReposEyebrow} title={copy.githubReposTitle} description={copy.githubReposDescription} />
-          <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn-ghost mb-12 shrink-0 self-start md:mb-16 md:self-auto">
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn-ghost mb-12 shrink-0 self-start md:mb-16 md:self-auto">
             <GithubIcon />
-            @kyan9400
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            <bdi>@kyan9400</bdi>
+            <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
           </a>
         </div>
 
-        {repos === null ? (
+        <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-center">
+          <label className="relative md:w-72 md:shrink-0">
+            <span className="sr-only">{copy.githubSearchPlaceholder}</span>
+            <Search className="pointer-events-none absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setExpanded(false);
+              }}
+              placeholder={copy.githubSearchPlaceholder}
+              className="field !rounded-full ps-11"
+            />
+          </label>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label={ui.repoFilterLabel}>
+            {FILTERS.map((key) => {
+              const active = filter === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => {
+                    setFilter(key);
+                    setExpanded(false);
+                  }}
+                  className={`relative inline-flex min-h-[40px] shrink-0 items-center gap-2 rounded-full px-4 text-[13px] font-medium transition-colors ${
+                    active ? "text-white" : "text-muted hover:text-text"
+                  }`}
+                >
+                  {active ? (
+                    <motion.span
+                      layoutId="repo-filter"
+                      className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-600 to-blue-600"
+                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    />
+                  ) : null}
+                  <span className="relative">{ui.repoCategories[key]}</span>
+                  <span className={`relative text-[11px] tabular-nums ${active ? "text-white/70" : "text-muted/70"}`}>{counts[key]}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {filtered.length === 0 ? (
           <p className="card p-10 text-center text-muted" role="status">
-            {copy.githubReposError}{" "}
-            <a href={GITHUB_URL} className="text-accent underline underline-offset-4" target="_blank" rel="noreferrer">
-              {copy.githubReposViewGithub}
-            </a>
+            {copy.githubReposEmpty}
           </p>
         ) : (
-          <>
-            <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-center">
-              <label className="relative md:w-72">
-                <span className="sr-only">{copy.githubSearchPlaceholder}</span>
-                <Search className="pointer-events-none absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    setVisible(INITIAL_VISIBLE);
-                  }}
-                  placeholder={copy.githubSearchPlaceholder}
-                  className="field !rounded-full ps-11"
-                />
-              </label>
-              <div className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 md:mx-0 md:px-0" role="group">
-                {CATEGORY_KEYS.map((key, i) => (
-                  <button
-                    key={key}
-                    type="button"
-                    aria-pressed={category === key}
-                    onClick={() => {
-                      setCategory(key);
-                      setVisible(INITIAL_VISIBLE);
-                    }}
-                    className={`relative min-h-[40px] shrink-0 rounded-full px-4 text-[13px] font-medium transition-colors ${
-                      category === key ? "text-white" : "text-muted hover:text-text"
-                    }`}
-                  >
-                    {category === key ? (
-                      <motion.span layoutId="repo-filter" className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-600 to-blue-600" transition={{ type: "spring", stiffness: 400, damping: 32 }} />
-                    ) : null}
-                    <span className="relative">{copy.githubFilterCategories[i] ?? key}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {filtered.length === 0 ? (
-              <p className="card p-10 text-center text-muted">{copy.githubReposEmpty}</p>
-            ) : (
-              <motion.ul layout className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <AnimatePresence mode="popLayout">
-                  {filtered.slice(0, visible).map((repo) => (
-                    <motion.li
-                      layout
-                      key={repo.html_url}
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={{ duration: 0.35 }}
-                      className="card card-hover group flex flex-col overflow-hidden"
-                    >
-                      <a href={repo.homepage || repo.html_url} target="_blank" rel="noreferrer" data-cursor={copy.ui.cursorOpen} className="relative block aspect-[16/10] overflow-hidden border-b hairline bg-surface">
-                        {repo.previewImage ? (
-                          <Image
-                            src={repo.previewImage}
-                            alt={`${prettyName(repo.name)} preview`}
-                            fill
-                            sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
-                            className="object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
-                          />
-                        ) : null}
-                        {repo.homepage ? (
-                          <span className="absolute end-3 top-3 flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-300 backdrop-blur">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                            Live
-                          </span>
-                        ) : null}
-                      </a>
-                      <div className="flex flex-1 flex-col p-5">
-                        <h3 className="font-display text-lg font-semibold leading-snug">{prettyName(repo.name)}</h3>
-                        <p className="mt-2 line-clamp-2 flex-1 text-sm text-muted">{repo.description || prettyName(repo.name)}</p>
-                        <div className="mt-4 flex items-center justify-between gap-2 text-xs text-muted">
-                          <div className="flex items-center gap-3">
-                            {repo.language ? <span className="tag">{repo.language}</span> : null}
-                            {repo.stargazers_count > 0 ? (
-                              <span className="flex items-center gap-1">
-                                <Star className="h-3.5 w-3.5" aria-hidden="true" />
-                                {repo.stargazers_count}
-                              </span>
-                            ) : null}
-                          </div>
-                          <a href={repo.html_url} target="_blank" rel="noreferrer" className="flex h-9 items-center gap-1.5 rounded-full px-3 font-medium transition hover:bg-surface hover:text-text">
-                            <GithubIcon className="h-3.5 w-3.5" />
-                            {copy.projectViewGithubLabel}
-                          </a>
-                        </div>
-                      </div>
-                    </motion.li>
-                  ))}
-                </AnimatePresence>
-              </motion.ul>
-            )}
-
-            {visible < filtered.length ? (
-              <div className="mt-10 flex justify-center">
-                <button type="button" className="btn-ghost" onClick={() => setVisible(filtered.length)}>
-                  {copy.githubReposViewMore} ({filtered.length - visible})
-                </button>
-              </div>
-            ) : null}
-          </>
+          <motion.ul ref={gridRef} layout className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {shown.map((repo, index) => (
+                <motion.li
+                  layout
+                  key={repo.name}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.35 }}
+                  className={`card card-hover group flex flex-col overflow-hidden ${!expanded && index >= INITIAL_MOBILE ? "max-sm:hidden" : ""}`}
+                >
+                  <RepoCard repo={repo} />
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </motion.ul>
         )}
+
+        {remainingMobile > 0 ? (
+          // Phones hide at least as many cards as larger screens; from sm the button only shows if cards are hidden there too.
+          <div className={`mt-10 flex justify-center ${remainingDesktop > 0 ? "" : "sm:hidden"}`}>
+            <button type="button" className="btn-ghost" onClick={expand}>
+              {showingEverything ? ui.viewAllRepos : copy.githubReposViewMore}
+              {showingEverything ? (
+                <span className="tabular-nums text-muted">{filtered.length}</span>
+              ) : (
+                <>
+                  <span className="tabular-nums text-muted sm:hidden">+{remainingMobile}</span>
+                  <span className="tabular-nums text-muted max-sm:hidden">+{remainingDesktop}</span>
+                </>
+              )}
+            </button>
+          </div>
+        ) : null}
       </div>
     </section>
   );

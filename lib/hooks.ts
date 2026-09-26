@@ -1,35 +1,57 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { getCopy, CONTACT_EMAIL } from "@/lib/ui-copy";
+import { trackEvent } from "@/lib/analytics";
 
+/** Copy for the current locale. Memoized so it is a stable reference between renders. */
 export function useCopy() {
   const locale = usePortfolioStore((s) => s.locale);
-  return getCopy(locale);
+  return useMemo(() => getCopy(locale), [locale]);
 }
 
-export const SECTION_IDS = ["hero", "about", "services", "projects", "github-repos", "skills", "experience", "contact"] as const;
+/**
+ * Home sections in page order (contract 7). The signature case study sits between
+ * "projects" and "skills" on the page but has no navigation entry.
+ */
+export const SECTION_IDS = ["hero", "about", "experience", "projects", "skills", "services", "github-repos", "contact"] as const;
+export type SectionId = (typeof SECTION_IDS)[number];
 
-/** Nav sections derived from the existing copy labels. */
-export function useSections() {
+/** Navigation entries (hero first, contact last) with labels for the current locale. */
+export function useSections(): { id: SectionId; label: string }[] {
   const copy = useCopy();
-  return [
-    { id: "hero", label: copy.navHome },
-    { id: "about", label: copy.nav[0] },
-    { id: "services", label: copy.nav[1] },
-    { id: "projects", label: copy.nav[2] },
-    { id: "github-repos", label: copy.nav[3] },
-    { id: "skills", label: copy.nav[4] },
-    { id: "experience", label: copy.nav[5] },
-    { id: "contact", label: copy.navContact }
-  ];
+  return useMemo(() => {
+    // copy.nav is [About, Services, Projects, Repositories, Skills, Experience].
+    const labels: Record<SectionId, string> = {
+      hero: copy.navHome,
+      about: copy.nav[0],
+      services: copy.nav[1],
+      projects: copy.nav[2],
+      "github-repos": copy.nav[3],
+      skills: copy.nav[4],
+      experience: copy.nav[5],
+      contact: copy.navContact
+    };
+    return SECTION_IDS.map((id) => ({ id, label: labels[id] }));
+  }, [copy]);
 }
 
 export function useCvFile() {
   const copy = useCopy();
   const locale = usePortfolioStore((s) => s.locale);
   return copy.cvDownloads.find((cv) => cv.code.toLowerCase() === locale)?.file ?? copy.cvDownloads[0].file;
+}
+
+/**
+ * The CV for the current locale plus a click handler that reports `cv_download`.
+ * Use as `<a href={cv.href} download onClick={cv.onClick}>`.
+ */
+export function useCvDownload() {
+  const href = useCvFile();
+  const locale = usePortfolioStore((s) => s.locale);
+  const onClick = useCallback(() => trackEvent("cv_download", { lang: locale }), [locale]);
+  return { href, onClick };
 }
 
 function subscribeTheme(callback: () => void) {
@@ -62,27 +84,58 @@ export function useTheme() {
   return { isDark, toggle };
 }
 
-export function useCopyEmail() {
-  const showToast = usePortfolioStore((s) => s.showToast);
-  const copy = useCopy();
-  return useCallback(async () => {
+/** Clipboard API first; a hidden textarea for browsers or contexts that block it. */
+async function writeToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const area = document.createElement("textarea");
     try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      showToast(copy.ui.toastEmailCopied);
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(area);
+      area.select();
+      return document.execCommand("copy");
     } catch {
-      window.location.href = `mailto:${CONTACT_EMAIL}`;
+      return false;
+    } finally {
+      area.remove();
+      previousFocus?.focus?.({ preventScroll: true });
     }
-  }, [showToast, copy.ui.toastEmailCopied]);
+  }
 }
 
-/** Tracks which section is in the middle of the viewport. */
-export function useActiveSection(ids: readonly string[]) {
-  const [active, setActive] = useState<string>(ids[0]);
+/**
+ * Copies the contact email and confirms with a toast. If the browser refuses, the toast shows
+ * the address itself so it can be copied by hand; it never navigates away to a mail app.
+ * Resolves to whether the copy succeeded.
+ */
+export function useCopyEmail() {
+  const showToast = usePortfolioStore((s) => s.showToast);
+  const copiedMessage = useCopy().ui.toastEmailCopied;
+  return useCallback(async () => {
+    const ok = await writeToClipboard(CONTACT_EMAIL);
+    if (ok) trackEvent("email_copy");
+    showToast(ok ? copiedMessage : CONTACT_EMAIL);
+    return ok;
+  }, [showToast, copiedMessage]);
+}
+
+/**
+ * Tracks which section is in the middle of the viewport. `key` (the pathname) re-subscribes after a
+ * client-side navigation: the navbar stays mounted across routes, and the home sections are new
+ * elements each time the home page is shown again.
+ */
+export function useActiveSection(ids: readonly string[], key?: string) {
+  const [state, setState] = useState<{ key: string | undefined; id: string }>({ key, id: ids[0] });
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (entry.isIntersecting) setState({ key, id: entry.target.id });
         }
       },
       { rootMargin: "-45% 0px -50% 0px" }
@@ -92,8 +145,27 @@ export function useActiveSection(ids: readonly string[]) {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, [ids]);
-  return active;
+  }, [ids, key]);
+  // A value recorded on another route is stale: fall back to the first section until the observer reports.
+  return state.key === key ? state.id : ids[0];
+}
+
+/**
+ * Keeps the tab title in the visitor's language. The server metadata is English, and React re-syncs
+ * the metadata <title> after hydration and on navigation, so the title is re-applied whenever the
+ * <head> changes (only when it differs, so this never loops). `null` leaves the title alone.
+ */
+export function useDocumentTitle(title: string | null) {
+  useEffect(() => {
+    if (!title) return;
+    const apply = () => {
+      if (document.title !== title) document.title = title;
+    };
+    apply();
+    const observer = new MutationObserver(apply);
+    observer.observe(document.head, { subtree: true, childList: true, characterData: true });
+    return () => observer.disconnect();
+  }, [title]);
 }
 
 /** Sets --mx/--my on the element for the `.spotlight` hover glow. */
