@@ -126,6 +126,7 @@ export async function getGithubRepos(): Promise<GithubReposResult> {
         stargazers_count: repo.stargazers_count,
         language: repo.language,
         homepage: repo.homepage,
+        topics: repo.topics,
         previewImage: publicPathForRepoScreenshot(repo.name)
       })
     )
