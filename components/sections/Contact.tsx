@@ -7,6 +7,7 @@ import { AlertCircle, Check, ChevronDown, Copy, Download, Loader2, Mail, MapPin,
 import { useCopy, useCopyEmail } from "@/lib/hooks";
 import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
 import { Bidi, Magnetic, Reveal, GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
+import { usePortfolioStore } from "@/store/portfolioStore";
 import { Footer } from "@/components/app/Footer";
 import { celebrate } from "@/lib/confetti";
 import { trackEvent } from "@/lib/analytics";
@@ -31,9 +32,6 @@ function isSendError(value: unknown): value is SendError {
   return value === "invalid" || value === "too_fast" || value === "send_failed" || value === "not_configured";
 }
 
-/** Three equal buttons in one row; tighter on phones so the icon and label always fit. */
-const SOCIAL_BUTTON = "btn-ghost gap-1.5 !px-2 text-[13px] sm:gap-2 sm:!px-3 sm:text-sm";
-
 /** The email address may wrap only at "@", never in the middle of a word. */
 function EmailAddress({ email = CONTACT_EMAIL }: { email?: string }) {
   const at = email.indexOf("@");
@@ -57,6 +55,10 @@ export function Contact() {
   const [sendError, setSendError] = useState<SendError | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [copiedTg, setCopiedTg] = useState(false);
+  const showToast = usePortfolioStore((st) => st.showToast);
+  const contactReason = usePortfolioStore((st) => st.contactReason);
+  const setContactReason = usePortfolioStore((st) => st.setContactReason);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -77,6 +79,31 @@ export function Contact() {
     const t = window.setTimeout(() => setCopied(false), 2000);
     return () => window.clearTimeout(t);
   }, [copied]);
+
+  useEffect(() => {
+    if (!copiedTg) return;
+    const t = window.setTimeout(() => setCopiedTg(false), 2000);
+    return () => window.clearTimeout(t);
+  }, [copiedTg]);
+
+  // Another section (Services → "Discuss a project") asked for a reason: preselect it once, then clear it.
+  useEffect(() => {
+    if (!contactReason) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- applying a one-shot request from the store
+    setFields((f) => ({ ...f, reason: contactReason }));
+    setContactReason(null);
+  }, [contactReason, setContactReason]);
+
+  const onCopyTelegram = async () => {
+    try {
+      await navigator.clipboard.writeText(TELEGRAM_HANDLE);
+      setCopiedTg(true);
+      trackEvent("telegram_click", { action: "copy" });
+    } catch {
+      /* clipboard blocked: the toast shows the handle so it can be copied by hand */
+    }
+    showToast(TELEGRAM_HANDLE);
+  };
 
   // useCopyEmail reports `email_copy` itself (only when the copy succeeds) and toasts the result.
   const onCopyEmail = async () => {
@@ -189,21 +216,89 @@ export function Contact() {
     <section id="contact" className="section cv-auto pb-10 [--cv-h:1700px] md:[--cv-h:1540px] lg:[--cv-h:1170px]">
       <div className="shell">
         <Reveal className="card relative overflow-hidden p-5 sm:p-10 md:p-14">
-          <div className="pointer-events-none absolute -end-32 -top-32 h-96 w-96 rounded-full bg-violet-500/20 blur-3xl" aria-hidden="true" />
-          <div className="pointer-events-none absolute -bottom-32 -start-32 h-96 w-96 rounded-full bg-cyan-400/15 blur-3xl" aria-hidden="true" />
-
           <div className="relative grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="min-w-0">
               <p className="eyebrow mb-4">{copy.contactEyebrow}</p>
               <h2 className="text-balance text-[clamp(2.2rem,5.5vw,4rem)] font-semibold leading-[1.02] rtl:leading-[1.25]">
                 {copy.contactTitle.split(" ").slice(0, -1).join(" ")}{" "}
-                <span className="gradient-text">{copy.contactTitle.split(" ").slice(-1)}</span>
+                <span className="text-accent-ink">{copy.contactTitle.split(" ").slice(-1)}</span>
               </h2>
               <p className="mt-5 max-w-md text-pretty text-muted md:text-lg">
                 <Bidi text={copy.contactDescription} />
               </p>
 
-              <p className="mt-8 flex flex-wrap gap-2">
+              {/* Telegram first (the real channel), then email: two large rows, each with its own copy button. */}
+              <div className="mt-8 max-w-md space-y-3">
+                <div className="flex h-16 items-center rounded-2xl border border-line/15 bg-surface transition-colors hover:border-accent/40">
+                  <a
+                    href={TELEGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackEvent("telegram_click")}
+                    className="flex h-full min-w-0 flex-1 items-center gap-3 rounded-s-2xl ps-4"
+                  >
+                    <TelegramIcon className="h-6 w-6 shrink-0 text-accent" />
+                    <span className="min-w-0">
+                      <span className="block text-xs text-muted">{ui.telegramLabel}</span>
+                      <span className="block truncate font-display text-base font-semibold sm:text-lg" dir="ltr">
+                        {TELEGRAM_HANDLE}
+                      </span>
+                    </span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={onCopyTelegram}
+                    className="me-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted transition hover:bg-card hover:text-text"
+                    title={ui.copyTelegram}
+                  >
+                    {copiedTg ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+                    <span className="sr-only">{ui.copyTelegram}</span>
+                  </button>
+                </div>
+
+                <div className="flex h-16 items-center rounded-2xl border border-line/15 transition-colors hover:border-accent/40">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="flex h-full min-w-0 flex-1 items-center gap-3 rounded-s-2xl ps-4">
+                    <Mail className="h-5 w-5 shrink-0 text-muted" aria-hidden="true" />
+                    <span className="min-w-0">
+                      <span className="block text-xs text-muted">{copy.contactEmailLabel}</span>
+                      <span className="block text-[15px] font-semibold sm:text-base">
+                        <EmailAddress />
+                      </span>
+                    </span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={onCopyEmail}
+                    className="me-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted transition hover:bg-surface hover:text-text"
+                    title={ui.copyEmail}
+                  >
+                    {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+                    <span className="sr-only">{ui.copyEmail}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-6 max-w-md">
+                <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted rtl:tracking-normal">{copy.contactCvLabel}</p>
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                  {copy.cvDownloads.map((cv) => (
+                    <a
+                      key={cv.code}
+                      href={cv.file}
+                      download
+                      type="application/pdf"
+                      hrefLang={cv.code.toLowerCase()}
+                      onClick={() => trackEvent("cv_download", { lang: cv.code.toLowerCase() })}
+                      className="btn-ghost !min-h-[44px] gap-1.5 !px-2 text-[13px] sm:!px-3"
+                    >
+                      <Download className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                      {cv.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-2">
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
                   <span className="relative flex h-2 w-2" aria-hidden="true">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
@@ -219,73 +314,21 @@ export function Contact() {
                     {availability.join(" · ")}
                   </span>
                 ) : null}
-              </p>
-
-              {/* The address is a mail link; copying is a separate, explicitly labelled button. */}
-              <div className="mt-10 flex w-full max-w-md items-center justify-between gap-3 rounded-2xl border border-line/10 bg-surface/50 p-4 transition hover:border-accent/40">
-                <div className="min-w-0">
-                  <p className="text-xs text-muted">{copy.contactEmailLabel}</p>
-                  <a
-                    href={`mailto:${CONTACT_EMAIL}`}
-                    className="mt-0.5 block font-display text-base font-medium transition-colors hover:text-accent-ink min-[400px]:text-lg sm:text-xl"
-                  >
-                    <EmailAddress />
-                  </a>
-                </div>
-                <button
-                  type="button"
-                  onClick={onCopyEmail}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent transition hover:scale-110"
-                  title={ui.copyEmail}
-                >
-                  {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
-                  <span className="sr-only">{ui.copyEmail}</span>
-                </button>
               </div>
+              {/* The reply-time promise, said once on the page. */}
+              <p className="mt-3 text-sm text-muted">{copy.heroResponseTime}</p>
 
-              {/* One row of three equal buttons; the Telegram handle is in the link's title. */}
-              <div className="mt-4 grid max-w-md grid-cols-3 gap-1.5 sm:gap-2">
-                <a
-                  href={TELEGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackEvent("telegram_click")}
-                  className={SOCIAL_BUTTON}
-                  title={TELEGRAM_HANDLE}
-                >
-                  <TelegramIcon className="h-4 w-4 shrink-0" /> {ui.telegramLabel}
-                </a>
-                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={SOCIAL_BUTTON}>
+              <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[40px] items-center gap-2 text-muted transition-colors hover:text-text">
                   <LinkedinIcon className="h-4 w-4 shrink-0" /> {copy.linkedinLabel}
                 </a>
-                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={SOCIAL_BUTTON}>
+                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[40px] items-center gap-2 text-muted transition-colors hover:text-text">
                   <GithubIcon className="h-4 w-4 shrink-0" /> {copy.githubLabel}
                 </a>
-              </div>
-
-              <div className="mt-8">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted rtl:tracking-normal">{copy.contactCvLabel}</p>
-                <div className="grid max-w-md grid-cols-3 gap-1.5 sm:gap-2">
-                  {copy.cvDownloads.map((cv) => (
-                    <a
-                      key={cv.code}
-                      href={cv.file}
-                      download
-                      type="application/pdf"
-                      hrefLang={cv.code.toLowerCase()}
-                      onClick={() => trackEvent("cv_download", { lang: cv.code.toLowerCase() })}
-                      className="btn-ghost !min-h-[40px] gap-1.5 !px-2 text-[13px] sm:!px-3"
-                    >
-                      <Download className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                      {cv.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <p className="mt-6 text-xs text-muted">{copy.heroResponseTime}</p>
+              </p>
             </div>
 
-            <div className="relative min-w-0">
+            <div className="relative flex min-w-0 flex-col">
               <AnimatePresence mode="wait" initial={false}>
                 {status === "sent" ? (
                   <motion.div
@@ -293,7 +336,7 @@ export function Contact() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex h-full min-h-[420px] flex-col items-center justify-center rounded-3xl border border-line/10 bg-surface/40 p-8 text-center"
+                    className="flex min-h-[420px] flex-1 flex-col items-center justify-center rounded-3xl border border-line/10 bg-surface/40 p-8 text-center"
                     role="status"
                   >
                     <motion.span
@@ -326,7 +369,7 @@ export function Contact() {
                     onSubmit={onSubmit}
                     noValidate
                     aria-busy={sending}
-                    className="relative space-y-4"
+                    className="relative flex flex-1 flex-col gap-4"
                   >
                     <h3 className="font-display text-xl font-semibold">{copy.contactFormTitle}</h3>
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -392,7 +435,7 @@ export function Contact() {
                         <ChevronDown className="pointer-events-none absolute end-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
                       </div>
                     </div>
-                    <div>
+                    <div className="flex flex-1 flex-col">
                       <label htmlFor="contact-message" className="mb-1.5 block text-xs font-medium text-muted">
                         {copy.contactFormMessage}
                       </label>
@@ -407,7 +450,7 @@ export function Contact() {
                         placeholder={ui.form.messagePlaceholder}
                         value={fields.message}
                         onChange={update("message")}
-                        className={`${fieldClass("message")} resize-none`}
+                        className={`${fieldClass("message")} min-h-[9rem] flex-1 resize-none`}
                         aria-invalid={Boolean(errors.message)}
                         aria-describedby={describedBy("message")}
                       />

@@ -1,5 +1,5 @@
 import { copyByLocale } from "@/lib/copy";
-import { typographRuDeep } from "@/lib/typograph";
+import { typographArDeep, typographRuDeep } from "@/lib/typograph";
 import type { Locale } from "@/lib/types";
 
 /** Strings for the UI chrome and interactions. Career facts live in copy.ts. */
@@ -27,6 +27,7 @@ type UiCopy = {
   toastEmailCopied: string;
   toastEasterEgg: string;
   copyEmail: string;
+  copyTelegram: string;
   telegramLabel: string;
   form: {
     sending: string;
@@ -53,11 +54,16 @@ type UiCopy = {
   // Projects
   caseStudyCta: string;
   privateCode: string;
+  /** Freelance work whose code belongs to the client (not an NDA): short badge. */
+  privateCodeClient: string;
   workProject: string;
   openSource: string;
   workProjectsTitle: string;
   openSourceTitle: string;
+  /** Employer projects: the code is under NDA. */
   diagramNote: string;
+  /** Freelance projects (`codeNote: "client"`): the code belongs to the client. */
+  diagramNoteClient: string;
   liveBadge: string;
   /** Used as `${name} ${previewAlt}`. */
   previewAlt: string;
@@ -71,24 +77,24 @@ type UiCopy = {
   // Experience
   educationTitle: string;
   certificationsTitle: string;
-  /** Phones show a few certifications first; followed by the total count in brackets. */
-  showAllCertifications: string;
+  /** Experience: toggle for the bullets beyond the first two. */
+  showMore: string;
+  showLess: string;
   stackLabel: string;
   // Repositories
   viewAllRepos: string;
   repoFilterLabel: string;
   repoCategories: { all: string; platform: string; backend: string; ai: string; frontend: string };
-  // Marquee (proof strip) pause control, WCAG 2.2.2
-  marqueePause: string;
-  marqueePlay: string;
+  /** Short label for the email button in the phone contact bar. */
+  emailShort: string;
+  /** Accessible name of the phone contact bar. */
+  contactBarLabel: string;
   errorPage: { title: string; body: string; retry: string; home: string };
   availabilityLine: string;
   /** Case-study pages: the full diagram scrolls sideways on phones. */
   diagram: { region: string; swipe: string; openFull: string };
   /** Closing call to action at the end of every case study. */
   projectCta: { eyebrow: string; title: string; body: string; contact: string };
-  /** Accessible name of the "How I build / How I work" tab list. */
-  approachTabsLabel: string;
   /** Localized document titles; the server metadata stays English. */
   meta: { homeTitle: string; nameSuffix: string };
 };
@@ -104,7 +110,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       night: "Hello, night owl"
     },
     heroIntro:
-      "I'm Alhassan — a Moscow-based software engineer who turns messy workflows into clear, reliable web and AI products.",
+      "Full-stack & Python developer in Moscow: React + TypeScript up front, Node.js or FastAPI behind it. In 2025 I built the OKKP operations platform from scratch as Chief Full-Stack Developer at Avenue Group.",
     heroScroll: "Scroll to explore",
     currentlyLabel: "Currently",
     currentlyValue: "building RAG search with FastAPI & FAISS at Elektroservis",
@@ -112,11 +118,11 @@ export const uiCopy: Record<Locale, UiCopy> = {
     aboutStory: [
       {
         label: "Where it started",
-        body: "In 2020 I took on my first freelance clients while starting a Bachelor's in Computer Science at Ural Federal University — and learned fast that software is only as good as the problem it solves."
+        body: "In 2020 I took on my first freelance clients — scoping, estimating, delivering and supporting the work myself."
       },
       {
         label: "Building with real teams",
-        body: "At Avenue Group I designed and shipped the OKKP platform from scratch as Chief Full-Stack Developer. At Junzi Tech Solutions I cut a critical endpoint's average response time by about 60%."
+        body: "At Avenue Group I designed and shipped the OKKP platform from scratch as Chief Full-Stack Developer, from architecture to deployment and production support."
       },
       {
         label: "Where I am now",
@@ -139,6 +145,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
     toastEmailCopied: "Email copied — talk soon!",
     toastEasterEgg: "You found the secret. You clearly pay attention to detail — let's work together.",
     copyEmail: "Copy email",
+    copyTelegram: "Copy Telegram handle",
     telegramLabel: "Telegram",
     form: {
       sending: "Sending…",
@@ -156,18 +163,21 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     footerLocalTime: "My local time",
     footerBackToTop: "Back to top",
-    footerTagline: "Designed & built with care.",
+    // Rendered as `${footerTagline} ${footerBuiltWith}.`
+    footerTagline: "Designed and built by me",
     cursorView: "View",
     cursorOpen: "Open",
     cursorHi: "Hi!",
     notFoundJoke: "This page went to production without a test. Let's get you somewhere real.",
     caseStudyCta: "Read case study",
     privateCode: "Private code · NDA",
+    privateCodeClient: "Private code · client-owned",
     workProject: "Work project",
     openSource: "Open source",
     workProjectsTitle: "Work projects",
     openSourceTitle: "Open-source projects",
     diagramNote: "The code is private (NDA), so this diagram shows the architecture I built.",
+    diagramNoteClient: "The code belongs to the client, so this diagram shows the architecture I built.",
     liveBadge: "Live",
     previewAlt: "preview",
     overview: "Overview",
@@ -178,7 +188,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     city: "Moscow",
     educationTitle: "Education",
     certificationsTitle: "Certifications",
-    showAllCertifications: "Show all certifications",
+    showMore: "More",
+    showLess: "Less",
     stackLabel: "Stack",
     viewAllRepos: "View all repositories",
     repoFilterLabel: "Filter repositories",
@@ -189,8 +200,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
       ai: "AI & ML",
       frontend: "Frontend"
     },
-    marqueePause: "Pause the moving strip",
-    marqueePlay: "Play the moving strip",
+    emailShort: "Email",
+    contactBarLabel: "Quick contact",
     errorPage: {
       title: "Something went wrong",
       body: "This page didn't load as expected. Try again, or head back to the home page.",
@@ -205,13 +216,12 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     projectCta: {
       eyebrow: "What's next",
-      title: "Hiring for a full-stack, Python or AI role? Let's talk.",
-      body: "I'm available immediately — on-site or hybrid in Moscow, or remote; full-time or contract. I usually reply within 48 hours.",
+      title: "Hiring for a full-stack, Python or AI role — or need something like this built? Let's talk.",
+      body: "I'm available immediately — on-site or hybrid in Moscow, or remote; full-time or contract. I reply within 48 hours — faster on Telegram.",
       contact: "Get in touch"
     },
-    approachTabsLabel: "How I build and how I work",
     meta: {
-      homeTitle: "Alhassan Alfarran — Software Engineer (Web & AI Systems)",
+      homeTitle: "Alhassan Alfarran — Full-Stack & Python Developer, Moscow",
       nameSuffix: "Alhassan Alfarran"
     }
   },
@@ -223,7 +233,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       night: "Привет, полуночник"
     },
     heroIntro:
-      "Я Альхассан — инженер-программист из Москвы. Превращаю запутанные процессы в понятные и надёжные веб- и AI-продукты.",
+      "Full-stack / Python-разработчик из Москвы: React и TypeScript на фронтенде, Node.js или FastAPI на бэкенде. В 2025 году в Avenue Group с нуля построил платформу OKKP как главный full-stack разработчик.",
     heroScroll: "Листайте дальше",
     currentlyLabel: "Сейчас",
     currentlyValue: "строю RAG-поиск на FastAPI и FAISS в «Электросервисе»",
@@ -231,11 +241,11 @@ export const uiCopy: Record<Locale, UiCopy> = {
     aboutStory: [
       {
         label: "С чего всё началось",
-        body: "В 2020 году я взял первые заказы на фрилансе — параллельно с бакалавриатом по информатике в УрФУ — и быстро понял: программа ценна ровно настолько, насколько она решает реальную задачу."
+        body: "В 2020 году я взял первые заказы на фрилансе: сам ставил задачу, оценивал сроки, разрабатывал и поддерживал результат."
       },
       {
         label: "Работа в командах",
-        body: "В Avenue Group как главный full-stack разработчик я с нуля спроектировал и запустил платформу OKKP. В Junzi Tech Solutions сократил среднее время ответа критичного эндпоинта примерно на 60%."
+        body: "В Avenue Group как главный full-stack разработчик я с нуля спроектировал и запустил платформу OKKP — от архитектуры до деплоя и поддержки в продакшене."
       },
       {
         label: "Где я сейчас",
@@ -258,6 +268,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
     toastEmailCopied: "Email скопирован — до связи!",
     toastEasterEgg: "Вы нашли секрет. Похоже, вы внимательны к деталям — давайте работать вместе.",
     copyEmail: "Скопировать email",
+    copyTelegram: "Скопировать ник в Telegram",
     telegramLabel: "Telegram",
     form: {
       sending: "Отправка…",
@@ -275,18 +286,20 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     footerLocalTime: "Моё местное время",
     footerBackToTop: "Наверх",
-    footerTagline: "Спроектировано и сделано с душой.",
+    footerTagline: "Спроектировал и сделал сам.",
     cursorView: "Смотреть",
     cursorOpen: "Открыть",
     cursorHi: "Привет!",
     notFoundJoke: "Эта страница ушла в прод без тестов. Давайте вернёмся туда, где всё работает.",
     caseStudyCta: "Читать кейс",
     privateCode: "Закрытый код · NDA",
-    workProject: "Рабочий проект",
+    privateCodeClient: "Закрытый код · принадлежит клиенту",
+    workProject: "Коммерческий проект",
     openSource: "Open source",
-    workProjectsTitle: "Рабочие проекты",
+    workProjectsTitle: "Коммерческие проекты",
     openSourceTitle: "Open-source проекты",
     diagramNote: "Код закрыт (NDA), поэтому здесь схема архитектуры, которую я построил.",
+    diagramNoteClient: "Код принадлежит клиенту, поэтому здесь схема архитектуры, которую я построил.",
     liveBadge: "Онлайн",
     previewAlt: "— превью",
     overview: "Обзор",
@@ -297,7 +310,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     city: "Москва",
     educationTitle: "Образование",
     certificationsTitle: "Сертификаты",
-    showAllCertifications: "Показать все сертификаты",
+    showMore: "Ещё",
+    showLess: "Свернуть",
     stackLabel: "Стек",
     viewAllRepos: "Все репозитории",
     repoFilterLabel: "Фильтр репозиториев",
@@ -308,8 +322,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
       ai: "AI и ML",
       frontend: "Фронтенд"
     },
-    marqueePause: "Остановить бегущую строку",
-    marqueePlay: "Запустить бегущую строку",
+    emailShort: "Почта",
+    contactBarLabel: "Быстрая связь",
     errorPage: {
       title: "Что-то пошло не так",
       body: "Страница загрузилась не так, как нужно. Попробуйте ещё раз или вернитесь на главную.",
@@ -324,13 +338,12 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     projectCta: {
       eyebrow: "Что дальше",
-      title: "Ищете full-stack, Python или AI-разработчика? Давайте обсудим.",
-      body: "Готов приступить сразу: офис или гибрид в Москве, либо удалённо; полная занятость или контракт. Обычно отвечаю в течение 48 часов.",
+      title: "Ищете full-stack, Python- или AI-разработчика — или нужно сделать что-то похожее? Давайте обсудим.",
+      body: "Готов приступить сразу: офис или гибрид в Москве, либо удалённо; полная занятость или контракт. Отвечаю в течение 48 часов, в Telegram — быстрее.",
       contact: "Связаться"
     },
-    approachTabsLabel: "Как я строю системы и как работаю",
     meta: {
-      homeTitle: "Альхассан Альфарран — Software Engineer (веб- и AI-системы)",
+      homeTitle: "Альхассан Альфарран — Full-stack / Python-разработчик, Москва",
       nameSuffix: "Альхассан Альфарран"
     }
   },
@@ -342,19 +355,19 @@ export const uiCopy: Record<Locale, UiCopy> = {
       night: "أهلاً يا ساهر الليل"
     },
     heroIntro:
-      "أنا الحسن، مهندس برمجيات في موسكو. أحوّل سير العمل المعقّد إلى منتجات ويب وذكاء اصطناعي واضحة وموثوقة.",
+      "مطوّر Full-Stack وPython في موسكو: React وTypeScript في الواجهة، وNode.js أو FastAPI في الخلفية. في 2025 بنيتُ منصة OKKP من الصفر بصفتي كبير مطوري Full-Stack في Avenue Group.",
     heroScroll: "مرّر للاستكشاف",
     currentlyLabel: "حالياً",
-    currentlyValue: "أبني بحث RAG بـ FastAPI وFAISS في Elektroservis",
+    currentlyValue: "أبني نظام بحث RAG باستخدام FastAPI وFAISS في Elektroservis",
     aboutStoryTitle: "القصة باختصار.",
     aboutStory: [
       {
         label: "البداية",
-        body: "في عام 2020 بدأت العمل مع أول عملائي كمطوّر مستقل، بالتزامن مع دراسة البكالوريوس في علوم الحاسوب بجامعة الأورال الفيدرالية — وتعلّمت سريعاً أن قيمة البرمجيات تُقاس بالمشكلة التي تحلّها."
+        body: "في عام 2020 بدأت العمل مع أول عملائي كمطوّر مستقل: أحدّد النطاق وأقدّر الجهد وأسلّم العمل وأدعمه بنفسي."
       },
       {
         label: "العمل مع فرق حقيقية",
-        body: "في Avenue Group صمّمت منصة OKKP وأطلقتها من الصفر بصفتي كبير مطوري Full-Stack. وفي Junzi Tech Solutions خفّضت متوسط زمن استجابة نقطة API حرجة بنحو 60%."
+        body: "في Avenue Group صمّمت منصة OKKP وأطلقتها من الصفر بصفتي كبير مطوري Full-Stack، من البنية حتى النشر والدعم في بيئة الإنتاج."
       },
       {
         label: "أين أنا الآن",
@@ -377,7 +390,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     toastEmailCopied: "تم نسخ البريد — نتحدث قريباً!",
     toastEasterEgg: "لقد وجدت السرّ. من الواضح أنك تهتم بالتفاصيل — لنعمل معاً.",
     copyEmail: "نسخ البريد",
-    telegramLabel: "تيليغرام",
+    copyTelegram: "نسخ معرّف Telegram",
+    telegramLabel: "Telegram",
     form: {
       sending: "جارٍ الإرسال…",
       successTitle: "وصلتني رسالتك!",
@@ -394,18 +408,20 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     footerLocalTime: "توقيتي المحلي",
     footerBackToTop: "العودة إلى الأعلى",
-    footerTagline: "صُمّم وبُني بعناية.",
+    footerTagline: "صمّمته وبنيته بنفسي.",
     cursorView: "عرض",
     cursorOpen: "فتح",
     cursorHi: "أهلاً!",
     notFoundJoke: "هذه الصفحة وصلت إلى الإنتاج دون اختبار. لنعدك إلى صفحة تعمل.",
     caseStudyCta: "اقرأ دراسة الحالة",
     privateCode: "كود خاص · NDA",
+    privateCodeClient: "كود خاص · ملك للعميل",
     workProject: "مشروع عمل",
     openSource: "مفتوح المصدر",
     workProjectsTitle: "مشاريع العمل",
     openSourceTitle: "مشاريع مفتوحة المصدر",
     diagramNote: "الكود خاص (NDA)، لذا يوضّح هذا المخطط البنية التي بنيتها.",
+    diagramNoteClient: "الكود ملك للعميل، لذا يوضّح هذا المخطط البنية التي بنيتها.",
     liveBadge: "مباشر",
     previewAlt: "— معاينة",
     overview: "نظرة عامة",
@@ -416,7 +432,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     city: "موسكو",
     educationTitle: "التعليم",
     certificationsTitle: "الشهادات",
-    showAllCertifications: "عرض كل الشهادات",
+    showMore: "المزيد",
+    showLess: "أقل",
     stackLabel: "التقنيات",
     viewAllRepos: "عرض كل المستودعات",
     repoFilterLabel: "تصفية المستودعات",
@@ -427,8 +444,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
       ai: "الذكاء الاصطناعي",
       frontend: "الواجهات الأمامية"
     },
-    marqueePause: "إيقاف الشريط المتحرك",
-    marqueePlay: "تشغيل الشريط المتحرك",
+    emailShort: "البريد",
+    contactBarLabel: "تواصل سريع",
     errorPage: {
       title: "حدث خطأ غير متوقع",
       body: "لم تُحمَّل هذه الصفحة كما ينبغي. جرّب مرة أخرى أو عُد إلى الصفحة الرئيسية.",
@@ -443,13 +460,12 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     projectCta: {
       eyebrow: "الخطوة التالية",
-      title: "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي؟ لنتحدث.",
-      body: "متاح فوراً — حضورياً أو بنظام هجين في موسكو، أو عن بُعد؛ بدوام كامل أو بعقد. أردّ عادةً خلال 48 ساعة.",
+      title: "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي — أو تحتاج إلى بناء شيء مشابه؟ لنتحدث.",
+      body: "متاح فوراً — حضورياً أو بنظام هجين في موسكو، أو عن بُعد؛ بدوام كامل أو بعقد. أردّ خلال 48 ساعة — وأسرع عبر Telegram.",
       contact: "تواصل معي"
     },
-    approachTabsLabel: "كيف أبني الأنظمة وكيف أعمل",
     meta: {
-      homeTitle: "الحسن الفران — مهندس برمجيات (أنظمة الويب والذكاء الاصطناعي)",
+      homeTitle: "الحسن الفران — مطوّر Full-Stack وPython، موسكو",
       nameSuffix: "الحسن الفران"
     }
   }
@@ -464,8 +480,10 @@ export const SITE_URL = "https://alhassan-portfolio-sigma.vercel.app";
 
 function buildCopy(locale: Locale) {
   const copy = { ...copyByLocale[locale], ui: uiCopy[locale] };
-  // Russian gets no-break spaces after one-letter words (see lib/typograph.ts).
-  return locale === "ru" ? typographRuDeep(copy) : copy;
+  // Russian and Arabic get no-break spaces where a line must not break (see lib/typograph.ts).
+  if (locale === "ru") return typographRuDeep(copy);
+  if (locale === "ar") return typographArDeep(copy);
+  return copy;
 }
 
 type BuiltCopy = ReturnType<typeof buildCopy>;

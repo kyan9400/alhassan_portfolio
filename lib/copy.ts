@@ -3,9 +3,9 @@ import type { Locale } from "@/lib/types";
 /*
  * Site copy in English, Russian and Arabic.
  * Career facts must match the CV (public/cv/Alhassan_Alfarran_CV_EN1.pdf):
- * four roles since 2020, the only performance metric is "~60% lower average
- * response time on a critical endpoint" (Junzi Tech Solutions), Russian is
- * conversational. Keep all three locales in sync when editing.
+ * freelance since 2020 plus three companies, the only performance metric is
+ * "~60% lower average response time on a critical endpoint" (Junzi Tech
+ * Solutions), Russian is conversational. Keep all three locales in sync when editing.
  */
 
 export type ExperienceItem = {
@@ -22,7 +22,7 @@ export type EducationItem = { period: string; degree: string; school: string };
 
 export type CopyDictionary = {
   dir: "ltr" | "rtl";
-  /** [About, Services, Projects, Repositories, Skills, Experience] */
+  /** [About, Services, Projects, GitHub repositories, Skills, Experience] */
   nav: string[];
   navHome: string;
   navContact: string;
@@ -35,19 +35,12 @@ export type CopyDictionary = {
   heroHeadlineFocus: string;
   heroHeadlineBottom: string;
   heroPrimaryCta: string;
+  /** Hero secondary button: downloads the CV PDF in the visitor's language. */
   heroSecondaryCta: string;
   heroStats: { value: string; label: string }[];
   aboutEyebrow: string;
   aboutTitle: string;
   aboutBody: string;
-  aboutHighlights: { label: string; value: string }[];
-  aboutFocusTitle: string;
-  aboutFocusItems: string[];
-  systemMapEyebrow: string;
-  systemMapTitle: string;
-  systemMapDescription: string;
-  mapLayers: { label: string; detail: string }[];
-  flowLabel: string;
   projectsEyebrow: string;
   projectsTitle: string;
   projectsSubtitle: string;
@@ -64,10 +57,10 @@ export type CopyDictionary = {
   experienceEyebrow: string;
   experienceTitle: string;
   experienceDescription: string;
-  /** Four roles, newest first. */
+  /** Newest first: three companies, then freelance. */
   experienceItems: ExperienceItem[];
   education: EducationItem[];
-  /** Real items from the EN CV only. */
+  /** Real items from the EN CV only; the site shows the relevant subset (the full list is in the CV). */
   certifications: string[];
   contactEyebrow: string;
   contactTitle: string;
@@ -79,8 +72,10 @@ export type CopyDictionary = {
   linkedinLabel: string;
   footerBuiltWith: string;
   languageLabel: string;
+  /** The reply-time promise. Show it once only (Contact). */
   heroResponseTime: string;
   proofStripLabel: string;
+  /** Company and university names only (muted wordmarks). */
   proofStripItems: string[];
   signature: {
     eyebrow: string;
@@ -95,6 +90,10 @@ export type CopyDictionary = {
     architecture: { name: string; detail: string }[];
     metricsTitle: string;
     metrics: { value: string; label: string }[];
+    /** Before / after bar chart: caption and the two bar labels. Relative scale, no milliseconds. */
+    chart: { caption: string; before: string; after: string };
+    /** Request-path line: what happens on a cache hit (returns early) and on a miss (goes to the database). */
+    path: { hit: string; miss: string };
     lessonsTitle: string;
     lessons: string[];
   };
@@ -110,11 +109,12 @@ export type CopyDictionary = {
   // Services section
   servicesEyebrow: string;
   servicesTitle: string;
-  servicesItems: { title: string; description: string }[];
+  /** `proof` is a short "Example: …" link label pointing at the matching project or case study. */
+  servicesItems: { title: string; description: string; proof: string }[];
+  /** Services button: jumps to #contact with the "freelance" reason preselected. */
+  servicesCta: string;
   // Available for work CTA
   availableBody: string;
-  // Credibility highlights
-  credibilityItems: { title: string; body: string }[];
   // GitHub filters & search
   githubSearchPlaceholder: string;
   // Contact
@@ -128,7 +128,8 @@ export type CopyDictionary = {
   navCvLabel: string;
   projectProblemLabel: string;
   projectSolutionLabel: string;
-  projectResultLabel: string;
+  /** Per-project label for `project.result`, chosen by `project.resultLabel`. */
+  projectResultLabels: { result: string; status: string; builtIn: string };
   projectLiveDemo: string;
   projectViewGithubLabel: string;
   projectBackLabel: string;
@@ -138,15 +139,11 @@ export type CopyDictionary = {
 
 /** Course titles are proper names, so they stay in English in every locale. */
 const CERTIFICATIONS = [
-  "Full-Stack Web Development with Angular — Coursera, HKUST",
   "Server-side Development with Node.js, Express and MongoDB — Coursera",
   "Introduction to SQL — Coursera, University of Michigan",
   "Understanding and Visualizing Data with Python — Coursera, University of Michigan",
   "Machine Learning for All — Coursera, University of London",
-  "Programming with Google Go Specialization — Coursera",
-  "JavaScript Algorithms and Data Structures — freeCodeCamp",
-  "Data Visualization — freeCodeCamp",
-  "ICDL — International Computer Driving Licence"
+  "Programming with Google Go Specialization — Coursera"
 ];
 
 const CV_FILES = {
@@ -158,57 +155,33 @@ const CV_FILES = {
 export const copyByLocale: Record<Locale, CopyDictionary> = {
   en: {
     dir: "ltr",
-    nav: ["About", "Services", "Projects", "Repositories", "Skills", "Experience"],
+    nav: ["About", "Services", "Projects", "GitHub", "Skills", "Experience"],
     navHome: "Home",
     navContact: "Contact",
     brandMonogram: "AA",
     brandName: "Alhassan",
     heroAvailability: "Available immediately",
-    heroEyebrow: "Software Engineer — Web & AI Systems",
+    heroEyebrow: "Full-Stack & Python Developer — Web & AI Systems",
     heroTitle: "Alhassan Alfarran",
-    heroHeadlineTop: "I build web & AI",
-    heroHeadlineFocus: "systems",
-    heroHeadlineBottom: "that actually ship.",
+    heroHeadlineTop: "Web platforms",
+    heroHeadlineFocus: "& AI search,",
+    heroHeadlineBottom: "built end to end.",
     heroPrimaryCta: "See my work",
-    heroSecondaryCta: "Get in touch",
+    heroSecondaryCta: "Download CV",
     heroStats: [
-      { value: "2020", label: "First client project" },
-      { value: "4", label: "Engineering roles" },
-      { value: "MSc", label: "NUST MISIS" },
-      { value: "3", label: "Languages" }
+      { value: "~60%", label: "lower avg. response time on a critical endpoint" },
+      { value: "OKKP", label: "platform built from scratch as Chief Full-Stack" },
+      { value: "4", label: "open-source tools with live demos" },
+      { value: "3", label: "languages · EN C1 · AR · RU" }
     ],
     aboutEyebrow: "About",
-    aboutTitle: "An engineer who thinks in systems.",
+    aboutTitle: "Three languages. One full stack.",
     aboutBody:
-      "I'm a Moscow-based software engineer who works across the whole stack: React and TypeScript interfaces, Node.js and FastAPI services, PostgreSQL and MongoDB — and the AI layer on top: OCR, embeddings and hybrid search. I care about clean boundaries between UI, services and AI, and about features that hold up in real workflows, not just in demos.",
-    aboutHighlights: [
-      { label: "Based in", value: "Moscow · on-site / hybrid / remote" },
-      { label: "Experience", value: "Since 2020 · 4 roles" },
-      { label: "Education", value: "MSc · NUST MISIS" },
-      { label: "Languages", value: "EN C1 · AR native · RU conversational" }
-    ],
-    aboutFocusTitle: "Currently focused on",
-    aboutFocusItems: [
-      "RAG and hybrid search over technical documents",
-      "FastAPI ingestion and query pipelines",
-      "OCR for scans, PDF, Word and Excel",
-      "Clear, simple React + TypeScript interfaces",
-      "Clean contracts between UI, API and AI layers"
-    ],
-    systemMapEyebrow: "How I build",
-    systemMapTitle: "A clear map of how I build systems.",
-    systemMapDescription: "Most of what I ship comes down to four layers with clear boundaries between them.",
-    mapLayers: [
-      { label: "UI Layer", detail: "React + TypeScript interfaces — responsive and easy to scan." },
-      { label: "API Layer", detail: "Node.js / Express and FastAPI services with explicit contracts." },
-      { label: "Data Layer", detail: "PostgreSQL and MongoDB models for day-to-day work and reporting." },
-      { label: "AI Layer", detail: "OCR, embeddings and hybrid search, with LLM-assisted answers." }
-    ],
-    flowLabel: "data flows top to bottom",
+      "Arabic is my first language and English (C1) my professional one. I studied in Russia — a Bachelor's at Ural Federal University in Yekaterinburg, then a Master's at NUST MISIS in Moscow. I like owning a feature end to end: the data model, the API contract, the permission rules and the Excel export a non-technical colleague can run on their own.",
     projectsEyebrow: "Selected work",
     projectsTitle: "Projects I've built.",
     projectsSubtitle:
-      "Work projects from real jobs — the code is under NDA, so you get the architecture — plus open-source tools you can run today.",
+      "Projects from my roles — private code, so you see the architecture — plus open-source tools with live demos.",
     projectsEmpty: "Selected projects will appear here.",
     githubReposEyebrow: "GitHub",
     githubReposTitle: "More on GitHub",
@@ -217,7 +190,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     githubReposEmpty: "No repositories to show.",
     skillsEyebrow: "Capabilities",
     skillsTitle: "Stack I reach for.",
-    skillsDescription: "The tools I use day to day — across interfaces, services, data, AI search and delivery.",
+    skillsDescription: "What I work with, grouped by layer — from interfaces to delivery.",
     skillsGroups: [
       {
         name: "Frontend",
@@ -243,18 +216,18 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     experienceEyebrow: "Experience",
     experienceTitle: "Where I've worked.",
     experienceDescription:
-      "Four roles since 2020 — from client projects to a platform built from scratch, and RAG search today.",
+      "Freelance since 2020 and three companies — from client projects to a platform built from scratch, and the RAG search I'm building now.",
     experienceItems: [
       {
         period: "Jan 2026 — Present",
         title: "Python / Full-Stack Developer",
         company: "Elektroservis",
         location: "Moscow",
-        summary: "Building a document search and RAG system for engineering (PTO) documentation.",
+        summary: "Building a document search and RAG system for engineering and technical documentation.",
         highlights: [
-          "Indexing PDF, Word and Excel files — including scanned documents via OCR.",
-          "Hybrid search that combines keyword matching with semantic retrieval (sentence-transformers + FAISS) to improve answer relevance.",
-          "FastAPI ingestion and query pipelines connecting parsing, indexing, retrieval and LLM-assisted answers."
+          "Built ingestion for PDF, Word and Excel files, with OCR for scanned documents.",
+          "Implemented hybrid search — keyword matching plus semantic retrieval (sentence-transformers + FAISS) — to improve answer relevance.",
+          "Developed FastAPI ingestion and query pipelines that connect parsing, indexing, retrieval and LLM-assisted answers."
         ],
         stack: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"]
       },
@@ -267,7 +240,8 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         highlights: [
           "Architected it end to end: React + TypeScript SPA, Node.js / Express REST API, PostgreSQL + MongoDB.",
           "Built employee management, violation tracking and reporting dashboards with role-based access control and audit logs.",
-          "Added secure media uploads (Cloudinary, Multer) and Excel exports that let non-technical staff produce audit-ready datasets; owned deployment and production support."
+          "Built Excel exports that let non-technical staff produce audit-ready datasets on their own.",
+          "Added secure media uploads (Cloudinary, Multer); owned deployment and production support."
         ],
         stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"]
       },
@@ -278,8 +252,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         summary: "Delivered full-stack features for client web applications in Agile teams.",
         highlights: [
           "Cut the average response time of a critical API endpoint by ~60% with a caching layer and query refactoring.",
-          "Designed REST APIs with consistent validation, error handling and response contracts.",
-          "Took part in code reviews and sprint planning."
+          "Designed REST APIs with consistent validation, error handling and response contracts; reviewed teammates' code and took part in sprint planning."
         ],
         stack: ["Node.js", "Express", "MongoDB", "React"]
       },
@@ -311,9 +284,9 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     ],
     certifications: CERTIFICATIONS,
     contactEyebrow: "Contact",
-    contactTitle: "Let's build something meaningful.",
+    contactTitle: "Hiring, or have a project? Let's talk.",
     contactDescription:
-      "Hiring for a full-stack, Python or AI role? Planning a web app, a dashboard or an AI search tool? Tell me what you need — I usually reply within 48 hours.",
+      "Hiring for a full-stack, Python or AI role — or planning a web app, a dashboard or AI document search? Tell me what you need. Telegram is the fastest way to reach me.",
     contactEmailLabel: "Email me",
     contactCvLabel: "Download CV",
     cvDownloads: [
@@ -323,20 +296,21 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     ],
     githubLabel: "GitHub",
     linkedinLabel: "LinkedIn",
-    footerBuiltWith: "Built with Next.js, Tailwind and Framer Motion",
+    // Rendered after the footer tagline: "Designed and built by me with Next.js, Tailwind and Framer Motion."
+    footerBuiltWith: "with Next.js, Tailwind and Framer Motion",
     languageLabel: "Language",
-    heroResponseTime: "Usually replies within 48 hours",
-    proofStripLabel: "Experience at",
-    proofStripItems: ["Elektroservis", "Avenue Group · OKKP", "Junzi Tech Solutions", "Freelance since 2020", "Open source"],
+    heroResponseTime: "I reply within 48 hours — faster on Telegram.",
+    proofStripLabel: "Experience and education",
+    proofStripItems: ["Elektroservis", "Avenue Group", "Junzi Tech Solutions", "NUST MISIS", "Ural Federal University"],
     signature: {
-      eyebrow: "Signature case study",
+      eyebrow: "Performance deep dive",
       company: "Junzi Tech Solutions",
       title: "Cutting a critical endpoint's response time by ~60%.",
       summary:
-        "At Junzi Tech Solutions I optimised a critical API endpoint in a client web application. A caching layer and refactored database queries cut its average response time by about 60%.",
+        "Queries first, cache second: I refactored the MongoDB queries behind a critical Node.js / Express endpoint, then cached repeated reads, without changing its response contract.",
       problemTitle: "Problem",
       problem:
-        "A critical endpoint in a client web application — a Node.js / Express API on MongoDB, with a React front end — needed a lower response time.",
+        "A critical endpoint in a client web application (Node.js / Express on MongoDB, React front end) was too slow, and the fix had to keep its response contract unchanged.",
       solutionTitle: "Solution",
       solution:
         "I refactored the database queries behind the endpoint and added a caching layer for repeated reads. Validation, error handling and the response contract stayed consistent with the rest of the REST API.",
@@ -349,6 +323,12 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       ],
       metricsTitle: "Result",
       metrics: [{ value: "~60%", label: "lower average response time on a critical API endpoint" }],
+      chart: {
+        caption: "Average response time, critical endpoint (relative scale)",
+        before: "Before",
+        after: "After"
+      },
+      path: { hit: "hit · returns early", miss: "miss" },
       lessonsTitle: "How I approach performance work",
       lessons: [
         "Measure first — the real cost is rarely where you look first.",
@@ -359,7 +339,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     howIWork: {
       eyebrow: "How I work",
       title: "A small set of habits, applied consistently.",
-      description: "No process theatre — just the patterns I actually rely on.",
+      description: "No process theatre — just the habits I rely on.",
       items: [
         {
           title: "Code review",
@@ -387,36 +367,33 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     servicesItems: [
       {
         title: "Full-stack web platforms",
-        description: "Admin panels and internal tools with authentication, role-based access, audit logs and clean REST APIs — like OKKP."
+        description: "Admin panels and internal tools with authentication, role-based access, audit logs and clean REST APIs — like OKKP.",
+        proof: "Example: OKKP"
       },
       {
         title: "AI document search",
-        description: "RAG over PDF, Word and Excel, OCR for scans, hybrid keyword + semantic search and FastAPI pipelines."
+        description: "RAG over PDF, Word and Excel, OCR for scans, hybrid keyword + semantic search and FastAPI pipelines.",
+        proof: "Example: engineering document search (RAG)"
       },
       {
         title: "Dashboards & reporting",
-        description: "KPI dashboards, charts and Excel exports your team can use without asking a developer."
+        description: "KPI dashboards, charts and Excel exports your team can use without asking a developer.",
+        proof: "Example: client dashboards"
       },
       {
         title: "API performance & backend",
-        description: "Profiling slow endpoints, caching and query refactoring, consistent validation and error handling."
-      }
-    ],
-    availableBody: "On-site or hybrid in Moscow, or remote. I build full-stack web apps, dashboards and AI-powered tools.",
-    credibilityItems: [
-      {
-        title: "End-to-end delivery",
-        body: "Frontend, backend, database, authentication, dashboards, deployment and documentation — one person who owns the whole path."
+        description: "Profiling slow endpoints, caching and query refactoring, consistent validation and error handling.",
+        proof: "Example: the ~60% case study"
       },
       {
-        title: "Business-first engineering",
-        body: "I build systems that solve real operational problems, not just good-looking interfaces."
-      },
-      {
-        title: "Practical AI",
-        body: "Hands-on RAG, OCR and hybrid search built for real documents and real workflows."
+        title: "Multilingual & RTL interfaces",
+        description: "English, Russian and Arabic UIs with real right-to-left layouts, like this site.",
+        proof: "Example: Smart Platform (EN / AR)"
       }
     ],
+    servicesCta: "Discuss a project",
+    availableBody:
+      "For teams that need an internal platform, a reporting dashboard or search over their own documents — designed and built end to end, from the database to the UI. Contract or freelance, remote or in Moscow.",
     githubSearchPlaceholder: "Search repositories…",
     contactFormTitle: "Send a message",
     contactFormName: "Your name",
@@ -427,7 +404,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navCvLabel: "CV",
     projectProblemLabel: "Problem",
     projectSolutionLabel: "Solution",
-    projectResultLabel: "Result",
+    projectResultLabels: { result: "Result", status: "Status", builtIn: "Built in" },
     projectLiveDemo: "Live demo",
     projectViewGithubLabel: "GitHub",
     projectBackLabel: "Back to projects",
@@ -436,57 +413,33 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
   },
   ru: {
     dir: "ltr",
-    nav: ["Обо мне", "Услуги", "Проекты", "Репозитории", "Навыки", "Опыт"],
+    nav: ["Обо мне", "Услуги", "Проекты", "GitHub", "Навыки", "Опыт"],
     navHome: "Главная",
     navContact: "Контакты",
     brandMonogram: "АА",
     brandName: "Альхассан",
     heroAvailability: "Готов приступить сразу",
-    heroEyebrow: "Software Engineer — веб- и AI-системы",
+    heroEyebrow: "Full-stack / Python-разработчик — веб- и AI-системы",
     heroTitle: "Альхассан Альфарран",
-    heroHeadlineTop: "Создаю веб- и",
-    heroHeadlineFocus: "AI-системы,",
-    heroHeadlineBottom: "которые работают.",
+    heroHeadlineTop: "Веб-платформы",
+    heroHeadlineFocus: "и AI-поиск",
+    heroHeadlineBottom: "от идеи до продакшена.",
     heroPrimaryCta: "Смотреть проекты",
-    heroSecondaryCta: "Связаться",
+    heroSecondaryCta: "Скачать резюме",
     heroStats: [
-      { value: "2020", label: "Первый клиент" },
-      { value: "4", label: "Инженерные роли" },
-      { value: "МИСИС", label: "Магистратура" },
-      { value: "3", label: "Языка" }
+      { value: "~60%", label: "сокращение среднего времени ответа критичного эндпоинта" },
+      { value: "OKKP", label: "платформа с нуля до продакшена" },
+      { value: "4", label: "open-source-проекта с онлайн-демо" },
+      { value: "3", label: "языка · EN C1 · AR · RU" }
     ],
     aboutEyebrow: "Обо мне",
-    aboutTitle: "Инженер с системным мышлением.",
+    aboutTitle: "Три языка — один стек.",
     aboutBody:
-      "Я инженер-программист из Москвы и работаю по всему стеку: интерфейсы на React и TypeScript, сервисы на Node.js и FastAPI, PostgreSQL и MongoDB — и AI-слой поверх них: OCR, эмбеддинги и гибридный поиск. Для меня важны чёткие границы между UI, сервисами и AI и функции, которые выдерживают реальную работу, а не только демо.",
-    aboutHighlights: [
-      { label: "Локация", value: "Москва · офис / гибрид / удалённо" },
-      { label: "Опыт", value: "С 2020 года · 4 роли" },
-      { label: "Образование", value: "Магистратура · НИТУ МИСИС" },
-      { label: "Языки", value: "EN C1 · AR — родной · RU — разговорный" }
-    ],
-    aboutFocusTitle: "Сейчас в фокусе",
-    aboutFocusItems: [
-      "RAG и гибридный поиск по технической документации",
-      "Пайплайны загрузки и запросов на FastAPI",
-      "OCR для сканов, PDF, Word и Excel",
-      "Простые и понятные интерфейсы на React + TypeScript",
-      "Чёткие контракты между UI, API и AI-слоем"
-    ],
-    systemMapEyebrow: "Подход",
-    systemMapTitle: "Как устроены системы, которые я строю.",
-    systemMapDescription: "Почти всё, что я делаю, сводится к четырём слоям с чёткими границами между ними.",
-    mapLayers: [
-      { label: "Слой UI", detail: "Интерфейсы на React + TypeScript — адаптивные и понятные с первого взгляда." },
-      { label: "Слой API", detail: "Сервисы на Node.js / Express и FastAPI с явными контрактами." },
-      { label: "Слой данных", detail: "Модели PostgreSQL и MongoDB для повседневной работы и отчётности." },
-      { label: "Слой AI", detail: "OCR, эмбеддинги и гибридный поиск с ответами на основе LLM." }
-    ],
-    flowLabel: "данные идут сверху вниз",
+      "Арабский — мой родной язык, английский (C1) — профессиональный. Учился в России: бакалавриат в УрФУ (Екатеринбург), затем магистратура в НИТУ МИСИС (Москва). Мне нравится отвечать за фичу целиком: модель данных, контракт API, права доступа и Excel-выгрузку, которую сотрудник без технических навыков сделает сам.",
     projectsEyebrow: "Избранное",
-    projectsTitle: "Проекты, которые я сделал.",
+    projectsTitle: "Что я сделал.",
     projectsSubtitle:
-      "Проекты с моих мест работы: код под NDA, поэтому я показываю архитектуру. А ещё open-source инструменты, которые можно запустить уже сегодня.",
+      "Коммерческие проекты — код закрыт, поэтому показываю архитектуру, — и open-source-инструменты, которые можно запустить прямо сейчас.",
     projectsEmpty: "Здесь появятся избранные проекты.",
     githubReposEyebrow: "GitHub",
     githubReposTitle: "Ещё на GitHub",
@@ -495,7 +448,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     githubReposEmpty: "Нет репозиториев для показа.",
     skillsEyebrow: "Навыки",
     skillsTitle: "Мой стек.",
-    skillsDescription: "Инструменты, с которыми я работаю каждый день: интерфейсы, сервисы, данные, AI-поиск и поставка.",
+    skillsDescription: "С чем я работаю — по слоям, от интерфейсов до поставки.",
     skillsGroups: [
       {
         name: "Фронтенд",
@@ -521,18 +474,18 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     experienceEyebrow: "Опыт",
     experienceTitle: "Где я работал.",
     experienceDescription:
-      "Четыре роли с 2020 года — от проектов для клиентов до платформы, построенной с нуля, и RAG-поиска сегодня.",
+      "С 2020 года — фриланс и три компании: от клиентских проектов до платформы, построенной с нуля, и RAG-поиска, над которым работаю сейчас.",
     experienceItems: [
       {
         period: "Январь 2026 — сейчас",
         title: "Python / full-stack разработчик",
         company: "Электросервис",
         location: "Москва",
-        summary: "Строю систему поиска и RAG по технической документации ПТО.",
+        summary: "Разрабатываю систему поиска и RAG по технической документации ПТО.",
         highlights: [
-          "Индексация PDF, Word и Excel, включая сканы через OCR.",
-          "Гибридный поиск: ключевые слова плюс семантика (sentence-transformers + FAISS), чтобы ответы были релевантнее.",
-          "Пайплайны загрузки и запросов на FastAPI: парсинг, индексация, поиск и ответы с помощью LLM."
+          "Реализовал индексацию PDF, Word и Excel, включая сканы через OCR.",
+          "Реализовал гибридный поиск: ключевые слова + семантика (sentence-transformers + FAISS) — чтобы ответы были релевантнее.",
+          "Разработал на FastAPI пайплайны загрузки и обработки запросов: парсинг, индексация, поиск и ответы с помощью LLM."
         ],
         stack: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"]
       },
@@ -545,7 +498,8 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         highlights: [
           "Выстроил архитектуру целиком: SPA на React + TypeScript, REST API на Node.js / Express, PostgreSQL + MongoDB.",
           "Сделал модули управления сотрудниками, учёта нарушений и отчётных дашбордов с ролевым доступом и журналом аудита.",
-          "Добавил защищённую загрузку медиафайлов (Cloudinary, Multer) и выгрузку в Excel, с которой сотрудники без технической подготовки сами готовят данные для аудита; отвечал за деплой и поддержку в продакшене."
+          "Сделал выгрузку в Excel, с которой сотрудники без технической подготовки сами готовят данные для аудита.",
+          "Добавил защищённую загрузку медиафайлов (Cloudinary, Multer); отвечал за деплой и поддержку в продакшене."
         ],
         stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"]
       },
@@ -556,8 +510,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         summary: "Разрабатывал full-stack функциональность клиентских веб-приложений в Agile-командах.",
         highlights: [
           "Сократил среднее время ответа критичного эндпоинта API примерно на 60% с помощью слоя кеширования и переработки запросов.",
-          "Проектировал REST API с единой валидацией, обработкой ошибок и контрактами ответов.",
-          "Участвовал в код-ревью и планировании спринтов."
+          "Проектировал REST API с единой валидацией, обработкой ошибок и контрактами ответов; ревьюил код коллег и участвовал в планировании спринтов."
         ],
         stack: ["Node.js", "Express", "MongoDB", "React"]
       },
@@ -589,9 +542,9 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     ],
     certifications: CERTIFICATIONS,
     contactEyebrow: "Контакты",
-    contactTitle: "Давайте сделаем что-то стоящее.",
+    contactTitle: "Вакансия или проект? Давайте обсудим.",
     contactDescription:
-      "Ищете разработчика в команду — full-stack, Python или AI? Планируете веб-приложение, дашборд или AI-поиск? Расскажите, что нужно, — обычно отвечаю в течение 48 часов.",
+      "Ищете full-stack, Python- или AI-разработчика — или планируете веб-приложение, дашборд или поиск по документам? Расскажите, что нужно. Быстрее всего — в Telegram.",
     contactEmailLabel: "Напишите мне",
     contactCvLabel: "Скачать резюме",
     cvDownloads: [
@@ -601,20 +554,20 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     ],
     githubLabel: "GitHub",
     linkedinLabel: "LinkedIn",
-    footerBuiltWith: "Сделано на Next.js, Tailwind и Framer Motion",
+    footerBuiltWith: "Стек сайта: Next.js, Tailwind и Framer Motion",
     languageLabel: "Язык",
-    heroResponseTime: "Обычно отвечаю в течение 48 часов",
-    proofStripLabel: "Опыт работы",
-    proofStripItems: ["Электросервис", "Avenue Group · OKKP", "Junzi Tech Solutions", "Фриланс с 2020 года", "Проекты с открытым кодом"],
+    heroResponseTime: "Отвечаю в течение 48 часов, в Telegram — быстрее.",
+    proofStripLabel: "Опыт и образование",
+    proofStripItems: ["Электросервис", "Avenue Group", "Junzi Tech Solutions", "НИТУ МИСИС", "УрФУ"],
     signature: {
-      eyebrow: "Ключевой кейс",
+      eyebrow: "Разбор производительности",
       company: "Junzi Tech Solutions",
       title: "Время ответа критичного эндпоинта — на ~60% меньше.",
       summary:
-        "В Junzi Tech Solutions я оптимизировал критичный эндпоинт API клиентского веб-приложения. Слой кеширования и переработанные запросы к базе сократили его среднее время ответа примерно на 60%.",
+        "Сначала запросы, потом кеш: я переработал запросы к MongoDB за критичным эндпоинтом на Node.js / Express, а затем закешировал повторяющиеся чтения — не меняя контракт ответа.",
       problemTitle: "Задача",
       problem:
-        "Критичному эндпоинту клиентского веб-приложения — API на Node.js / Express с MongoDB и фронтендом на React — нужно было отвечать быстрее.",
+        "Критичный эндпоинт клиентского веб-приложения (Node.js / Express на MongoDB, фронтенд на React) отвечал слишком медленно, а исправление не должно было менять его контракт ответа.",
       solutionTitle: "Решение",
       solution:
         "Переработал запросы к базе за эндпоинтом и добавил слой кеширования для повторяющихся чтений. Валидация, обработка ошибок и контракт ответа остались такими же, как во всём REST API.",
@@ -627,6 +580,12 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       ],
       metricsTitle: "Результат",
       metrics: [{ value: "~60%", label: "снижение среднего времени ответа критичного эндпоинта API" }],
+      chart: {
+        caption: "Среднее время ответа критичного эндпоинта (относительная шкала)",
+        before: "До",
+        after: "После"
+      },
+      path: { hit: "есть в кеше · ответ сразу", miss: "нет в кеше" },
       lessonsTitle: "Как я подхожу к оптимизации",
       lessons: [
         "Сначала измерить: узкое место редко там, куда смотришь в первую очередь.",
@@ -637,7 +596,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     howIWork: {
       eyebrow: "Как я работаю",
       title: "Несколько привычек, которым я следую всегда.",
-      description: "Без процессного театра — только то, на что я действительно опираюсь.",
+      description: "Без процессного театра — только привычки, на которые я опираюсь.",
       items: [
         {
           title: "Код-ревью",
@@ -665,36 +624,33 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     servicesItems: [
       {
         title: "Full-stack веб-платформы",
-        description: "Админ-панели и внутренние системы с авторизацией, ролевым доступом, журналом аудита и аккуратным REST API — как OKKP."
+        description: "Админ-панели и внутренние системы с авторизацией, ролевым доступом, журналом аудита и аккуратным REST API — как OKKP.",
+        proof: "Пример: OKKP"
       },
       {
         title: "AI-поиск по документам",
-        description: "RAG по PDF, Word и Excel, OCR для сканов, гибридный поиск по ключевым словам и смыслу, пайплайны на FastAPI."
+        description: "RAG по PDF, Word и Excel, OCR для сканов, гибридный поиск по ключевым словам и смыслу, пайплайны на FastAPI.",
+        proof: "Пример: поиск по технической документации (RAG)"
       },
       {
         title: "Дашборды и отчётность",
-        description: "KPI-дашборды, графики и выгрузки в Excel, которыми команда пользуется без помощи разработчика."
+        description: "KPI-дашборды, графики и выгрузки в Excel, которыми команда пользуется без помощи разработчика.",
+        proof: "Пример: клиентские дашборды"
       },
       {
         title: "Бэкенд и производительность API",
-        description: "Поиск медленных эндпоинтов, кеширование и переработка запросов, единая валидация и обработка ошибок."
-      }
-    ],
-    availableBody: "Офис или гибрид в Москве, либо удалённо. Делаю full-stack веб-приложения, дашборды и инструменты с AI.",
-    credibilityItems: [
-      {
-        title: "Разработка от начала до конца",
-        body: "Фронтенд, бэкенд, база данных, авторизация, дашборды, деплой и документация — один человек отвечает за весь путь."
+        description: "Поиск медленных эндпоинтов, кеширование и переработка запросов, единая валидация и обработка ошибок.",
+        proof: "Пример: кейс с ускорением на ~60%"
       },
       {
-        title: "Инженерия под задачи бизнеса",
-        body: "Строю системы, которые решают реальные операционные задачи, а не просто красиво выглядят."
-      },
-      {
-        title: "Прикладной AI",
-        body: "Практический опыт с RAG, OCR и гибридным поиском по реальным документам и в реальных процессах."
+        title: "Многоязычные интерфейсы и RTL",
+        description: "Английский, русский и арабский, с настоящей вёрсткой справа налево, как на этом сайте.",
+        proof: "Пример: Smart Platform (EN / AR)"
       }
     ],
+    servicesCta: "Обсудить проект",
+    availableBody:
+      "Для команд, которым нужна внутренняя платформа, дашборд с отчётностью или поиск по собственным документам, — полный цикл: от базы данных до интерфейса. Контракт или фриланс, удалённо или в Москве.",
     githubSearchPlaceholder: "Поиск по репозиториям…",
     contactFormTitle: "Написать сообщение",
     contactFormName: "Ваше имя",
@@ -705,7 +661,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navCvLabel: "Резюме",
     projectProblemLabel: "Задача",
     projectSolutionLabel: "Решение",
-    projectResultLabel: "Результат",
+    projectResultLabels: { result: "Результат", status: "Статус", builtIn: "Под капотом" },
     projectLiveDemo: "Демо",
     projectViewGithubLabel: "GitHub",
     projectBackLabel: "Назад к проектам",
@@ -714,58 +670,35 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
   },
   ar: {
     dir: "rtl",
-    nav: ["نبذة", "الخدمات", "المشاريع", "المستودعات", "المهارات", "الخبرة"],
+    nav: ["نبذة", "الخدمات", "المشاريع", "GitHub", "المهارات", "الخبرة"],
     navHome: "الرئيسية",
     navContact: "تواصل",
     // The logo mark stays the Latin initials in every locale: "حا" did not read as initials.
     brandMonogram: "AA",
     brandName: "الحسن",
     heroAvailability: "متاح للعمل فوراً",
-    heroEyebrow: "مهندس برمجيات — أنظمة الويب والذكاء الاصطناعي",
+    heroEyebrow: "مطوّر Full-Stack وPython — أنظمة الويب والذكاء الاصطناعي",
     heroTitle: "الحسن الفران",
-    heroHeadlineTop: "أبني أنظمة ويب",
-    heroHeadlineFocus: "وذكاء اصطناعي",
-    heroHeadlineBottom: "تعمل فعلاً.",
+    // The middle line is nowrap: kept short so it fits a 390px phone.
+    heroHeadlineTop: "منصات ويب",
+    heroHeadlineFocus: "وبحث ذكي",
+    heroHeadlineBottom: "من الفكرة حتى الإطلاق.",
     heroPrimaryCta: "شاهد أعمالي",
-    heroSecondaryCta: "تواصل معي",
+    heroSecondaryCta: "تحميل السيرة الذاتية",
     heroStats: [
-      { value: "2020", label: "أول مشروع لعميل" },
-      { value: "4", label: "أدوار هندسية" },
-      { value: "ماجستير", label: "جامعة MISIS" },
-      { value: "3", label: "لغات" }
+      { value: "~60%", label: "انخفاض متوسط زمن استجابة نقطة نهاية API حرجة" },
+      { value: "OKKP", label: "منصة من الصفر حتى الإنتاج" },
+      { value: "4", label: "أدوات مفتوحة المصدر مع عروض حية" },
+      { value: "3", label: "لغات · العربية · الإنجليزية C1 · الروسية" }
     ],
     aboutEyebrow: "نبذة",
-    aboutTitle: "مهندس يفكّر بمنطق الأنظمة.",
+    aboutTitle: "ثلاث لغات — وحزمة تقنية واحدة.",
     aboutBody:
-      "مهندس برمجيات مقيم في موسكو، أعمل على كامل الحزمة التقنية: واجهات React وTypeScript، وخدمات Node.js وFastAPI، وقواعد بيانات PostgreSQL وMongoDB، وفوقها طبقة الذكاء الاصطناعي: التعرّف الضوئي على النصوص (OCR) والتضمينات والبحث الهجين. يهمّني أن تكون الحدود واضحة بين الواجهة والخدمات والذكاء الاصطناعي، وأن تصمد الميزات في سير العمل الحقيقي لا في العروض التجريبية فقط.",
-    aboutHighlights: [
-      { label: "الموقع", value: "موسكو · حضوري / هجين / عن بُعد" },
-      { label: "الخبرة", value: "منذ 2020 · 4 أدوار" },
-      { label: "التعليم", value: "ماجستير · جامعة MISIS" },
-      { label: "اللغات", value: "العربية (الأم) · الإنجليزية C1 · الروسية (محادثة)" }
-    ],
-    aboutFocusTitle: "أعمل حالياً على",
-    aboutFocusItems: [
-      "RAG والبحث الهجين في الوثائق التقنية",
-      "مسارات FastAPI لاستقبال المستندات والاستعلام",
-      "OCR للمستندات الممسوحة وملفات PDF وWord وExcel",
-      "واجهات React + TypeScript بسيطة وواضحة",
-      "عقود واضحة بين الواجهة وAPI وطبقة الذكاء الاصطناعي"
-    ],
-    systemMapEyebrow: "المنهج",
-    systemMapTitle: "خريطة واضحة لطريقة بنائي للأنظمة.",
-    systemMapDescription: "معظم ما أبنيه يتكوّن من أربع طبقات بحدود واضحة بينها.",
-    mapLayers: [
-      { label: "طبقة الواجهة", detail: "واجهات React + TypeScript متجاوبة وسهلة القراءة." },
-      { label: "طبقة API", detail: "خدمات Node.js / Express وFastAPI بعقود صريحة." },
-      { label: "طبقة البيانات", detail: "نماذج PostgreSQL وMongoDB للعمل اليومي والتقارير." },
-      { label: "طبقة الذكاء الاصطناعي", detail: "OCR وتضمينات وبحث هجين، مع إجابات بمساعدة LLM." }
-    ],
-    flowLabel: "تتدفق البيانات من الأعلى إلى الأسفل",
+      "العربية لغتي الأم، والإنجليزية (C1) لغتي المهنية. درستُ في روسيا: البكالوريوس في جامعة الأورال الفيدرالية في يكاترينبورغ، ثم الماجستير في جامعة MISIS في موسكو. أحبّ أن أتولّى الميزة كاملة: نموذج البيانات، وعقد الواجهة البرمجية، وصلاحيات الوصول، وتصدير Excel يستطيع زميل غير تقني إعداده بنفسه.",
     projectsEyebrow: "أعمال مختارة",
     projectsTitle: "مشاريع بنيتها.",
     projectsSubtitle:
-      "مشاريع من عملي الفعلي — الكود خاضع لاتفاقية عدم إفصاح، لذا أعرض البنية — إلى جانب أدوات مفتوحة المصدر يمكنك تشغيلها اليوم.",
+      "مشاريع من عملي — الكود خاص، لذا أعرض البنية — إلى جانب أدوات مفتوحة المصدر مع عروض حية.",
     projectsEmpty: "ستُعرض المشاريع المختارة هنا.",
     githubReposEyebrow: "GitHub",
     githubReposTitle: "المزيد على GitHub",
@@ -774,7 +707,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     githubReposEmpty: "لا توجد مستودعات للعرض.",
     skillsEyebrow: "المهارات",
     skillsTitle: "الأدوات التي أعتمد عليها.",
-    skillsDescription: "الأدوات التي أعمل بها يومياً: الواجهات والخدمات والبيانات والبحث الذكي والتسليم.",
+    skillsDescription: "ما أعمل به، مصنّفاً حسب الطبقة — من الواجهات إلى التسليم.",
     skillsGroups: [
       {
         name: "الواجهات الأمامية",
@@ -786,7 +719,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       },
       {
         name: "الذكاء الاصطناعي والبحث",
-        items: ["مسارات RAG", "تكامل LLM", "sentence-transformers", "FAISS", "البحث الهجين", "OCR", "Pandas وNumPy"]
+        items: ["خطوط معالجة RAG", "تكامل LLM", "sentence-transformers", "FAISS", "البحث الهجين", "OCR", "Pandas وNumPy"]
       },
       {
         name: "البيانات والتخزين",
@@ -800,18 +733,18 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     experienceEyebrow: "الخبرة",
     experienceTitle: "مسيرتي المهنية.",
     experienceDescription:
-      "أربعة أدوار منذ 2020 — من مشاريع العملاء إلى منصة بنيتها من الصفر، واليوم أنظمة بحث RAG.",
+      "منذ 2020: عمل حر وثلاث شركات — من مشاريع العملاء إلى منصة بنيتها من الصفر، واليوم أنظمة بحث RAG.",
     experienceItems: [
       {
         period: "يناير 2026 — حتى الآن",
         title: "مطوّر Python / Full-Stack",
         company: "Elektroservis",
         location: "موسكو",
-        summary: "أبني نظام بحث وRAG لوثائق القسم الفني الهندسي (PTO).",
+        summary: "أبني نظام بحث وRAG للوثائق الهندسية والفنية.",
         highlights: [
-          "فهرسة ملفات PDF وWord وExcel، بما فيها المستندات الممسوحة ضوئياً عبر OCR.",
-          "بحث هجين يجمع بين الكلمات المفتاحية والبحث الدلالي (sentence-transformers + FAISS) لرفع دقة الإجابات.",
-          "مسارات FastAPI لاستقبال المستندات والاستعلام، تربط التحليل والفهرسة والاسترجاع بإجابات مدعومة بنماذج LLM."
+          "بنيتُ استقبال ملفات PDF وWord وExcel وفهرستها، مع OCR للمستندات الممسوحة ضوئياً.",
+          "نفّذتُ بحثاً هجيناً يجمع بين مطابقة الكلمات المفتاحية والاسترجاع الدلالي (sentence-transformers + FAISS) لرفع دقة الإجابات.",
+          "طوّرتُ على FastAPI خطوط معالجة لاستقبال المستندات والاستعلام، تربط التحليل والفهرسة والاسترجاع بإجابات مدعومة بنماذج LLM."
         ],
         stack: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"]
       },
@@ -822,9 +755,10 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         location: "موسكو · من المكتب",
         summary: "صمّمت منصة OKKP وأطلقتها من الصفر — منصة متكاملة لإدارة العمليات.",
         highlights: [
-          "صمّمت البنية من طرف إلى طرف: تطبيق SPA بـ React + TypeScript، وREST API بـ Node.js / Express، وقواعد PostgreSQL وMongoDB.",
+          "صمّمت البنية بالكامل: تطبيق SPA على React + TypeScript، وREST API على Node.js / Express، وقواعد PostgreSQL وMongoDB.",
           "بنيت وحدات إدارة الموظفين وتتبّع المخالفات ولوحات التقارير، مع صلاحيات حسب الأدوار وسجل تدقيق.",
-          "أضفت رفعاً آمناً للوسائط (Cloudinary وMulter) وتصديراً إلى Excel يتيح للموظفين غير التقنيين إعداد بيانات جاهزة للتدقيق، وتولّيت النشر ودعم بيئة الإنتاج."
+          "بنيتُ تصديراً إلى Excel يتيح للموظفين غير التقنيين إعداد بيانات جاهزة للتدقيق بأنفسهم.",
+          "أضفت رفعاً آمناً للوسائط (Cloudinary وMulter)، وتولّيت النشر ودعم بيئة الإنتاج."
         ],
         stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"]
       },
@@ -834,9 +768,8 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         company: "Junzi Tech Solutions",
         summary: "طوّرت ميزات متكاملة لتطبيقات ويب خاصة بعملاء الشركة ضمن فرق Agile.",
         highlights: [
-          "خفّضت متوسط زمن استجابة نقطة API حرجة بنحو 60% عبر طبقة تخزين مؤقت وإعادة هيكلة الاستعلامات.",
-          "صمّمت واجهات REST API بتحقق موحّد من المدخلات ومعالجة متسقة للأخطاء وعقود استجابة ثابتة.",
-          "شاركت في مراجعة الكود وتخطيط السبرنتات."
+          "خفّضت متوسط زمن استجابة نقطة نهاية API حرجة بنحو 60% عبر طبقة تخزين مؤقت وإعادة هيكلة الاستعلامات.",
+          "صمّمت واجهات REST API بتحقق موحّد من المدخلات ومعالجة متسقة للأخطاء وعقود استجابة ثابتة، وراجعت كود زملائي وشاركت في تخطيط السبرنتات."
         ],
         stack: ["Node.js", "Express", "MongoDB", "React"]
       },
@@ -847,8 +780,8 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         location: "عن بُعد",
         summary: "مشاريع لعملاء دوليين، بالتوازي مع الدراسة والعمل بدوام كامل.",
         highlights: [
-          "تطبيقات ويب ولوحات تحكم بـ React / TypeScript، وخدمات خلفية بـ Python / FastAPI.",
-          "Pathwise: تطبيق مبني بـ FastAPI + PostgreSQL بخدمة خلفية غير متزامنة.",
+          "تطبيقات ويب ولوحات تحكم على React / TypeScript، وخدمات خلفية على Python / FastAPI.",
+          "Pathwise: تطبيق مبني على FastAPI + PostgreSQL بخدمة خلفية غير متزامنة.",
           "إدارة دورة العمل كاملة مع العميل: تحديد النطاق والتقدير والتسليم والدعم بعد الإطلاق."
         ],
         stack: ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL"]
@@ -868,9 +801,9 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     ],
     certifications: CERTIFICATIONS,
     contactEyebrow: "تواصل",
-    contactTitle: "لنبنِ معاً شيئاً ذا قيمة.",
+    contactTitle: "توظيف أو مشروع؟ لنتحدث.",
     contactDescription:
-      "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي لفريقك؟ أو تخطط لتطبيق ويب أو لوحة تحكم أو أداة بحث ذكية؟ أخبرني بما تحتاجه — أردّ عادةً خلال 48 ساعة.",
+      "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي — أو تخطّط لتطبيق ويب أو لوحة تحكم أو بحث ذكي في المستندات؟ أخبرني بما تحتاجه. أسرع طريقة للتواصل معي هي Telegram.",
     contactEmailLabel: "راسلني",
     contactCvLabel: "تحميل السيرة الذاتية",
     cvDownloads: [
@@ -880,43 +813,49 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     ],
     githubLabel: "GitHub",
     linkedinLabel: "LinkedIn",
-    footerBuiltWith: "مبني بـ Next.js وTailwind وFramer Motion",
+    footerBuiltWith: "التقنيات: Next.js وTailwind وFramer Motion",
     languageLabel: "اللغة",
-    heroResponseTime: "أردّ عادةً خلال 48 ساعة",
-    proofStripLabel: "خبرة في",
-    proofStripItems: ["Elektroservis", "Avenue Group · OKKP", "Junzi Tech Solutions", "عمل حر منذ 2020", "مفتوح المصدر"],
+    heroResponseTime: "أردّ خلال 48 ساعة — وأسرع عبر Telegram.",
+    proofStripLabel: "الخبرة والتعليم",
+    proofStripItems: ["Elektroservis", "Avenue Group", "Junzi Tech Solutions", "جامعة MISIS", "جامعة الأورال الفيدرالية"],
     signature: {
-      eyebrow: "دراسة الحالة الأبرز",
+      eyebrow: "تحليل الأداء بالتفصيل",
       company: "Junzi Tech Solutions",
-      title: "خفّضت زمن استجابة نقطة API حرجة بنحو 60%.",
+      title: "خفّضت زمن استجابة نقطة نهاية API حرجة بنحو 60%.",
       summary:
-        "في Junzi Tech Solutions حسّنت نقطة API حرجة في تطبيق ويب لأحد العملاء، فخفّضت طبقة تخزين مؤقت وإعادة هيكلة استعلامات قاعدة البيانات متوسط زمن استجابتها بنحو 60%.",
+        "الاستعلامات أولاً ثم التخزين المؤقت: أعدتُ هيكلة استعلامات MongoDB خلف نقطة نهاية حرجة على Node.js / Express، ثم خزّنتُ القراءات المتكررة مؤقتاً، دون تغيير عقد استجابتها.",
       problemTitle: "المشكلة",
       problem:
-        "نقطة حرجة في تطبيق ويب لأحد العملاء — واجهة API مبنية بـ Node.js / Express وMongoDB، مع واجهة أمامية بـ React — كانت تحتاج إلى زمن استجابة أقل.",
+        "كانت نقطة نهاية حرجة في تطبيق ويب لأحد العملاء (Node.js / Express على MongoDB، وواجهة أمامية على React) بطيئة، وكان على الإصلاح أن يُبقي عقد استجابتها كما هو.",
       solutionTitle: "الحل",
       solution:
-        "أعدت هيكلة استعلامات قاعدة البيانات خلف النقطة، وأضفت طبقة تخزين مؤقت للقراءات المتكررة. وبقي التحقق من المدخلات ومعالجة الأخطاء وعقد الاستجابة متسقاً مع بقية واجهة REST API.",
+        "أعدت هيكلة استعلامات قاعدة البيانات خلف نقطة النهاية، وأضفت طبقة تخزين مؤقت للقراءات المتكررة. وبقي التحقق من المدخلات ومعالجة الأخطاء وعقد الاستجابة متسقاً مع بقية واجهة REST API.",
       architectureTitle: "البنية",
       architecture: [
-        { name: "العميل", detail: "واجهة أمامية مبنية بـ React." },
-        { name: "API", detail: "نقطة Node.js / Express بتحقق موحّد ومعالجة متسقة للأخطاء." },
+        { name: "العميل", detail: "واجهة أمامية مبنية على React." },
+        { name: "API", detail: "نقطة نهاية Node.js / Express بتحقق موحّد ومعالجة متسقة للأخطاء." },
         { name: "التخزين المؤقت", detail: "طبقة تخزين مؤقت للقراءات المتكررة." },
         { name: "البيانات", detail: "استعلامات MongoDB مُعاد هيكلتها." }
       ],
       metricsTitle: "النتيجة",
-      metrics: [{ value: "~60%", label: "انخفاض في متوسط زمن استجابة نقطة API حرجة" }],
+      metrics: [{ value: "~60%", label: "انخفاض في متوسط زمن استجابة نقطة نهاية API حرجة" }],
+      chart: {
+        caption: "متوسط زمن الاستجابة لنقطة نهاية API حرجة (مقياس نسبي)",
+        before: "قبل",
+        after: "بعد"
+      },
+      path: { hit: "موجودة مؤقتاً · رد فوري", miss: "غير موجودة" },
       lessonsTitle: "كيف أتعامل مع تحسين الأداء",
       lessons: [
-        "القياس أولاً — فالتكلفة الحقيقية نادراً ما تكون حيث تنظر أولاً.",
-        "أصلح الاستعلام أولاً ثم أضف التخزين المؤقت؛ فالتخزين فوق استعلام بطيء يخفي المشكلة فقط.",
+        "أقيس أولاً — فالتكلفة الحقيقية نادراً ما تكون حيث ننظر أولاً.",
+        "أُصلح الاستعلام أولاً ثم أضيف التخزين المؤقت؛ فالتخزين المؤقت فوق استعلام بطيء لا يفعل سوى إخفاء المشكلة.",
         "أحافظ على ثبات عقد الاستجابة، كي يُنشر تحسين الأداء كأي تغيير عادي."
       ]
     },
     howIWork: {
       eyebrow: "كيف أعمل",
       title: "عادات قليلة أطبّقها باستمرار.",
-      description: "بلا مظاهر إجرائية — فقط ما أعتمد عليه فعلاً.",
+      description: "بلا مظاهر إجرائية — فقط العادات التي أعتمد عليها.",
       items: [
         {
           title: "مراجعة الكود",
@@ -944,36 +883,33 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     servicesItems: [
       {
         title: "منصات ويب متكاملة",
-        description: "لوحات إدارة وأدوات داخلية بمصادقة وصلاحيات حسب الأدوار وسجلات تدقيق وواجهات REST API واضحة — مثل OKKP."
+        description: "لوحات إدارة وأدوات داخلية بمصادقة وصلاحيات حسب الأدوار وسجلات تدقيق وواجهات REST API واضحة — مثل OKKP.",
+        proof: "مثال: OKKP"
       },
       {
         title: "بحث ذكي في المستندات",
-        description: "RAG في ملفات PDF وWord وExcel، وOCR للمستندات الممسوحة، وبحث هجين بالكلمات المفتاحية والمعنى، ومسارات FastAPI."
+        description: "RAG في ملفات PDF وWord وExcel، وOCR للمستندات الممسوحة، وبحث هجين بالكلمات المفتاحية والمعنى، وخطوط معالجة على FastAPI.",
+        proof: "مثال: البحث في الوثائق الهندسية (RAG)"
       },
       {
         title: "لوحات مؤشرات وتقارير",
-        description: "لوحات KPI ورسوم بيانية وتصدير إلى Excel يستخدمها فريقك دون الحاجة إلى مطوّر."
+        description: "لوحات KPI ورسوم بيانية وتصدير إلى Excel يستخدمها فريقك دون الحاجة إلى مطوّر.",
+        proof: "مثال: لوحات مؤشرات لعميل"
       },
       {
         title: "أداء API والخدمات الخلفية",
-        description: "تحليل النقاط البطيئة، والتخزين المؤقت، وإعادة هيكلة الاستعلامات، وتحقق موحّد ومعالجة متسقة للأخطاء."
-      }
-    ],
-    availableBody: "حضورياً أو بنظام هجين في موسكو، أو عن بُعد. أبني تطبيقات ويب متكاملة ولوحات تحكم وأدوات مدعومة بالذكاء الاصطناعي.",
-    credibilityItems: [
-      {
-        title: "تسليم من البداية إلى النهاية",
-        body: "واجهات أمامية وخدمات خلفية وقواعد بيانات ومصادقة ولوحات تحكم ونشر وتوثيق — شخص واحد مسؤول عن المسار كله."
+        description: "تحليل نقاط النهاية البطيئة، والتخزين المؤقت، وإعادة هيكلة الاستعلامات، وتحقق موحّد ومعالجة متسقة للأخطاء.",
+        proof: "مثال: دراسة حالة تحسين الأداء (~60%)"
       },
       {
-        title: "هندسة في خدمة الأعمال",
-        body: "أبني أنظمة تحل مشكلات تشغيلية حقيقية، لا مجرد واجهات جميلة."
-      },
-      {
-        title: "ذكاء اصطناعي عملي",
-        body: "خبرة عملية في RAG وOCR والبحث الهجين، مبنية لمستندات حقيقية وسير عمل حقيقي."
+        title: "واجهات متعددة اللغات ودعم RTL",
+        description: "الإنجليزية والروسية والعربية، بتخطيط حقيقي من اليمين إلى اليسار، كما في هذا الموقع.",
+        proof: "مثال: Smart Platform (EN / AR)"
       }
     ],
+    servicesCta: "لنناقش مشروعك",
+    availableBody:
+      "للفرق التي تحتاج إلى منصة داخلية أو لوحة تقارير أو بحث في مستنداتها الخاصة — تصميم وتنفيذ متكامل من قاعدة البيانات إلى الواجهة. بعقد أو عمل حر، عن بُعد أو في موسكو.",
     githubSearchPlaceholder: "ابحث في المستودعات…",
     contactFormTitle: "أرسل رسالة",
     contactFormName: "اسمك",
@@ -984,7 +920,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navCvLabel: "السيرة الذاتية",
     projectProblemLabel: "المشكلة",
     projectSolutionLabel: "الحل",
-    projectResultLabel: "النتيجة",
+    projectResultLabels: { result: "النتيجة", status: "الحالة", builtIn: "التفاصيل التقنية" },
     projectLiveDemo: "عرض حيّ",
     projectViewGithubLabel: "GitHub",
     projectBackLabel: "العودة إلى المشاريع",

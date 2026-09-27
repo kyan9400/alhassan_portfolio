@@ -8,7 +8,8 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-body)", "var(--font-arabic)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "var(--font-arabic)", "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+        arabic: ["var(--font-arabic)", "system-ui", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "Cascadia Mono", "Liberation Mono", "monospace"]
       },
       colors: {
         bg: "rgb(var(--bg) / <alpha-value>)",
@@ -29,36 +30,14 @@ const config: Config = {
         "4xl": "2rem"
       },
       keyframes: {
-        marquee: {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(-50%)" }
-        },
-        "spin-slow": {
-          to: { transform: "rotate(360deg)" }
-        },
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" }
-        },
         // transform + opacity only: compositor-friendly, no paint per frame on phones
         rise: {
           from: { opacity: "0", transform: "translate3d(0, 0.35em, 0)" },
           to: { opacity: "1", transform: "translate3d(0, 0, 0)" }
-        },
-        wave: {
-          "0%, 60%, 100%": { transform: "rotate(0deg)" },
-          "10%, 30%": { transform: "rotate(14deg)" },
-          "20%": { transform: "rotate(-8deg)" },
-          "40%": { transform: "rotate(-4deg)" },
-          "50%": { transform: "rotate(10deg)" }
         }
       },
       animation: {
-        marquee: "marquee var(--marquee-duration, 40s) linear infinite",
-        "spin-slow": "spin-slow 14s linear infinite",
-        float: "float 6s ease-in-out infinite",
-        rise: "rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
-        wave: "wave 2.4s ease-in-out 1s 2"
+        rise: "rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both"
       }
     }
   },

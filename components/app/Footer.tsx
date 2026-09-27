@@ -19,7 +19,18 @@ function subscribeClock(onChange: () => void) {
 const getMinute = () => Math.floor(Date.now() / 60_000);
 const getServerMinute = () => null;
 
-/** Site footer: name, local time in Moscow and "back to top". Shared by home and the case studies. */
+/** Greeting for the visitor's own time of day (their clock, not Moscow's). */
+function greetingFor(hour: number, g: { morning: string; afternoon: string; evening: string; night: string }) {
+  if (hour < 5) return g.night;
+  if (hour < 12) return g.morning;
+  if (hour < 18) return g.afternoon;
+  return g.evening;
+}
+
+/**
+ * Site footer: a large quiet sign-off with the name, then name, a time-aware greeting next to my local
+ * time in Moscow, and "back to top". Shared by home and the case studies.
+ */
 export function Footer({ className = "" }: { className?: string }) {
   const copy = useCopy();
   const locale = usePortfolioStore((s) => s.locale);
@@ -31,7 +42,15 @@ export function Footer({ className = "" }: { className?: string }) {
     : "--:--";
 
   return (
-    <footer className={`flex flex-col items-center justify-between gap-6 border-t border-line/10 pt-8 text-sm text-muted md:flex-row ${className}`}>
+    <footer className={className}>
+      {/* Decorative sign-off: the name, very large and faint. */}
+      <p
+        aria-hidden="true"
+        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-text/[0.07] rtl:tracking-normal"
+      >
+        {copy.heroTitle}
+      </p>
+      <div className="mt-8 flex flex-col items-center justify-between gap-6 border-t border-line/10 pt-8 text-sm text-muted md:flex-row">
       <div className="text-center md:text-start">
         <p className="font-display text-base font-semibold text-text">
           {copy.heroTitle}
@@ -41,7 +60,8 @@ export function Footer({ className = "" }: { className?: string }) {
           © <span suppressHydrationWarning>{now ? now.getFullYear() : RENDER_YEAR}</span> · {copy.ui.footerTagline} {copy.footerBuiltWith}.
         </p>
       </div>
-      <p className="text-xs">
+      <p className="text-center text-xs">
+        {now ? <span>{greetingFor(now.getHours(), copy.ui.greeting)} · </span> : null}
         {copy.ui.footerLocalTime}:{" "}
         <time className="font-medium tabular-nums text-text" dateTime={now ? now.toISOString() : undefined}>
           {time}
@@ -56,6 +76,7 @@ export function Footer({ className = "" }: { className?: string }) {
         {copy.ui.footerBackToTop}
         <ArrowUpRight className="h-4 w-4 -rotate-45" aria-hidden="true" />
       </button>
+      </div>
     </footer>
   );
 }

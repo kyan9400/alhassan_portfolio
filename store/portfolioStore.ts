@@ -15,7 +15,15 @@ type PortfolioState = {
   /** True once the command palette has been opened; its code is only loaded from then on. */
   paletteUsed: boolean;
   setPaletteOpen: (open: boolean) => void;
+  /**
+   * A reason another section asks the contact form to preselect (Services → "freelance").
+   * Contact applies it once and clears it back to null.
+   */
+  contactReason: ContactReason | null;
+  setContactReason: (reason: ContactReason | null) => void;
 };
+
+export type ContactReason = "hiring" | "freelance" | "other";
 
 /** Same key the pre-paint script in app/layout.tsx reads to set <html lang/dir> before first paint. */
 const LOCALE_KEY = "locale";
@@ -42,10 +50,17 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
   showToast: (message) => set({ toast: { id: ++toastSeq, message } }),
   paletteOpen: false,
   paletteUsed: false,
-  setPaletteOpen: (paletteOpen) => set((s) => ({ paletteOpen, paletteUsed: s.paletteUsed || paletteOpen }))
+  setPaletteOpen: (paletteOpen) => set((s) => ({ paletteOpen, paletteUsed: s.paletteUsed || paletteOpen })),
+  contactReason: null,
+  setContactReason: (contactReason) => set({ contactReason })
 }));
 
-/** Restore the saved locale once on the client, then mark the locale as ready. */
+/**
+ * Restore the saved locale once on the client, then mark the locale as ready. With nothing saved, a
+ * Russian browser gets Russian: the same rule as the pre-paint script in app/layout.tsx, so the
+ * <html lang> it set before first paint and the store agree. The guess is not saved; only an
+ * explicit choice (setLocale) is.
+ */
 export function hydrateLocale() {
   let saved: string | null = null;
   try {
@@ -53,5 +68,6 @@ export function hydrateLocale() {
   } catch {
     /* storage unavailable */
   }
+  if (!saved && /^ru/i.test(navigator.language || "")) saved = "ru";
   usePortfolioStore.setState(isLocale(saved) ? { locale: saved, localeReady: true } : { localeReady: true });
 }

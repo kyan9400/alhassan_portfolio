@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Inter, Manrope, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppChrome } from "@/components/app/AppChrome";
@@ -8,12 +8,13 @@ import "./globals.css";
 
 /*
  * Fonts. `subsets` only decides what gets a <link rel="preload">: next/font still self-hosts
- * every unicode-range Google serves (Inter's Cyrillic included), so Russian text keeps Inter
- * without making every first visit pay for Cyrillic and Arabic files up front.
+ * every unicode-range Google serves (Inter's and Manrope's Cyrillic included), so Russian text
+ * keeps both faces without making every first visit pay for Cyrillic and Arabic files up front.
+ * Manrope is the display face for English and Russian (Space Grotesk had no Cyrillic).
  * Arabic is loaded on demand (preload: false) and only in the two weights the UI uses.
  */
 const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
-const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", display: "swap" });
+const display = Manrope({ subsets: ["latin"], variable: "--font-display", display: "swap" });
 const arabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["400", "600"],
@@ -22,9 +23,9 @@ const arabic = IBM_Plex_Sans_Arabic({
   preload: false
 });
 
-const title = "Alhassan Alfarran — Software Engineer (Web & AI Systems)";
+const title = "Alhassan Alfarran — Full-Stack & Python Developer, Moscow";
 const description =
-  "Software engineer building web platforms and AI systems: React, TypeScript, Node.js, Python/FastAPI, RAG and document search. Based in Moscow, available immediately.";
+  "Full-stack & Python developer in Moscow: React, TypeScript, Node.js, FastAPI, PostgreSQL and RAG document search. Built an operations platform from scratch as Chief Full-Stack Developer. Available now — on-site, hybrid or remote.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,8 +37,10 @@ export const metadata: Metadata = {
   keywords: [
     "Alhassan Alfarran",
     "Альхассан Альфарран",
-    "Software Engineer",
     "Full-stack Developer",
+    "Full-stack разработчик",
+    "Python-разработчик",
+    "Software Engineer",
     "Python Developer",
     "React",
     "TypeScript",
@@ -75,10 +78,11 @@ export const viewport: Viewport = {
  * - cv-all: a deep link (/#section) renders every section at once, for an exact landing (.cv-auto);
  * - theme: dark by default, respects a stored "light" choice (no flash);
  * - locale: a stored "ru"/"ar" choice sets <html lang/dir> immediately, so Arabic does not
- *   paint LTR and then flip to RTL after hydration (layout shift). The store in
- *   store/portfolioStore.ts writes the same "locale" key.
+ *   paint LTR and then flip to RTL after hydration (layout shift). With no stored choice, a
+ *   Russian browser (navigator.language "ru…") opens in Russian. hydrateLocale() in
+ *   store/portfolioStore.ts applies the same rule and reads the same "locale" key.
  */
-const prePaintScript = `(function(){var d=document.documentElement;d.classList.add("js");if(location.hash)d.classList.add("cv-all");try{if(localStorage.getItem("theme")!=="light"){d.classList.add("dark")}var l=localStorage.getItem("locale");if(l==="ru"||l==="ar"){d.lang=l;d.dir=l==="ar"?"rtl":"ltr"}}catch(e){d.classList.add("dark")}})();`;
+const prePaintScript = `(function(){var d=document.documentElement;d.classList.add("js");if(location.hash)d.classList.add("cv-all");try{if(localStorage.getItem("theme")!=="light"){d.classList.add("dark")}var l=localStorage.getItem("locale");if(!l&&/^ru/i.test(navigator.language||""))l="ru";if(l==="ru"||l==="ar"){d.lang=l;d.dir=l==="ar"?"rtl":"ltr"}}catch(e){d.classList.add("dark")}})();`;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -96,7 +100,7 @@ const jsonLd = {
       "@id": `${SITE_URL}/#person`,
       name: "Alhassan Alfarran",
       alternateName: ["Альхассан Альфарран"],
-      jobTitle: "Software Engineer — Web & AI Systems",
+      jobTitle: "Full-Stack & Python Developer",
       url: SITE_URL,
       image: `${SITE_URL}/images/alhassan.webp`,
       worksFor: { "@type": "Organization", name: "Elektroservis", alternateName: "Электросервис" },

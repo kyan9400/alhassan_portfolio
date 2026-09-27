@@ -10,6 +10,7 @@ import { Skills } from "@/components/sections/Skills";
 import { Services } from "@/components/sections/Services";
 import { GithubRepos } from "@/components/sections/GithubRepos";
 import { Contact } from "@/components/sections/Contact";
+import { MobileContactBar } from "@/components/app/MobileContactBar";
 
 export const revalidate = 3600;
 
@@ -53,6 +54,7 @@ export default async function HomePage() {
       <Suspense>
         <Contact />
       </Suspense>
+      <MobileContactBar />
     </main>
   );
 }

@@ -113,7 +113,7 @@ export function Navbar() {
   return (
     <>
       <motion.div
-        className="fixed inset-x-0 top-0 z-[70] h-[2px] origin-left bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-400 rtl:origin-right"
+        className="fixed inset-x-0 top-0 z-[70] h-[2px] origin-left bg-accent rtl:origin-right"
         style={{ scaleX: progress }}
         aria-hidden="true"
       />
@@ -141,7 +141,8 @@ export function Navbar() {
               className="group flex shrink-0 items-center gap-2.5 rounded-full py-1 pe-3 ps-px sm:ps-[3px]"
               aria-label={copy.heroTitle}
             >
-              <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 font-display text-sm font-bold text-white shadow-lg shadow-violet-500/30 transition-transform duration-500 group-hover:rotate-[360deg]">
+              {/* Flat monogram in the text colour. */}
+              <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-line/25 font-display text-[13px] font-bold tracking-tight text-text transition-colors duration-300 group-hover:border-accent/60">
                 {copy.brandMonogram}
               </span>
               <span className="hidden font-display text-sm font-semibold tracking-tight sm:inline lg:hidden xl:inline">
@@ -211,13 +212,13 @@ export function Navbar() {
                     aria-label={`${ui.languageNames[l]} (${l.toUpperCase()})`}
                     title={ui.languageNames[l]}
                     className={`relative h-8 min-w-[2.1rem] rounded-full px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
-                      locale === l ? "text-white" : "text-muted hover:text-text"
+                      locale === l ? "text-text" : "text-muted hover:text-text"
                     }`}
                   >
                     {locale === l ? (
                       <motion.span
                         layoutId="locale-pill"
-                        className="absolute inset-0 -z-0 rounded-full bg-gradient-to-br from-violet-600 to-blue-600"
+                        className="absolute inset-0 -z-0 rounded-full bg-card shadow-sm ring-1 ring-line/15"
                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
                       />
                     ) : null}
@@ -240,7 +241,7 @@ export function Navbar() {
                 </AnimatePresence>
               </button>
 
-              <Link href="/#contact" onClick={go("contact")} className="btn-primary hidden !min-h-[36px] !px-4 text-[13px] md:inline-flex">
+              <Link href="/#contact" onClick={go("contact")} className="btn-solid hidden !min-h-[36px] !px-4 text-[13px] md:inline-flex">
                 {copy.navContact}
               </Link>
 

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { projects, getProject } from "@/lib/projects";
 
-export const alt = "Project case study — Alhassan Alfarran, Software Engineer (Web & AI Systems)";
+export const alt = "Project case study — Alhassan Alfarran, Full-Stack & Python Developer (Web & AI Systems)";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -55,7 +55,7 @@ export default async function ProjectOpengraphImage({ params }: { params: Promis
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ fontSize: 26, color: "#ececf3", fontWeight: 600 }}>Alhassan Alfarran</div>
-              <div style={{ fontSize: 20, color: "#9698aa" }}>Software Engineer — Web & AI Systems</div>
+              <div style={{ fontSize: 20, color: "#9698aa" }}>Full-Stack & Python Developer — Web & AI Systems</div>
             </div>
           </div>
           <div

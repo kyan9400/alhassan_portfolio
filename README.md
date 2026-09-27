@@ -1,6 +1,6 @@
 # alhassan-portfolio
 
-Source of [alhassan-portfolio-sigma.vercel.app](https://alhassan-portfolio-sigma.vercel.app) — the portfolio of Alhassan Alfarran, Software Engineer (Web & AI Systems).
+Source of [alhassan-portfolio-sigma.vercel.app](https://alhassan-portfolio-sigma.vercel.app) — the portfolio of Alhassan Alfarran, Full-Stack & Python Developer (Web & AI Systems) in Moscow.
 
 A trilingual (English / Russian / Arabic with RTL) single-page portfolio with project case studies, a curated GitHub showcase and a contact form.
 

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Alhassan Alfarran — Software Engineer (Web & AI Systems). Moscow · Available immediately";
+export const alt = "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available immediately";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -72,7 +72,7 @@ export default function OpengraphImage() {
               color: "transparent"
             }}
           >
-            Software Engineer — Web & AI Systems
+            Full-Stack & Python Developer
           </div>
         </div>
 

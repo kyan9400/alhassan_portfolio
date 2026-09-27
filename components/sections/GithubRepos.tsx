@@ -19,8 +19,8 @@ type Filter = (typeof FILTERS)[number];
  * The phone limit is CSS (cards past it get `max-sm:hidden`), not a matchMedia re-render: the server
  * HTML is already right on every screen, and nothing is removed (and exit-animated) after hydration.
  */
-const INITIAL_DESKTOP = 6;
-const INITIAL_MOBILE = 3;
+const INITIAL_DESKTOP = 3;
+const INITIAL_MOBILE = 2;
 const MOBILE_QUERY = "(max-width: 639px)";
 
 /** Header art for repos without a screenshot: one icon and tint per category. */
@@ -271,18 +271,18 @@ export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
                     setExpanded(false);
                   }}
                   className={`relative inline-flex min-h-[40px] shrink-0 items-center gap-2 rounded-full px-4 text-[13px] font-medium transition-colors ${
-                    active ? "text-white" : "text-muted hover:text-text"
+                    active ? "text-text" : "text-muted hover:text-text"
                   }`}
                 >
                   {active ? (
                     <motion.span
                       layoutId="repo-filter"
-                      className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-600 to-blue-600"
+                      className="absolute inset-0 rounded-full bg-surface ring-1 ring-line/15"
                       transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     />
                   ) : null}
                   <span className="relative">{ui.repoCategories[key]}</span>
-                  <span className={`relative text-[11px] tabular-nums ${active ? "text-white/70" : "text-muted/70"}`}>{counts[key]}</span>
+                  <span className={`relative text-[11px] tabular-nums ${active ? "text-muted" : "text-muted/70"}`}>{counts[key]}</span>
                 </button>
               );
             })}

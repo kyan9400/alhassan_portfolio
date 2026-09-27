@@ -72,6 +72,11 @@
     letter-spacing: -0.03em;
   }
 
+  /* Cyrillic needs less negative tracking than Latin at display sizes. */
+  html[lang="ru"] :is(h1, h2, h3) {
+    letter-spacing: -0.015em;
+  }
+
   [dir="rtl"] h1,
   [dir="rtl"] h2,
   [dir="rtl"] h3 {
@@ -80,9 +85,9 @@
 
   /*
    * Script-aware font stacks. next/font's metric-adjusted fallbacks (local Arial) have no
-   * unicode-range, so with the default stacks Arabic text would render in "Inter Fallback" and
-   * Cyrillic headings in "Space Grotesk Fallback" instead of the real fonts. <html lang> is set
-   * before first paint (see app/layout.tsx), so these apply without a flash.
+   * unicode-range, so with the default stacks Arabic text would render in "Inter Fallback" instead
+   * of the real font. <html lang> is set before first paint (see app/layout.tsx), so these apply
+   * without a flash. Manrope (the display face) covers Latin and Cyrillic, so Russian needs no override.
    */
   html[lang="ar"] body,
   html[lang="ar"] .font-sans {
@@ -91,9 +96,9 @@
   html[lang="ar"] :is(h1, h2, h3, .font-display) {
     font-family: var(--font-arabic), var(--font-display), system-ui, sans-serif;
   }
-  /* Space Grotesk has no Cyrillic; Inter does. */
-  html[lang="ru"] :is(h1, h2, h3, .font-display) {
-    font-family: var(--font-body), system-ui, sans-serif;
+  /* Mono labels (dates, section labels) carry Arabic text in the Arabic page; Latin-only tech lines are dir="ltr". */
+  html[lang="ar"] .font-mono:not([dir="ltr"]) {
+    font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
   }
 
   img {
@@ -119,7 +124,7 @@ html.lenis body {
   }
 
   .section {
-    @apply relative scroll-mt-24 py-16 md:py-28;
+    @apply relative scroll-mt-24 py-12 md:py-20;
   }
 
   .hairline {
@@ -193,7 +198,7 @@ html.lenis body {
   }
   .eyebrow::before {
     content: "";
-    @apply h-px w-6 bg-gradient-to-r from-accent to-accent-2;
+    @apply h-px w-6 bg-accent;
   }
   [dir="rtl"] .eyebrow {
     letter-spacing: 0.05em;
@@ -230,6 +235,14 @@ html.lenis body {
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.25) inset,
       0 16px 40px -10px rgb(124 58 237 / 0.9);
+  }
+  /* Solid secondary action: text colour on the page colour. No glow, no gradient. */
+  .btn-solid {
+    @apply btn bg-text text-bg hover:bg-text/85;
+  }
+  /* Inline text link with an arrow: accent ink, underline on hover. */
+  .text-link {
+    @apply inline-flex items-center gap-1.5 font-semibold text-accent-ink underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-current;
   }
   .btn-ghost {
     @apply btn border bg-card/50 text-text backdrop-blur hover:bg-card;
@@ -331,6 +344,40 @@ html.lenis body {
 }
 
 /*
+ * Moving dashes along a data-flow connector (ArchitectureFlow). Paused until the flow is on
+ * screen ([data-inview]); without motion preference the line stays still.
+ */
+.flow-dash {
+  background-image: repeating-linear-gradient(var(--flow-dir, 180deg), currentColor 0 3px, transparent 3px 9px);
+  background-size: 100% 18px;
+}
+.flow-dash-x {
+  --flow-dir: 90deg;
+  background-size: 18px 100%;
+}
+@keyframes flow-dash-y {
+  to {
+    background-position: 0 18px;
+  }
+}
+@keyframes flow-dash-x {
+  to {
+    background-position: 18px 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-inview="true"] .flow-dash {
+    animation: flow-dash-y 0.9s linear infinite;
+  }
+  [data-inview="true"] .flow-dash-x {
+    animation-name: flow-dash-x;
+  }
+  [dir="rtl"] [data-inview="true"] .flow-dash-x {
+    animation-direction: reverse;
+  }
+}
+
+/*
  * Scroll reveal (Reveal in components/ui/primitives.tsx): a shared IntersectionObserver sets
  * data-reveal="shown". Hidden only when JS runs (html.js is set before first paint), so content never
  * stays invisible without it. The border/shadow transitions keep .card-hover working on the same element.
@@ -359,19 +406,6 @@ html.lenis body {
     opacity: 1 !important;
     transform: none !important;
   }
-}
-
-/*
- * Soft fade at the start; at the end the words are fully gone before they reach the pause button
- * (which sits on the end side: the right in LTR, the left in RTL).
- */
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
-  mask-image: linear-gradient(to right, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
-}
-[dir="rtl"] .marquee-mask {
-  -webkit-mask-image: linear-gradient(to left, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
-  mask-image: linear-gradient(to left, transparent, black 8%, black calc(100% - 9rem), transparent calc(100% - 3.75rem));
 }
 
 @media (hover: none), (pointer: coarse) {

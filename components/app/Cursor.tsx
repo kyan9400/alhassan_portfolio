@@ -95,7 +95,7 @@ export function Cursor() {
       <div
         className={`flex items-center justify-center rounded-full text-[11px] font-semibold uppercase tracking-widest transition-[width,height,background-color,border-color,transform] duration-300 ease-out rtl:tracking-normal ${
           label
-            ? "bg-gradient-to-br from-violet-600 to-cyan-500 text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.8)]"
+            ? "bg-text text-bg shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]"
             : hovering
               ? "border border-accent/60 bg-accent/10"
               : "border border-text/40"

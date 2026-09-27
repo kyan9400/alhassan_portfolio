@@ -23,6 +23,7 @@ import { CONTACT_EMAIL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { Bidi, Reveal, GithubIcon, TelegramIcon } from "@/components/ui/primitives";
 import { Footer } from "@/components/app/Footer";
+import { ArchitectureFlow } from "./ArchitectureFlow";
 
 /**
  * Delay for the CSS-only `.fade-in` entrance (globals.css). Unlike a Framer `initial={{ opacity: 0 }}`,
@@ -43,6 +44,8 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
   const nextTitle = localizeProject(next, locale).title;
 
   const isDiagram = p.imageKind === "diagram";
+  const clientCode = p.codeNote === "client";
+  const privateCode = clientCode ? ui.privateCodeClient : ui.privateCode;
   const paragraphs = p.longDescription
     .split(/\n\n+/)
     .map((para) => para.trim())
@@ -51,7 +54,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
   const caseCards = [
     { icon: ShieldAlert, label: copy.projectProblemLabel, text: p.problem, tone: "text-rose-500" },
     { icon: Lightbulb, label: copy.projectSolutionLabel, text: p.solution, tone: "text-accent" },
-    { icon: CheckCircle2, label: copy.projectResultLabel, text: p.result, tone: "text-emerald-500" }
+    { icon: CheckCircle2, label: copy.projectResultLabels[p.resultLabel ?? "result"], text: p.result, tone: "text-emerald-500" }
   ].filter((c): c is typeof c & { text: string } => Boolean(c.text));
 
   return (
@@ -90,7 +93,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
 
           <div className="fade-in mt-8 flex flex-wrap items-center gap-3" style={delay(240)}>
             {p.live ? (
-              <a href={p.live} target="_blank" rel="noopener noreferrer" className="btn-primary">
+              <a href={p.live} target="_blank" rel="noopener noreferrer" className="btn-solid">
                 {copy.projectLiveDemo}
                 <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
               </a>
@@ -103,7 +106,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
             ) : (
               <span className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-dashed border-line/20 px-5 text-sm font-medium text-muted">
                 <Lock className="h-4 w-4" aria-hidden="true" />
-                {ui.privateCode}
+                {privateCode}
               </span>
             )}
           </div>
@@ -112,10 +115,15 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
         {isDiagram ? (
           <figure className="fade-in mt-14" style={delay(300)}>
             {/*
-              Phones scroll the diagram sideways at a width where its labels stay readable (about 12px);
-              from md it fits the column. LTR so it always starts at the beginning of the flow.
+              Phones get the architecture as stacked HTML (top to bottom, readable at any width, in the
+              page's language); from md the full SVG diagram fits the column.
             */}
-            <div className="card overflow-hidden !bg-[#0f0f17]">
+            {p.flow ? (
+              <div className="card p-5 sm:p-6 md:hidden">
+                <ArchitectureFlow stages={p.flow} layout="rows" />
+              </div>
+            ) : null}
+            <div className={`card overflow-hidden !bg-[#0f0f17] ${p.flow ? "max-md:hidden" : ""}`}>
               <div
                 dir="ltr"
                 role="region"
@@ -123,7 +131,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
                 tabIndex={0}
                 className="overflow-x-auto overscroll-x-contain rounded-[inherit] md:overflow-visible"
               >
-                <div className="relative aspect-video min-w-[880px] md:min-w-0">
+                <div className={`relative aspect-video md:min-w-0 ${p.flow ? "" : "min-w-[880px]"}`}>
                   <Image
                     src={p.image}
                     alt={`${p.title} ${ui.previewAlt}`}
@@ -139,13 +147,15 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
             <figcaption className="mt-4 flex flex-wrap items-start justify-between gap-x-6 gap-y-3 text-sm text-muted">
               <span className="flex items-start gap-2">
                 <Lock className="mt-0.5 h-4 w-4 shrink-0 text-accent-ink" aria-hidden="true" />
-                <span>{ui.diagramNote}</span>
+                <span>{clientCode ? ui.diagramNoteClient : ui.diagramNote}</span>
               </span>
               <span className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span className="inline-flex items-center gap-1.5 md:hidden">
-                  <MoveHorizontal className="h-4 w-4 shrink-0 text-accent-ink" aria-hidden="true" />
-                  {ui.diagram.swipe}
-                </span>
+                {p.flow ? null : (
+                  <span className="inline-flex items-center gap-1.5 md:hidden">
+                    <MoveHorizontal className="h-4 w-4 shrink-0 text-accent-ink" aria-hidden="true" />
+                    {ui.diagram.swipe}
+                  </span>
+                )}
                 <a
                   href={p.image}
                   target="_blank"
@@ -205,7 +215,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
               <ul className="space-y-4">
                 {p.whatItDoes.map((line) => (
                   <li key={line} className="flex gap-3 text-lg leading-relaxed">
-                    <span className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400" aria-hidden="true" />
+                    <span className="mt-[0.7em] h-1.5 w-1.5 shrink-0 rounded-full bg-text/40" aria-hidden="true" />
                     <span>
                       <Bidi text={line} />
                     </span>
@@ -239,7 +249,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
                 ) : (
                   <>
                     <Lock className="h-4 w-4" aria-hidden="true" />
-                    {ui.privateCode}
+                    {privateCode}
                   </>
                 )}
               </p>
@@ -294,8 +304,6 @@ function ProjectCta() {
 
   return (
     <Reveal as="div" className="card relative mt-16 overflow-hidden p-6 sm:p-10 md:p-12">
-      <div className="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-violet-500/20 blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" aria-hidden="true" />
       <div className="relative">
         <p className="eyebrow mb-4">{ui.projectCta.eyebrow}</p>
         <h2 className="max-w-2xl text-balance text-[clamp(1.75rem,4vw,2.75rem)] font-semibold leading-[1.08] rtl:leading-[1.3]">

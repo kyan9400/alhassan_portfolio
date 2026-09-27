@@ -1,10 +1,11 @@
 import type { Locale } from "@/lib/types";
-import { typographRuDeep } from "@/lib/typograph";
+import { typographArDeep, typographRuDeep } from "@/lib/typograph";
 
 /**
  * Project catalog. English is the source of truth; `localizeProject` overlays the
- * Russian and Arabic text. Work projects are private (NDA), so they carry an
- * architecture diagram and no `github`; open-source projects link to the real repo.
+ * Russian and Arabic text. Work projects are private (employer NDA, or client-owned code
+ * for freelance work, see `codeNote`), so they carry an architecture diagram and no
+ * `github`; open-source projects link to the real repo.
  * Every claim here must match the CV or the repo README — no invented metrics.
  */
 export type Project = {
@@ -31,6 +32,17 @@ export type Project = {
   solution?: string;
   result?: string;
   /**
+   * Which label goes in front of `result`: "result" for shipped work, "status" for work in
+   * progress, "builtIn" for open source. Localized in `copy.projectResultLabels`.
+   */
+  resultLabel?: ProjectResultLabel;
+  /**
+   * Work projects only: why the code is private. "nda" = employer NDA (`ui.privateCode`,
+   * `ui.diagramNote`); "client" = the code belongs to a freelance client
+   * (`ui.privateCodeClient`, `ui.diagramNoteClient`).
+   */
+  codeNote?: "nda" | "client";
+  /**
    * Work (diagram) projects: a simplified architecture, left to right, drawn as HTML on the cards so the
    * labels stay readable at any width (the full SVG diagram is on the case-study page). Stage labels and
    * notes are translated; node names are tech names and stay in Latin script.
@@ -38,7 +50,13 @@ export type Project = {
   flow?: FlowStage[];
 };
 
-export type FlowStage = { label: string; nodes: { name: string; note?: string }[] };
+/**
+ * One stage of a card's architecture flow. `module` nodes are the smaller sub-parts of the stage
+ * (e.g. the API's domain modules), drawn as compact chips. `edge` labels the connector to the next stage.
+ */
+export type FlowStage = { label: string; nodes: { name: string; note?: string; module?: boolean }[]; edge?: string };
+
+export type ProjectResultLabel = "result" | "status" | "builtIn";
 
 type ProjectText = Pick<Project, "title" | "rolePurpose" | "description" | "longDescription" | "whatItDoes"> &
   Partial<Pick<Project, "company" | "problem" | "solution" | "result" | "flow">>;
@@ -64,24 +82,44 @@ export const projects: Project[] = [
     image: "/images/projects/okkp-platform.svg",
     imageKind: "diagram",
     problem:
-      "The company needed an operational management platform built from scratch, with clear boundaries between UI, business logic and data.",
+      "Avenue Group needed one system for day-to-day operations — employees, violations and reporting — and the reports had to work for staff who don't write queries.",
     solution:
-      "React + TypeScript SPA, Node.js / Express REST API, PostgreSQL + MongoDB, role-based access, audit logs and Cloudinary uploads.",
+      "I architected and built it end to end: a React + TypeScript SPA, a Node.js / Express REST API and a PostgreSQL + MongoDB data layer, with role-based access, audit logs and secure Cloudinary uploads. I also owned deployment and production support.",
     result: "Shipped to production; non-technical staff export audit-ready Excel datasets on their own.",
+    resultLabel: "result",
+    codeNote: "nda",
     flow: [
-      { label: "Frontend", nodes: [{ name: "React + TypeScript", note: "SPA · dashboards per role" }] },
-      { label: "API", nodes: [{ name: "Node.js / Express", note: "REST · RBAC · audit log" }] },
-      { label: "Data", nodes: [{ name: "PostgreSQL" }, { name: "MongoDB" }, { name: "Cloudinary", note: "media" }] }
+      { label: "Frontend", nodes: [{ name: "React + TypeScript", note: "SPA · dashboards per role" }], edge: "REST" },
+      {
+        label: "API",
+        nodes: [
+          { name: "Node.js / Express", note: "REST API" },
+          { name: "Auth · RBAC", module: true },
+          { name: "Employees", module: true },
+          { name: "Violations", module: true },
+          { name: "Reporting", module: true },
+          { name: "Audit log", module: true }
+        ],
+        edge: "SQL · documents · media"
+      },
+      {
+        label: "Data",
+        nodes: [
+          { name: "PostgreSQL", note: "SQL" },
+          { name: "MongoDB", note: "documents" },
+          { name: "Cloudinary", note: "media" }
+        ]
+      }
     ]
   },
   {
     slug: "document-intelligence-rag",
-    title: "Document Intelligence (RAG)",
+    title: "Engineering Document Search (RAG)",
     kind: "work",
     company: "Elektroservis",
     rolePurpose: "Current role · RAG document search",
     description:
-      "Search and RAG over engineering (PTO) documentation — PDF, Word, Excel and scanned files — with hybrid keyword + semantic retrieval behind a FastAPI service.",
+      "Search and RAG over engineering and technical documentation — PDF, Word, Excel and scanned files — with hybrid keyword + semantic retrieval behind a FastAPI service.",
     whatItDoes: [
       "Indexes PDF, Word and Excel files, including scanned documents via OCR",
       "Hybrid search: keyword matching plus semantic retrieval with sentence-transformers + FAISS",
@@ -89,7 +127,7 @@ export const projects: Project[] = [
       "LLM-assisted answers grounded in the retrieved passages"
     ],
     longDescription:
-      "Engineering (PTO) documentation is a mix of PDFs, Word files, Excel sheets and scans. My current work at Elektroservis in Moscow is a search and RAG system that makes all of it searchable in one place.\n\nThe ingestion pipeline parses each format and runs scanned documents through OCR before indexing. Retrieval is hybrid: keyword matching catches exact terms, while semantic search — sentence-transformers embeddings in a FAISS index — finds passages that say the same thing in different words. Combining the two is meant to give more relevant answers than either approach alone.\n\nFastAPI pipelines connect parsing, indexing, retrieval and LLM-assisted answers. The system is in active development and the code is private, so the diagram shows the architecture.",
+      "Engineering and technical documentation is a mix of PDFs, Word files, Excel sheets and scans. My current work at Elektroservis in Moscow is a search and RAG system that makes all of it searchable in one place.\n\nThe ingestion pipeline parses each format and runs scanned documents through OCR before indexing. Retrieval is hybrid: keyword matching catches exact terms, while semantic search — sentence-transformers embeddings in a FAISS index — finds passages that say the same thing in different words. Combining the two is meant to give more relevant answers than either approach alone.\n\nFastAPI pipelines connect parsing, indexing, retrieval and LLM-assisted answers. The system is in active development and the code is private, so the diagram shows the architecture.",
     tech: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"],
     image: "/images/projects/document-rag.svg",
     imageKind: "diagram",
@@ -97,39 +135,42 @@ export const projects: Project[] = [
       "Engineering documents are spread across PDF, Word, Excel and scanned files — a mix that plain keyword search handles poorly.",
     solution:
       "OCR and parsing for every format, hybrid retrieval (sentence-transformers + FAISS), FastAPI pipelines and LLM-assisted answers.",
-    result: "In active development; hybrid retrieval chosen to improve answer relevance.",
+    result: "In development at Elektroservis — one search across PDF, Word, Excel and scanned engineering documents.",
+    resultLabel: "status",
+    codeNote: "nda",
     flow: [
       { label: "Ingest", nodes: [{ name: "PDF · Word · Excel" }, { name: "OCR", note: "scanned files" }] },
-      { label: "Index", nodes: [{ name: "sentence-transformers" }, { name: "FAISS + keyword" }] },
+      { label: "Index", nodes: [{ name: "sentence-transformers" }, { name: "FAISS" }, { name: "keyword" }] },
       { label: "Query", nodes: [{ name: "FastAPI", note: "hybrid retrieval" }, { name: "LLM", note: "answer" }] }
     ]
   },
   {
     slug: "ai-dashboard-suite",
-    title: "AI-Driven Analytics Dashboards",
+    title: "Client KPI Dashboards",
     kind: "work",
     company: "Freelance",
-    rolePurpose: "Freelance client work · KPI dashboards",
+    rolePurpose: "Freelance client work · React dashboards",
     description:
-      "Interactive dashboards for a client that bring several data sources together, with an AI panel that summarises what changed.",
+      "Interactive KPI dashboards for a freelance client, bringing several data sources together behind one Node.js API.",
     whatItDoes: [
       "Filterable KPI modules instead of static exports",
       "A Node.js API that brings several data sources together",
-      "Trend views that make changes easy to spot",
-      "An AI panel with plain-language summaries of what changed"
+      "Trend views that make changes easy to spot"
     ],
     longDescription:
-      "A freelance client was working from static exports and one-off spreadsheets, so trends stayed hidden until someone refreshed a report by hand. The goal was interactive dashboards that make KPIs easier to read.\n\nI built a React front end with filterable KPI modules and a Node.js API that brings several data sources together behind one REST interface.\n\nAn AI panel summarises what changed in plain language. It sits beside the numbers rather than in front of them, so the dashboards stay readable and the AI stays an assistant. The code belongs to the client, so the diagram shows the architecture.",
-    tech: ["React", "Node.js", "REST API", "LLM"],
+      "A freelance client was working from static exports and one-off spreadsheets, so trends stayed hidden until someone refreshed a report by hand. The goal was interactive dashboards that make KPIs easier to read.\n\nI built a React front end with filterable KPI modules and trend views, and a Node.js API that brings several data sources together behind one REST interface. The code belongs to the client, so the diagram shows the architecture.",
+    tech: ["React", "Node.js", "REST API"],
     image: "/images/projects/ai-dashboard-suite.svg",
     imageKind: "diagram",
     problem: "Decisions ran on static exports and spreadsheets, so trends surfaced late.",
-    solution: "React dashboards with filterable KPIs, a Node.js API over several data sources and an AI summary panel.",
+    solution: "React dashboards with filterable KPIs and trend views, on a Node.js API over several data sources.",
     result: "Filterable KPIs in one place instead of hand-refreshed reports.",
+    resultLabel: "result",
+    codeNote: "client",
     flow: [
       { label: "Data", nodes: [{ name: "Multiple sources" }] },
       { label: "API", nodes: [{ name: "Node.js", note: "one REST interface" }] },
-      { label: "UI", nodes: [{ name: "React", note: "KPI dashboards" }, { name: "LLM", note: "AI summaries" }] }
+      { label: "UI", nodes: [{ name: "React", note: "KPI dashboards · filters" }] }
     ]
   },
   {
@@ -154,7 +195,9 @@ export const projects: Project[] = [
     imageKind: "screenshot",
     problem: "Uptime checks, incident history and SLO reporting usually mean running several separate services.",
     solution: "One FastAPI service with an async scheduler, SQLite storage, a dashboard, a public status page and Prometheus metrics.",
-    result: "Runs with a single docker compose command; MIT-licensed, with CI and a live demo."
+    result:
+      "Tests cover incident recovery, SLO math, access control and SSRF protection. Live demo; one docker compose command.",
+    resultLabel: "builtIn"
   },
   {
     slug: "deployledger",
@@ -178,7 +221,9 @@ export const projects: Project[] = [
     imageKind: "screenshot",
     problem: "Delivery speed and change stability are hard to judge when deployment data is scattered.",
     solution: "A FastAPI service that ingests deployment events and computes DORA metrics, with a React dashboard and a hash-linked audit chain.",
-    result: "Live dashboard on Vercel; self-hostable with Docker Compose, Kustomize or Terraform."
+    result:
+      "Computes all five DORA metrics from deployment events, with a tamper-evident audit chain. Live demo; CI tests the code and scans the images.",
+    resultLabel: "builtIn"
   },
   {
     slug: "gatehouse",
@@ -202,7 +247,8 @@ export const projects: Project[] = [
     imageKind: "screenshot",
     problem: "With standing production access it's hard to tell who had access, why, and whether policy was followed.",
     solution: "A just-in-time request and approval workflow with policy context, workspace isolation and a hash-linked audit trail.",
-    result: "Live demo dashboard and a public FastAPI / OpenAPI demo; self-hostable with Docker Compose."
+    result: "Idempotency keys, optimistic locking and a hash-linked audit chain per workspace. Live demo and public OpenAPI.",
+    resultLabel: "builtIn"
   },
   {
     slug: "webhook-workbench",
@@ -226,7 +272,9 @@ export const projects: Project[] = [
     imageKind: "screenshot",
     problem: "Debugging webhooks often means sending real payloads to a third-party inspection service.",
     solution: "A self-hosted Go binary that captures, verifies and safely replays webhooks, redacting secrets before storage.",
-    result: "Release binaries with checksums, a hardened Docker setup and a public sandbox demo."
+    result:
+      "Tests cover redaction, signature checks, replay and SSRF defences. Checksummed release binaries; live sandbox.",
+    resultLabel: "builtIn"
   }
 ];
 
@@ -248,14 +296,32 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       longDescription:
         "В Avenue Group я был главным full-stack разработчиком OKKP — платформы операционного управления, которая начиналась с пустого репозитория. Задача — единая система для повседневной работы компании с чёткими границами между интерфейсом, бизнес-логикой и слоем данных.\n\nАрхитектуру я выстроил целиком: SPA на React + TypeScript, REST API на Node.js / Express, данные в PostgreSQL и MongoDB. Поверх неё — ключевые модули: управление сотрудниками, учёт нарушений и отчётные дашборды с ролевым доступом и журналом аудита, а также защищённая загрузка медиафайлов через Cloudinary и Multer.\n\nОтчётность должна была работать для людей, которые не пишут запросы, поэтому выгрузка в Excel позволяет сотрудникам без технической подготовки самостоятельно собирать данные для аудита. Деплой и поддержка в продакшене тоже были на мне, а интерфейс на Tailwind CSS полностью адаптивный.",
       problem:
-        "Компании нужна была платформа операционного управления с нуля — с чёткими границами между интерфейсом, бизнес-логикой и данными.",
+        "Avenue Group нужна была единая система для операционной работы — сотрудники, нарушения, отчётность, — причём отчёты должны были работать для сотрудников, которые не пишут запросы.",
       solution:
-        "SPA на React + TypeScript, REST API на Node.js / Express, PostgreSQL + MongoDB, ролевой доступ, журнал аудита и загрузка через Cloudinary.",
+        "Я спроектировал и построил её целиком: SPA на React + TypeScript, REST API на Node.js / Express и слой данных на PostgreSQL + MongoDB, с ролевым доступом, журналом аудита и защищённой загрузкой файлов в Cloudinary. Деплой и поддержка в продакшене — тоже на мне.",
       result: "Запущена в продакшен; сотрудники сами выгружают данные для аудита в Excel.",
       flow: [
-        { label: "Фронтенд", nodes: [{ name: "React + TypeScript", note: "SPA · дашборды по ролям" }] },
-        { label: "API", nodes: [{ name: "Node.js / Express", note: "REST · RBAC · аудит" }] },
-        { label: "Данные", nodes: [{ name: "PostgreSQL" }, { name: "MongoDB" }, { name: "Cloudinary", note: "медиа" }] }
+        { label: "Фронтенд", nodes: [{ name: "React + TypeScript", note: "SPA · дашборды по ролям" }], edge: "REST" },
+        {
+          label: "API",
+          nodes: [
+            { name: "Node.js / Express", note: "REST API" },
+            { name: "Авторизация · RBAC", module: true },
+            { name: "Сотрудники", module: true },
+            { name: "Нарушения", module: true },
+            { name: "Отчётность", module: true },
+            { name: "Журнал аудита", module: true }
+          ],
+          edge: "SQL · документы · медиа"
+        },
+        {
+          label: "Данные",
+          nodes: [
+            { name: "PostgreSQL", note: "SQL" },
+            { name: "MongoDB", note: "документы" },
+            { name: "Cloudinary", note: "медиа" }
+          ]
+        }
       ]
     },
     ar: {
@@ -271,16 +337,34 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "تصدير إلى Excel يُنتج بيانات جاهزة للتدقيق دون تدخّل مطوّر"
       ],
       longDescription:
-        "في Avenue Group كنت كبير مطوري Full-Stack في مشروع OKKP، وهو منصة لإدارة العمليات بدأت من مستودع فارغ. كان الهدف نظاماً واحداً للعمل اليومي في الشركة، بحدود واضحة بين الواجهة ومنطق الأعمال وطبقة البيانات.\n\nصمّمت البنية من طرف إلى طرف: تطبيق صفحة واحدة (SPA) مبني بـ React وTypeScript، وREST API مبنية بـ Node.js وExpress، وطبقة بيانات على PostgreSQL وMongoDB. وفوق ذلك بنيت الوحدات الأساسية — إدارة الموظفين وتتبّع المخالفات ولوحات التقارير — مع صلاحيات حسب الأدوار وسجل تدقيق، إضافة إلى مسار آمن لرفع الوسائط عبر Cloudinary وMulter.\n\nكان على التقارير أن تخدم أشخاصاً لا يكتبون استعلامات، لذلك يتيح التصدير إلى Excel للموظفين غير التقنيين إعداد بيانات جاهزة للتدقيق بأنفسهم. وتولّيت أيضاً النشر ودعم بيئة الإنتاج، وقدّمت واجهة متجاوبة بالكامل مبنية بـ Tailwind CSS.",
+        "في Avenue Group كنت كبير مطوري Full-Stack في مشروع OKKP، وهو منصة لإدارة العمليات بدأت من مستودع فارغ. كان الهدف نظاماً واحداً للعمل اليومي في الشركة، بحدود واضحة بين الواجهة ومنطق الأعمال وطبقة البيانات.\n\nصمّمت البنية بالكامل: تطبيق صفحة واحدة (SPA) مبني على React وTypeScript، وREST API مبنية على Node.js وExpress، وطبقة بيانات على PostgreSQL وMongoDB. وفوق ذلك بنيت الوحدات الأساسية — إدارة الموظفين وتتبّع المخالفات ولوحات التقارير — مع صلاحيات حسب الأدوار وسجل تدقيق، إضافة إلى آلية آمنة لرفع الوسائط عبر Cloudinary وMulter.\n\nكان على التقارير أن تخدم أشخاصاً لا يكتبون استعلامات، لذلك يتيح التصدير إلى Excel للموظفين غير التقنيين إعداد بيانات جاهزة للتدقيق بأنفسهم. وتولّيت أيضاً النشر ودعم بيئة الإنتاج، وقدّمت واجهة متجاوبة بالكامل مبنية على Tailwind CSS.",
       problem:
-        "احتاجت الشركة إلى منصة لإدارة العمليات تُبنى من الصفر، بحدود واضحة بين الواجهة ومنطق الأعمال والبيانات.",
+        "احتاجت Avenue Group إلى نظام واحد للعمل التشغيلي اليومي — الموظفون والمخالفات والتقارير — وكان على التقارير أن تخدم موظفين لا يكتبون استعلامات.",
       solution:
-        "تطبيق SPA بـ React + TypeScript، وREST API بـ Node.js / Express، وPostgreSQL + MongoDB، مع صلاحيات حسب الأدوار وسجل تدقيق ورفع للوسائط عبر Cloudinary.",
+        "صمّمتُ النظام وبنيته بالكامل: تطبيق SPA على React + TypeScript، وواجهة REST على Node.js / Express، وطبقة بيانات PostgreSQL + MongoDB، مع صلاحيات حسب الأدوار وسجل تدقيق ورفع آمن للملفات عبر Cloudinary. وتولّيتُ النشر والدعم في بيئة الإنتاج.",
       result: "أُطلقت في بيئة الإنتاج، ويصدّر الموظفون بيانات التدقيق إلى Excel بأنفسهم.",
       flow: [
-        { label: "الواجهة", nodes: [{ name: "React + TypeScript", note: "SPA · لوحات لكل دور" }] },
-        { label: "API", nodes: [{ name: "Node.js / Express", note: "REST · صلاحيات · تدقيق" }] },
-        { label: "البيانات", nodes: [{ name: "PostgreSQL" }, { name: "MongoDB" }, { name: "Cloudinary", note: "وسائط" }] }
+        { label: "الواجهة", nodes: [{ name: "React + TypeScript", note: "SPA · لوحات لكل دور" }], edge: "REST" },
+        {
+          label: "API",
+          nodes: [
+            { name: "Node.js / Express", note: "REST API" },
+            { name: "المصادقة · RBAC", module: true },
+            { name: "الموظفون", module: true },
+            { name: "المخالفات", module: true },
+            { name: "التقارير", module: true },
+            { name: "سجل التدقيق", module: true }
+          ],
+          edge: "SQL · مستندات · وسائط"
+        },
+        {
+          label: "البيانات",
+          nodes: [
+            { name: "PostgreSQL", note: "SQL" },
+            { name: "MongoDB", note: "مستندات" },
+            { name: "Cloudinary", note: "وسائط" }
+          ]
+        }
       ]
     }
   },
@@ -303,84 +387,82 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "Инженерные документы разбросаны по PDF, Word, Excel и сканам, а обычный поиск по ключевым словам плохо справляется с таким набором.",
       solution:
         "OCR и парсинг всех форматов, гибридный поиск (sentence-transformers + FAISS), пайплайны на FastAPI и ответы с помощью LLM.",
-      result: "В активной разработке; гибридный поиск выбран, чтобы повысить релевантность ответов.",
+      result: "В разработке в «Электросервисе»: единый поиск по PDF, Word, Excel и сканам технической документации.",
       flow: [
         { label: "Загрузка", nodes: [{ name: "PDF · Word · Excel" }, { name: "OCR", note: "сканы" }] },
-        { label: "Индекс", nodes: [{ name: "sentence-transformers" }, { name: "FAISS + keyword" }] },
+        { label: "Индекс", nodes: [{ name: "sentence-transformers" }, { name: "FAISS" }, { name: "ключевые слова" }] },
         { label: "Запрос", nodes: [{ name: "FastAPI", note: "гибридный поиск" }, { name: "LLM", note: "ответ" }] }
       ]
     },
     ar: {
-      title: "البحث الذكي في الوثائق (RAG)",
+      title: "البحث في الوثائق الهندسية (RAG)",
       company: "Elektroservis",
       rolePurpose: "عملي الحالي · بحث RAG في الوثائق",
       description:
-        "بحث وRAG في وثائق القسم الفني (PTO) — ملفات PDF وWord وExcel والمستندات الممسوحة ضوئياً — ببحث هجين يجمع بين الكلمات المفتاحية والمعنى عبر خدمة FastAPI.",
+        "بحث وRAG في الوثائق الهندسية والفنية — ملفات PDF وWord وExcel والمستندات الممسوحة ضوئياً — ببحث هجين يجمع بين الكلمات المفتاحية والمعنى عبر خدمة FastAPI.",
       whatItDoes: [
         "فهرسة ملفات PDF وWord وExcel، بما فيها المستندات الممسوحة عبر OCR",
-        "بحث هجين: مطابقة الكلمات المفتاحية مع البحث الدلالي بـ sentence-transformers وFAISS",
-        "مسارات FastAPI لاستقبال المستندات والاستعلام",
+        "بحث هجين: مطابقة الكلمات المفتاحية مع البحث الدلالي باستخدام sentence-transformers وFAISS",
+        "خطوط معالجة على FastAPI لاستقبال المستندات والاستعلام",
         "إجابات بمساعدة LLM مبنية على المقاطع المسترجَعة"
       ],
       longDescription:
-        "وثائق القسم الفني (PTO) خليط من ملفات PDF وWord وجداول Excel ومستندات ممسوحة ضوئياً. وعملي الحالي في Elektroservis بموسكو نظام بحث وRAG يجعل هذا كله قابلاً للبحث في مكان واحد.\n\nيحلّل مسار الاستقبال كل صيغة ويمرّر المستندات الممسوحة عبر OCR قبل الفهرسة. والبحث هجين: مطابقة الكلمات المفتاحية تلتقط المصطلحات الدقيقة، بينما يعثر البحث الدلالي — بتضمينات sentence-transformers وفهرس FAISS — على المقاطع التي تحمل المعنى نفسه بصياغة مختلفة. والغاية من الجمع بينهما إجابات أوثق صلة بالسؤال مما يقدّمه كلٌّ منهما منفرداً.\n\nتربط مسارات FastAPI بين التحليل والفهرسة والاسترجاع والإجابات المدعومة بنماذج LLM. النظام قيد التطوير النشط والكود خاص، لذا يعرض المخطط البنية.",
+        "الوثائق الهندسية والفنية خليط من ملفات PDF وWord وجداول Excel ومستندات ممسوحة ضوئياً. وعملي الحالي في Elektroservis بموسكو نظام بحث وRAG يجعل هذا كله قابلاً للبحث في مكان واحد.\n\nيحلّل خط معالجة الاستقبال كل صيغة ويمرّر المستندات الممسوحة عبر OCR قبل الفهرسة. والبحث هجين: مطابقة الكلمات المفتاحية تلتقط المصطلحات الدقيقة، بينما يعثر البحث الدلالي — بتضمينات sentence-transformers وفهرس FAISS — على المقاطع التي تحمل المعنى نفسه بصياغة مختلفة. والغاية من الجمع بينهما إجابات أوثق صلة بالسؤال مما يقدّمه كلٌّ منهما منفرداً.\n\nتربط خطوط المعالجة على FastAPI بين التحليل والفهرسة والاسترجاع والإجابات المدعومة بنماذج LLM. النظام قيد التطوير النشط والكود خاص، لذا يعرض المخطط البنية.",
       problem:
         "الوثائق الهندسية موزّعة بين ملفات PDF وWord وExcel ومستندات ممسوحة، والبحث التقليدي بالكلمات المفتاحية لا يتعامل جيداً مع هذا المزيج.",
       solution:
-        "OCR وتحليل لكل الصيغ، وبحث هجين (sentence-transformers + FAISS)، ومسارات FastAPI، وإجابات بمساعدة LLM.",
-      result: "قيد التطوير النشط؛ واختير البحث الهجين لرفع صلة الإجابات بالسؤال.",
+        "OCR وتحليل لكل الصيغ، وبحث هجين (sentence-transformers + FAISS)، وخطوط معالجة على FastAPI، وإجابات بمساعدة LLM.",
+      result: "قيد التطوير في Elektroservis — بحث واحد يشمل ملفات PDF وWord وExcel والوثائق الهندسية الممسوحة ضوئياً.",
       flow: [
         { label: "الاستقبال", nodes: [{ name: "PDF · Word · Excel" }, { name: "OCR", note: "المستندات الممسوحة" }] },
-        { label: "الفهرسة", nodes: [{ name: "sentence-transformers" }, { name: "FAISS + keyword" }] },
+        { label: "الفهرسة", nodes: [{ name: "sentence-transformers" }, { name: "FAISS" }, { name: "الكلمات المفتاحية" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "بحث هجين" }, { name: "LLM", note: "الإجابة" }] }
       ]
     }
   },
   "ai-dashboard-suite": {
     ru: {
-      title: "AI-дашборды для аналитики",
+      title: "KPI-дашборды для клиента",
       company: "Фриланс",
-      rolePurpose: "Фриланс, клиентский проект · KPI-дашборды",
+      rolePurpose: "Фриланс, клиентский проект · дашборды на React",
       description:
-        "Интерактивные дашборды для клиента, которые сводят данные из нескольких источников, и AI-панель, которая кратко объясняет, что изменилось.",
+        "Интерактивные KPI-дашборды для клиента на фрилансе: данные из нескольких источников сведены за единым API на Node.js.",
       whatItDoes: [
         "Фильтруемые KPI-модули вместо статичных выгрузок",
         "API на Node.js, который сводит несколько источников данных",
-        "Графики трендов, на которых изменения видны сразу",
-        "AI-панель с понятными сводками о том, что изменилось"
+        "Графики трендов, на которых изменения видны сразу"
       ],
       longDescription:
-        "Клиент на фрилансе работал со статичными выгрузками и разовыми таблицами, поэтому тренды оставались незаметными, пока кто-нибудь не обновит отчёт вручную. Нужны были интерактивные дашборды, в которых легко читать KPI.\n\nЯ сделал фронтенд на React с фильтруемыми KPI-модулями и API на Node.js, который сводит несколько источников данных в один REST-интерфейс.\n\nAI-панель простыми словами пересказывает, что изменилось. Она стоит рядом с цифрами, а не поверх них, поэтому дашборды остаются читаемыми, а AI — помощником. Код принадлежит клиенту, поэтому здесь показана схема архитектуры.",
+        "Клиент на фрилансе работал со статичными выгрузками и разовыми таблицами, поэтому тренды оставались незаметными, пока кто-нибудь не обновит отчёт вручную. Нужны были интерактивные дашборды, в которых легко читать KPI.\n\nЯ сделал фронтенд на React с фильтруемыми KPI-модулями и графиками трендов и API на Node.js, который сводит несколько источников данных в один REST-интерфейс. Код принадлежит клиенту, поэтому здесь показана схема архитектуры.",
       problem: "Решения принимались по статичным выгрузкам и таблицам, поэтому тренды замечали поздно.",
-      solution: "Дашборды на React с фильтруемыми KPI, API на Node.js поверх нескольких источников и AI-панель со сводками.",
+      solution: "Дашборды на React с фильтруемыми KPI и графиками трендов; API на Node.js сводит несколько источников данных.",
       result: "Фильтруемые KPI в одном месте вместо отчётов, которые обновляют вручную.",
       flow: [
         { label: "Данные", nodes: [{ name: "Несколько источников" }] },
         { label: "API", nodes: [{ name: "Node.js", note: "единый REST-интерфейс" }] },
-        { label: "UI", nodes: [{ name: "React", note: "KPI-дашборды" }, { name: "LLM", note: "AI-сводки" }] }
+        { label: "UI", nodes: [{ name: "React", note: "KPI-дашборды · фильтры" }] }
       ]
     },
     ar: {
-      title: "لوحات تحليلات مدعومة بالذكاء الاصطناعي",
+      title: "لوحات مؤشرات أداء لعميل",
       company: "عمل حر",
-      rolePurpose: "عمل حر لعميل · لوحات مؤشرات",
+      rolePurpose: "عمل حر لعميل · لوحات React",
       description:
-        "لوحات تفاعلية لأحد العملاء تجمع بيانات من عدة مصادر، مع لوحة ذكاء اصطناعي تلخّص ما تغيّر.",
+        "لوحات مؤشرات تفاعلية لأحد عملاء العمل الحر، تجمع بيانات عدة مصادر خلف واجهة API واحدة على Node.js.",
       whatItDoes: [
         "وحدات مؤشرات أداء قابلة للتصفية بدلاً من الملفات الثابتة",
-        "واجهة API بـ Node.js تجمع بيانات عدة مصادر",
-        "عروض للاتجاهات تُظهر التغيّرات بسرعة",
-        "لوحة ذكاء اصطناعي تلخّص ما تغيّر بلغة بسيطة"
+        "واجهة API على Node.js تجمع بيانات عدة مصادر",
+        "عروض للاتجاهات تُظهر التغيّرات بسرعة"
       ],
       longDescription:
-        "كان أحد عملائي في العمل الحر يعتمد على ملفات مُصدَّرة ثابتة وجداول متفرقة، فتبقى الاتجاهات مخفية حتى يحدّث أحدهم التقرير يدوياً. وكان المطلوب لوحات تفاعلية تجعل قراءة المؤشرات أسهل.\n\nبنيت واجهة React بوحدات مؤشرات قابلة للتصفية، وواجهة API بـ Node.js تجمع بيانات عدة مصادر خلف واجهة REST واحدة.\n\nأما لوحة الذكاء الاصطناعي فتلخّص ما تغيّر بلغة بسيطة، وتقف إلى جانب الأرقام لا فوقها، فتبقى اللوحات مقروءة ويبقى الذكاء الاصطناعي مساعداً. الكود ملك للعميل، لذا يعرض المخطط البنية.",
+        "كان أحد عملائي في العمل الحر يعتمد على ملفات مُصدَّرة ثابتة وجداول متفرقة، فتبقى الاتجاهات مخفية حتى يحدّث أحدهم التقرير يدوياً. وكان المطلوب لوحات تفاعلية تجعل قراءة المؤشرات أسهل.\n\nبنيت واجهة React بوحدات مؤشرات قابلة للتصفية وعروض للاتجاهات، وواجهة API على Node.js تجمع بيانات عدة مصادر خلف واجهة REST واحدة. الكود ملك للعميل، لذا يعرض المخطط البنية.",
       problem: "كانت القرارات تعتمد على ملفات مُصدَّرة وجداول ثابتة، فتُكتشف الاتجاهات متأخرة.",
-      solution: "لوحات React بمؤشرات قابلة للتصفية، وواجهة API بـ Node.js فوق عدة مصادر، ولوحة ذكاء اصطناعي للملخصات.",
+      solution: "لوحات React بمؤشرات قابلة للتصفية وعروض للاتجاهات، وواجهة API على Node.js فوق عدة مصادر.",
       result: "مؤشرات قابلة للتصفية في مكان واحد بدلاً من تقارير تُحدَّث يدوياً.",
       flow: [
         { label: "البيانات", nodes: [{ name: "مصادر متعددة" }] },
         { label: "API", nodes: [{ name: "Node.js", note: "واجهة REST واحدة" }] },
-        { label: "الواجهة", nodes: [{ name: "React", note: "لوحات المؤشرات" }, { name: "LLM", note: "ملخصات ذكية" }] }
+        { label: "الواجهة", nodes: [{ name: "React", note: "لوحات المؤشرات · التصفية" }] }
       ]
     }
   },
@@ -401,7 +483,8 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       problem: "Проверки доступности, история инцидентов и отчёты по SLO обычно требуют нескольких отдельных сервисов.",
       solution:
         "Один сервис на FastAPI: асинхронный планировщик, хранилище SQLite, дашборд, публичная страница статуса и метрики Prometheus.",
-      result: "Запускается одной командой docker compose; лицензия MIT, CI и живое демо."
+      result:
+        "Тесты покрывают восстановление после инцидентов, расчёт SLO, контроль доступа и защиту от SSRF. Живое демо; запуск одной командой docker compose."
     },
     ar: {
       title: "Pulseboard",
@@ -409,17 +492,18 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       description:
         "مراقبة توفّر خدمات HTTP على خادمك الخاص، مع حوادث تُفتح تلقائياً وميزانيات أخطاء SLO وصفحة حالة عامة ومقاييس Prometheus — في حاوية واحدة.",
       whatItDoes: [
-        "يفحص نقاط HTTP وفق جدول زمني ويسجّل زمن الاستجابة والتوفّر",
+        "يفحص نقاط نهاية HTTP وفق جدول زمني ويسجّل زمن الاستجابة والتوفّر",
         "يفتح الحوادث ويغلقها تلقائياً",
         "تقارير ميزانية الأخطاء لأهداف SLO على مدى 24 ساعة و7 أيام و30 يوماً",
         "صفحة حالة عامة وواجهة JSON API مضبوطة الأنواع وفحوص للصحة ومسار ‎/metrics"
       ],
       longDescription:
-        "Pulseboard أداة مدمجة لمراقبة التوفّر تعمل في حاوية واحدة: المجدوِل وواجهة API ولوحة التحكم وقاعدة SQLite لا تحتاج إلى أي خدمة خارجية. تفحص نقاط HTTP العامة وفق جدول زمني، وتحفظ زمن الاستجابة والتوفّر، وتفتح الحوادث وتغلقها من تلقاء نفسها.\n\nتتحوّل الفحوص المحفوظة إلى تقارير ميزانية أخطاء لأهداف SLO: الهدف، ونسبة التوفّر الفعلية، وتقدير زمن التوقف، ومدى استنفاد الميزانية على مدى 24 ساعة أو 7 أيام أو 30 يوماً. والحالة نفسها متاحة عبر لوحة تحكم متجاوبة، وصفحة حالة عامة للقراءة فقط لا تكشف الروابط المراقَبة، وواجهة JSON API مضبوطة الأنواع، وفحوص liveness وreadiness، ومقاييس متوافقة مع Prometheus.\n\nالإعدادات الافتراضية آمنة عن قصد: الشبكات الخاصة والمحجوزة محظورة، والروابط التي تتضمن بيانات اعتماد مرفوضة، ولا تُتبَع عمليات إعادة التوجيه، ويكفي متغيّر بيئة واحد لحماية كل عمليات الكتابة بمفتاح API. وتعمل الاختبارات على ناقل HTTP في الذاكرة، وتغطي التعافي من الحوادث وحسابات SLO والتحكم في الوصول وحماية الطلبات الصادرة.",
+        "Pulseboard أداة مدمجة لمراقبة التوفّر تعمل في حاوية واحدة: المجدوِل وواجهة API ولوحة التحكم وقاعدة SQLite لا تحتاج إلى أي خدمة خارجية. تفحص نقاط نهاية HTTP العامة وفق جدول زمني، وتحفظ زمن الاستجابة والتوفّر، وتفتح الحوادث وتغلقها من تلقاء نفسها.\n\nتتحوّل الفحوص المحفوظة إلى تقارير ميزانية أخطاء لأهداف SLO: الهدف، ونسبة التوفّر الفعلية، وتقدير زمن التوقف، ومدى استنفاد الميزانية على مدى 24 ساعة أو 7 أيام أو 30 يوماً. والحالة نفسها متاحة عبر لوحة تحكم متجاوبة، وصفحة حالة عامة للقراءة فقط لا تكشف الروابط المراقَبة، وواجهة JSON API مضبوطة الأنواع، وفحوص liveness وreadiness، ومقاييس متوافقة مع Prometheus.\n\nالإعدادات الافتراضية آمنة عن قصد: الشبكات الخاصة والمحجوزة محظورة، والروابط التي تتضمن بيانات اعتماد مرفوضة، ولا تُتبَع عمليات إعادة التوجيه، ويكفي متغيّر بيئة واحد لحماية كل عمليات الكتابة بمفتاح API. وتعمل الاختبارات على ناقل HTTP في الذاكرة، وتغطي التعافي من الحوادث وحسابات SLO والتحكم في الوصول وحماية الطلبات الصادرة.",
       problem: "مراقبة التوفّر وسجل الحوادث وتقارير SLO تتطلّب عادةً تشغيل عدة خدمات منفصلة.",
       solution:
         "خدمة FastAPI واحدة بمجدوِل غير متزامن وتخزين SQLite ولوحة تحكم وصفحة حالة عامة ومقاييس Prometheus.",
-      result: "تعمل بأمر docker compose واحد؛ برخصة MIT، مع CI وعرض حي."
+      result:
+        "تغطي الاختبارات التعافي من الحوادث وحسابات SLO والتحكم في الوصول والحماية من SSRF. عرض حيّ، ويعمل بأمر docker compose واحد."
     }
   },
   deployledger: {
@@ -439,7 +523,8 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       problem: "Трудно оценить скорость поставки и стабильность изменений, когда данные о деплоях разрознены.",
       solution:
         "Сервис на FastAPI принимает события деплоя и считает метрики DORA; к нему — дашборд на React и журнал аудита на хеш-цепочке.",
-      result: "Живой дашборд на Vercel; разворачивается через Docker Compose, Kustomize или Terraform."
+      result:
+        "Считает все пять метрик DORA по событиям деплоя и ведёт журнал аудита, в котором видна любая подмена. Живое демо; CI тестирует код и сканирует образы."
     },
     ar: {
       title: "DeployLedger",
@@ -457,7 +542,8 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       problem: "يصعب تقييم سرعة التسليم واستقرار التغييرات حين تكون بيانات النشر متفرقة.",
       solution:
         "خدمة FastAPI تستقبل أحداث النشر وتحسب مقاييس DORA، مع لوحة React وسلسلة تدقيق مترابطة بالتجزئة.",
-      result: "لوحة حيّة على Vercel، وقابلة للاستضافة الذاتية عبر Docker Compose أو Kustomize أو Terraform."
+      result:
+        "يحسب مقاييس DORA الخمسة كلها من أحداث النشر، مع سلسلة تدقيق تكشف أي تلاعب. عرض حيّ، وCI يختبر الكود ويفحص الصور."
     }
   },
   gatehouse: {
@@ -477,7 +563,8 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       problem: "При постоянном доступе к продакшену трудно понять, у кого был доступ, зачем и по правилам ли он выдан.",
       solution:
         "Процесс запроса и согласования доступа just-in-time с контекстом политик, изоляцией пространств и журналом аудита на хеш-цепочке.",
-      result: "Живой демо-дашборд и публичное демо API с OpenAPI; разворачивается через Docker Compose."
+      result:
+        "Ключи идемпотентности, оптимистичные блокировки и журнал аудита на хеш-цепочке для каждого рабочего пространства. Живое демо и публичный OpenAPI."
     },
     ar: {
       title: "Gatehouse",
@@ -491,11 +578,11 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "عزل مساحات العمل وثلاثة أدوار: مقدّم الطلب والمعتمِد والمسؤول"
       ],
       longDescription:
-        "الوصول الدائم إلى بيئة الإنتاج يخلق غموضاً وقت الحوادث: من كان يملك الوصول، ولماذا احتاجه، وهل اتُّخذ القرار وفق السياسة؟ يجيب Gatehouse عن ذلك بمسار صغير وشفاف لمنح الوصول عند الحاجة (just-in-time): يطلب المهندس وصولاً محدود النطاق لفترة محددة، ويراجع المعتمِد الطلب والمخاطر وسياق السياسة أمامه.\n\nالخلفية مبنية بـ FastAPI غير متزامن مع تحقق Pydantic، وSQLite محلياً وPostgreSQL في الإنتاج. وتُضمن سلامة العمليات بآليات صريحة: مفاتيح idempotency، والقفل المتفائل، ومدد صلاحية تحدّها السياسة، ومعالجة آمنة للقرارات المتعارضة. ولكل مساحة عمل سلسلة تدقيق خاصة بها مترابطة بالتجزئة ولا تقبل إلا الإضافة.\n\nتعمل واجهة المراجعة المبنية بـ React وTypeScript في وضعين حيّ وتجريبي، ويسهل التحكم فيها من لوحة المفاتيح. والتسليم بالعناية نفسها: صور متعددة المراحل تعمل دون root، وفحوص للصحة والجاهزية، وطبقات Kustomize، وTerraform، ونشر الصور على GHCR.",
+        "الوصول الدائم إلى بيئة الإنتاج يخلق غموضاً وقت الحوادث: من كان يملك الوصول، ولماذا احتاجه، وهل اتُّخذ القرار وفق السياسة؟ يجيب Gatehouse عن ذلك بمسار صغير وشفاف لمنح الوصول عند الحاجة (just-in-time): يطلب المهندس وصولاً محدود النطاق لفترة محددة، ويراجع المعتمِد الطلب والمخاطر وسياق السياسة أمامه.\n\nالخلفية مبنية على FastAPI غير متزامن مع تحقق Pydantic، وSQLite محلياً وPostgreSQL في الإنتاج. وتُضمن سلامة العمليات بآليات صريحة: مفاتيح idempotency، والقفل المتفائل، ومدد صلاحية تحدّها السياسة، ومعالجة آمنة للقرارات المتعارضة. ولكل مساحة عمل سلسلة تدقيق خاصة بها مترابطة بالتجزئة ولا تقبل إلا الإضافة.\n\nتعمل واجهة المراجعة المبنية على React وTypeScript في وضعين حيّ وتجريبي، ويسهل التحكم فيها من لوحة المفاتيح. والتسليم بالعناية نفسها: صور متعددة المراحل تعمل دون root، وفحوص للصحة والجاهزية، وطبقات Kustomize، وTerraform، ونشر الصور على GHCR.",
       problem: "مع الوصول الدائم إلى الإنتاج يصعب معرفة من كان يملك الوصول، ولماذا، وهل مُنح وفق القواعد.",
       solution:
         "مسار لطلب الوصول والموافقة عليه عند الحاجة، مع سياق السياسات وعزل مساحات العمل وسجل تدقيق مترابط بالتجزئة.",
-      result: "لوحة تجريبية حيّة وعرض عام لواجهة FastAPI / OpenAPI، وقابلة للاستضافة الذاتية عبر Docker Compose."
+      result: "مفاتيح idempotency وقفل متفائل وسلسلة تدقيق مترابطة بالتجزئة لكل مساحة عمل. عرض حيّ وواجهة OpenAPI عامة."
     }
   },
   "webhook-workbench": {
@@ -515,7 +602,8 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
       problem: "Для отладки вебхуков часто приходится отправлять реальные данные в сторонний сервис.",
       solution:
         "Бинарник на Go на вашем сервере: принимает, проверяет и безопасно переотправляет вебхуки, скрывая секреты до сохранения.",
-      result: "Релизные бинарники с контрольными суммами, защищённая Docker-конфигурация и публичная песочница."
+      result:
+        "Тесты покрывают скрытие секретов, проверку подписей, переотправку и защиту от SSRF. Релизные бинарники с контрольными суммами; публичная песочница."
     },
     ar: {
       title: "Webhook Workbench",
@@ -529,11 +617,12 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "يحجب الأسرار قبل التخزين، مع مصادقة اختيارية برمز Bearer"
       ],
       longDescription:
-        "يلتقط Webhook Workbench طلبات webhooks الواردة على أي قناة، ويعرض لكل طلب محتواه بعد فك ترميزه، والترويسات بعد حجب الأسرار، وأمر cURL جاهزاً لإعادة إنتاجه. وهو ملف تنفيذي واحد بلغة Go يعتمد على المكتبة القياسية وحدها، والواجهة مدمجة داخله، ولا يستمع افتراضياً إلا على localhost.\n\nيمكن التحقق من التواقيع مقابل المحتوى الملتقَط نفسه لملفات تعريف GitHub وStripe (مع نافذة استلام مدتها خمس دقائق) وHMAC-SHA-256 العام، ويُستخدم السر مرة واحدة ولا يُخزَّن أبداً. ويمكن إعادة إرسال الطلبات الملتقَطة إلى عنوان تختاره، لكن بحذر: تُرفض العناوين الخاصة وعناوين loopback والعناوين غير HTTP، ويُعاد فحص DNS عند الاتصال، وتُقيَّد عمليات إعادة التوجيه، وتُحذف ترويسات التفويض والكوكيز وhop-by-hop.\n\nيحتفظ بسجل أحداث محدود الحجم في لقطة JSON محلية، ويحفظ المحتوى الثنائي بترميز base64، ويوفّر نقطة لفحص الصحة. ويعمل إعداد Docker دون root، مع إسقاط صلاحيات Linux ونظام ملفات جذري للقراءة فقط، وتغطي الاختبارات حجب الأسرار والتحقق من التواقيع وإعادة الإرسال والحماية من SSRF.",
+        "يلتقط Webhook Workbench طلبات webhooks الواردة على أي قناة، ويعرض لكل طلب محتواه بعد فك ترميزه، والترويسات بعد حجب الأسرار، وأمر cURL جاهزاً لإعادة إنتاجه. وهو ملف تنفيذي واحد بلغة Go يعتمد على المكتبة القياسية وحدها، والواجهة مدمجة داخله، ولا يستمع افتراضياً إلا على localhost.\n\nيمكن التحقق من التواقيع مقابل المحتوى الملتقَط نفسه لملفات تعريف GitHub وStripe (مع نافذة استلام مدتها خمس دقائق) وHMAC-SHA-256 العام، ويُستخدم السر مرة واحدة ولا يُخزَّن أبداً. ويمكن إعادة إرسال الطلبات الملتقَطة إلى عنوان تختاره، لكن بحذر: تُرفض العناوين الخاصة وعناوين loopback والعناوين غير HTTP، ويُعاد فحص DNS عند الاتصال، وتُقيَّد عمليات إعادة التوجيه، وتُحذف ترويسات التفويض والكوكيز وhop-by-hop.\n\nيحتفظ بسجل أحداث محدود الحجم في لقطة JSON محلية، ويحفظ المحتوى الثنائي بترميز base64، ويوفّر نقطة نهاية لفحص الصحة. ويعمل إعداد Docker دون root، مع إسقاط صلاحيات Linux ونظام ملفات جذري للقراءة فقط، وتغطي الاختبارات حجب الأسرار والتحقق من التواقيع وإعادة الإرسال والحماية من SSRF.",
       problem: "تصحيح webhooks يعني غالباً إرسال بيانات حقيقية إلى خدمة فحص خارجية.",
       solution:
         "ملف تنفيذي بلغة Go على خادمك يلتقط webhooks ويتحقق منها ويعيد إرسالها بأمان، مع حجب الأسرار قبل التخزين.",
-      result: "ملفات تنفيذية للإصدارات مع مجاميع تحقق (checksums)، وإعداد Docker محصّن، وبيئة تجريبية عامة."
+      result:
+        "تغطي الاختبارات حجب الأسرار والتحقق من التواقيع وإعادة الإرسال والحماية من SSRF. ملفات تنفيذية للإصدارات مع مجاميع تحقق (checksums)، وبيئة تجريبية حيّة."
     }
   }
 };
@@ -550,7 +639,7 @@ export function localizeProject(p: Project, locale: Locale): Project {
   const cached = localizedCache.get(key);
   if (cached) return cached;
   const t = translations[p.slug]?.[locale];
-  const merged = t ? { ...p, ...(locale === "ru" ? typographRuDeep(t) : t) } : p;
+  const merged = t ? { ...p, ...(locale === "ru" ? typographRuDeep(t) : typographArDeep(t)) } : p;
   localizedCache.set(key, merged);
   return merged;
 }

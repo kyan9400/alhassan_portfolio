@@ -20,8 +20,6 @@ const GRID_STYLE: React.CSSProperties = {
   maskImage: "radial-gradient(ellipse at 35% 30%, black 20%, transparent 75%)",
   WebkitMaskImage: "radial-gradient(ellipse at 35% 30%, black 20%, transparent 75%)"
 };
-/** Non-featured cards show this many tech tags, then "+N". */
-const MAX_TAGS = 6;
 
 /**
  * One project card. The whole card opens the case study through a single "stretched" link (the
@@ -55,8 +53,6 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
   };
 
   const flow = project.imageKind === "diagram" ? project.flow : undefined;
-  const tags = featured ? project.tech : project.tech.slice(0, MAX_TAGS);
-  const hiddenTags = project.tech.length - tags.length;
 
   // Work projects (private code) show their architecture as live HTML, readable at any width; the full
   // SVG diagram is on the case-study page. Open-source projects show a 16:10 screenshot of the live app.
@@ -65,7 +61,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
     ? featured
       ? "min-h-[15rem] md:min-h-[18rem] lg:min-h-0 lg:w-[57%] lg:border-b-0 lg:border-e"
       : "min-h-[15rem] md:min-h-[19rem] lg:aspect-[3/2] lg:min-h-0"
-    : "aspect-[16/10]";
+    : "aspect-[2/1] sm:aspect-[16/10]";
 
   return (
     <Reveal delay={(index % 2) * 0.08} className={featured ? "md:col-span-2" : ""}>
@@ -86,7 +82,10 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
                 aria-hidden="true"
               />
               <div className="pointer-events-none absolute inset-0" style={GRID_STYLE} aria-hidden="true" />
-              <div className={`relative w-full px-5 pb-6 pt-16 sm:px-6 ${featured ? "lg:px-8 lg:pt-20" : ""}`} aria-hidden="true">
+              <div
+                className={`relative w-full px-5 pb-6 pt-16 sm:px-6 ${featured ? "flex flex-col justify-center self-stretch md:pb-8 md:pt-16 lg:px-7" : ""}`}
+                aria-hidden="true"
+              >
                 <ArchitectureFlow stages={flow} featured={featured} />
               </div>
               <span className="absolute start-4 top-4 inline-flex max-w-[calc(100%-5rem)] items-center gap-1.5 rounded-full border border-line/10 bg-card/85 px-3 py-1 text-[11px] font-medium text-text shadow-sm backdrop-blur-md">
@@ -124,7 +123,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
           </span>
         </div>
 
-        <div className={`flex flex-1 flex-col p-6 md:p-8 ${featured ? "lg:p-10" : ""}`}>
+        <div className={`flex flex-1 flex-col p-5 sm:p-6 md:p-8 ${featured ? "lg:p-10" : ""}`}>
           <p className="text-balance text-xs font-medium uppercase tracking-[0.14em] text-muted rtl:tracking-normal">
             <Bidi text={project.rolePurpose} />
           </p>
@@ -141,30 +140,24 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
           </p>
 
           {project.result ? (
-            <p className="mt-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-3 text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-              <span className="font-semibold">{copy.projectResultLabel}:</span> <Bidi text={project.result} />
+            <p className="mt-5 border-s-2 border-emerald-500/50 ps-3.5 text-sm leading-relaxed text-text/85">
+              <span className="font-semibold text-emerald-700 dark:text-emerald-300">{copy.projectResultLabels[project.resultLabel ?? "result"]}:</span>{" "}
+              <Bidi text={project.result} />
             </p>
           ) : null}
 
-          <ul className="mt-6 flex flex-wrap gap-2" aria-label={copy.projectTechStackLabel}>
-            {tags.map((t) => (
-              <li key={t} dir="ltr" className="tag">
-                {t}
-              </li>
-            ))}
-            {hiddenTags > 0 ? (
-              <li dir="ltr" className="tag">
-                +{hiddenTags}
-              </li>
-            ) : null}
-          </ul>
+          {/* The stack as one quiet mono line (no pill row); phones skip it on the smaller cards (it is on the case-study page). */}
+          <p className={`mt-5 font-mono text-[12px] leading-relaxed text-muted rtl:text-right ${featured ? "" : "max-sm:hidden"}`} dir="ltr">
+            <span className="sr-only">{copy.projectTechStackLabel}: </span>
+            {project.tech.join(" · ")}
+          </p>
 
-          <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-7">
+          <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-6 md:pt-7">
             <Link
               href={`/projects/${project.slug}`}
               data-cursor={ui.cursorView}
               onClick={() => trackEvent("project_open", { slug: project.slug, source: "card" })}
-              className="inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full max-sm:w-full bg-[linear-gradient(120deg,#7c3aed,#2563eb_60%,#0891b2)] px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-12px_rgba(124,58,237,0.75)] transition-shadow duration-300 after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:shadow-[0_16px_40px_-12px_rgba(124,58,237,0.95)]"
+              className="text-link me-2 min-h-[40px] text-sm after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:decoration-current"
             >
               {ui.caseStudyCta}
               <span className="sr-only">
@@ -195,7 +188,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
             ) : (
               <span className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-dashed border-line/20 px-3.5 text-[12px] font-medium text-muted">
                 <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-                {ui.privateCode}
+                {project.codeNote === "client" ? ui.privateCodeClient : ui.privateCode}
               </span>
             )}
           </div>
