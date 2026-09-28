@@ -58,6 +58,9 @@ type UiCopy = {
   privateCode: string;
   /** Freelance work whose code belongs to the client (not an NDA): short badge. */
   privateCodeClient: string;
+  /** Phones: toggle that expands a compact open-source project row into the full card. */
+  showDetails: string;
+  hideDetails: string;
   workProject: string;
   openSource: string;
   workProjectsTitle: string;
@@ -226,6 +229,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     caseStudyCta: "Read case study",
     privateCode: "Private code · NDA",
     privateCodeClient: "Private code · client-owned",
+    showDetails: "Show details",
+    hideDetails: "Hide details",
     workProject: "Work project",
     openSource: "Open source",
     workProjectsTitle: "Work projects",
@@ -409,6 +414,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     caseStudyCta: "Читать кейс",
     privateCode: "Закрытый код · NDA",
     privateCodeClient: "Закрытый код · принадлежит клиенту",
+    showDetails: "Подробнее",
+    hideDetails: "Свернуть",
     workProject: "Коммерческий проект",
     openSource: "Open source",
     workProjectsTitle: "Коммерческие проекты",
@@ -592,6 +599,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
     caseStudyCta: "اقرأ دراسة الحالة",
     privateCode: "كود خاص · NDA",
     privateCodeClient: "كود خاص · ملك للعميل",
+    showDetails: "عرض التفاصيل",
+    hideDetails: "إخفاء التفاصيل",
     workProject: "مشروع عمل",
     openSource: "مفتوح المصدر",
     workProjectsTitle: "مشاريع العمل",
@@ -718,7 +727,26 @@ export const GITHUB_URL = "https://github.com/kyan9400";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/alhassan-alfarran-880b00246/";
 export const TELEGRAM_URL = "https://t.me/hassan775775";
 export const TELEGRAM_HANDLE = "@hassan775775";
-export const SITE_URL = "https://alhassan-portfolio-sigma.vercel.app";
+
+/** Used when NEXT_PUBLIC_SITE_URL is unset or not an absolute http(s) URL. cv-src/render.mjs reads this line. */
+export const DEFAULT_SITE_URL = "https://alhassan-portfolio-sigma.vercel.app";
+
+/** Absolute origin without a trailing slash, from NEXT_PUBLIC_SITE_URL (e.g. "https://example.com"); inlined at build time. */
+function resolveSiteUrl(value: string | undefined): string {
+  if (!value?.trim()) return DEFAULT_SITE_URL;
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== "https:" && url.protocol !== "http:") return DEFAULT_SITE_URL;
+    return `${url.protocol}//${url.host}`;
+  } catch {
+    return DEFAULT_SITE_URL;
+  }
+}
+
+/** The canonical origin: metadata, sitemap, robots, OG images, JSON-LD, RSS and the CV page all use it. */
+export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
+/** SITE_URL without the scheme, for display ("example.com"). */
+export const SITE_HOST = SITE_URL.replace(/^https?:\/\//, "");
 
 function buildCopy(locale: Locale) {
   const copy = { ...copyByLocale[locale], ui: uiCopy[locale] };

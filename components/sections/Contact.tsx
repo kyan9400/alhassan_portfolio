@@ -521,7 +521,7 @@ export function Contact() {
           </div>
         </Reveal>
 
-        <Footer className="mt-16" />
+        <Footer className="mt-12 sm:mt-16" />
       </div>
     </section>
   );

@@ -1,10 +1,10 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Building2, Lock } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Building2, ChevronDown, Lock } from "lucide-react";
 import { localizeProject, projects, type Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
 import { trackPointer, useCopy } from "@/lib/hooks";
@@ -27,10 +27,17 @@ const GRID_STYLE: React.CSSProperties = {
  * are sibling links raised above that overlay. Nothing between the CTA and the <article> may be
  * positioned or transformed, or the overlay would shrink to that box.
  */
-function ProjectCard({ project, index, featured }: { project: Project; index: number; featured: boolean }) {
+function ProjectCard({ project, index, featured, collapsible = false }: { project: Project; index: number; featured: boolean; collapsible?: boolean }) {
   const copy = useCopy();
   const { ui } = copy;
   const titleId = useId();
+  const detailsId = useId();
+  // Phones (<640px) only: a collapsible card starts as a compact row (title, one line, links; work
+  // projects keep their role line) and a "Show details" toggle reveals the rest. Pure CSS (max-sm:),
+  // so the server HTML is the same everywhere and larger screens never change.
+  const [open, setOpen] = useState(false);
+  const compact = collapsible && !open;
+  const phoneHidden = compact ? "max-sm:hidden" : "";
   const reduceMotion = useReducedMotion();
 
   const tilt = featured ? 3 : 6;
@@ -74,7 +81,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
         style={{ rotateX, rotateY, transformPerspective: 1400 }}
         className={`card card-hover spotlight group flex h-full flex-col overflow-hidden ${featured ? "lg:flex-row" : ""}`}
       >
-        <div className={`relative flex shrink-0 overflow-hidden border-b hairline ${flow ? "items-center bg-surface/40" : "bg-surface"} ${mediaFrame}`}>
+        <div className={`relative flex shrink-0 overflow-hidden border-b hairline ${flow ? "items-center bg-surface/40" : "bg-surface"} ${mediaFrame} ${phoneHidden}`}>
           {flow ? (
             <>
               <div
@@ -123,41 +130,55 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
           </span>
         </div>
 
-        <div className={`flex flex-1 flex-col p-5 sm:p-6 md:p-8 ${featured ? "lg:p-10" : ""}`}>
-          <p className="text-balance text-xs font-medium uppercase tracking-[0.14em] text-muted rtl:tracking-normal">
+        <div id={detailsId} className={`flex flex-1 flex-col p-5 sm:p-6 md:p-8 ${featured ? "lg:p-10" : ""}`}>
+          <p className={`text-balance text-xs font-medium uppercase tracking-[0.14em] text-muted rtl:tracking-normal ${project.kind === "work" ? "" : phoneHidden}`}>
             <Bidi text={project.rolePurpose} />
           </p>
-          <h4
-            id={titleId}
-            className={`mt-3 font-display font-semibold leading-tight tracking-tight transition-colors group-hover:text-accent-ink rtl:tracking-normal ${
-              featured ? "text-3xl md:text-4xl" : "text-2xl md:text-[1.75rem]"
-            }`}
-          >
-            <Bidi text={project.title} />
-          </h4>
-          <p className="mt-3 max-w-2xl text-pretty text-[15px] leading-relaxed text-muted">
+          <div className={`mt-3 flex items-start justify-between gap-3 ${compact && project.kind !== "work" ? "max-sm:mt-0" : ""}`}>
+            <h4
+              id={titleId}
+              className={`font-display font-semibold leading-tight tracking-tight transition-colors group-hover:text-accent-ink rtl:tracking-normal ${
+                featured ? "text-3xl md:text-4xl" : "text-2xl md:text-[1.75rem]"
+              } ${compact ? "max-sm:text-xl" : ""}`}
+            >
+              <Bidi text={project.title} />
+            </h4>
+            {collapsible ? (
+              <button
+                type="button"
+                aria-expanded={open}
+                aria-controls={detailsId}
+                onClick={() => setOpen((v) => !v)}
+                className="relative z-10 -me-2 -mt-2 inline-flex min-h-[40px] shrink-0 items-center gap-1 rounded-full px-2 text-[13px] font-medium text-muted transition hover:text-text sm:hidden"
+              >
+                {open ? ui.hideDetails : ui.showDetails}
+                <ChevronDown className={`h-4 w-4 transition-transform motion-reduce:transition-none ${open ? "rotate-180" : ""}`} aria-hidden="true" />
+              </button>
+            ) : null}
+          </div>
+          <p className={`mt-3 max-w-2xl text-pretty text-[15px] leading-relaxed text-muted ${compact ? "max-sm:mt-1.5 max-sm:line-clamp-1 max-sm:text-sm" : ""}`}>
             <Bidi text={project.description} />
           </p>
 
           {project.result ? (
-            <p className="mt-5 border-s-2 border-emerald-500/50 ps-3.5 text-sm leading-relaxed text-text/85">
+            <p className={`mt-5 border-s-2 border-emerald-500/50 ps-3.5 text-sm leading-relaxed text-text/85 ${phoneHidden}`}>
               <span className="font-semibold text-emerald-700 dark:text-emerald-300">{copy.projectResultLabels[project.resultLabel ?? "result"]}:</span>{" "}
               <Bidi text={project.result} />
             </p>
           ) : null}
 
-          {/* The stack as one quiet mono line (no pill row); phones skip it on the smaller cards (it is on the case-study page). */}
-          <p className={`mt-5 font-mono text-[12px] leading-relaxed text-muted rtl:text-right ${featured ? "" : "max-sm:hidden"}`} dir="ltr">
+          {/* The stack as one quiet mono line (no pill row); phones skip it (it is on the case-study page). */}
+          <p className="mt-5 font-mono text-[12px] leading-relaxed text-muted max-sm:hidden rtl:text-right" dir="ltr">
             <span className="sr-only">{copy.projectTechStackLabel}: </span>
             {project.tech.join(" · ")}
           </p>
 
-          <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-6 md:pt-7">
+          <div className={`mt-auto flex flex-wrap items-center gap-2.5 pt-6 md:pt-7 ${compact ? "max-sm:gap-x-2 max-sm:pt-3" : ""}`}>
             <Link
               href={`/projects/${project.slug}`}
               data-cursor={ui.cursorView}
               onClick={() => trackEvent("project_open", { slug: project.slug, source: "card" })}
-              className="text-link me-2 min-h-[40px] text-sm after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:decoration-current"
+              className={`text-link me-2 min-h-[40px] text-sm ${compact ? "max-sm:me-1" : ""} after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:decoration-current`}
             >
               {ui.caseStudyCta}
               <span className="sr-only">
@@ -168,7 +189,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
             </Link>
 
             {project.live ? (
-              <a href={project.live} target="_blank" rel="noopener noreferrer" className="btn-ghost z-10 !min-h-[40px] !px-4 text-[13px]">
+              <a href={project.live} target="_blank" rel="noopener noreferrer" className={`btn-ghost z-10 !min-h-[40px] !px-4 text-[13px] ${compact ? "max-sm:!min-h-[36px] max-sm:!px-3 max-sm:text-[12px]" : ""}`}>
                 {copy.projectLiveDemo}
                 <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
               </a>
@@ -179,18 +200,19 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost z-10 !min-h-[40px] !px-4 text-[13px]"
+                className={`btn-ghost z-10 !min-h-[40px] !px-4 text-[13px] ${compact ? "max-sm:!min-h-[36px] max-sm:!px-3 max-sm:text-[12px]" : ""}`}
                 aria-label={`${copy.projectViewGithubLabel}: ${project.title}`}
               >
                 <GithubIcon />
                 {copy.projectViewGithubLabel}
               </a>
             ) : (
-              <span className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-dashed border-line/20 px-3.5 text-[12px] font-medium text-muted">
+              <span className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-dashed border-line/20 px-3.5 text-[12px] font-medium text-muted ${compact ? "max-sm:min-h-[36px] max-sm:px-3" : ""}`}>
                 <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                 {project.codeNote === "client" ? ui.privateCodeClient : ui.privateCode}
               </span>
             )}
+
           </div>
         </div>
       </motion.article>
@@ -211,7 +233,7 @@ function GroupHeading({ title, count }: { title: string; count: number }) {
 }
 
 /** "Full project archive →": shared with the GitHub section. */
-export function ArchiveLink({ className = "mt-12 md:mt-14" }: { className?: string }) {
+export function ArchiveLink({ className = "mt-8 sm:mt-12 md:mt-14" }: { className?: string }) {
   const { ui } = useCopy();
   return (
     <p className={`flex justify-end ${className}`}>
@@ -232,20 +254,20 @@ export function Projects() {
   const openSource = localized.filter((p) => p.kind === "open-source");
 
   return (
-    <section id="projects" className="section cv-auto [--cv-h:6400px] md:[--cv-h:4000px] lg:[--cv-h:3600px]">
+    <section id="projects" className="section cv-auto [--cv-h:3000px] sm:[--cv-h:6400px] md:[--cv-h:4000px] lg:[--cv-h:3600px]">
       <div className="shell">
         <SectionHeader eyebrow={copy.projectsEyebrow} title={copy.projectsTitle} description={copy.projectsSubtitle} />
 
         {localized.length === 0 ? (
           <p className="card p-10 text-center text-muted">{copy.projectsEmpty}</p>
         ) : (
-          <div className="space-y-16 md:space-y-20">
+          <div className="space-y-12 sm:space-y-16 md:space-y-20">
             {work.length ? (
               <div>
                 <GroupHeading title={copy.ui.workProjectsTitle} count={work.length} />
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 max-sm:gap-3 md:grid-cols-2">
                   {work.map((p, i) => (
-                    <ProjectCard key={p.slug} project={p} index={i} featured={i === 0} />
+                    <ProjectCard key={p.slug} project={p} index={i} featured={i === 0} collapsible={i > 0} />
                   ))}
                 </div>
               </div>
@@ -254,9 +276,9 @@ export function Projects() {
             {openSource.length ? (
               <div>
                 <GroupHeading title={copy.ui.openSourceTitle} count={openSource.length} />
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 max-sm:gap-3 md:grid-cols-2">
                   {openSource.map((p, i) => (
-                    <ProjectCard key={p.slug} project={p} index={i} featured={false} />
+                    <ProjectCard key={p.slug} project={p} index={i} featured={false} collapsible />
                   ))}
                 </div>
               </div>

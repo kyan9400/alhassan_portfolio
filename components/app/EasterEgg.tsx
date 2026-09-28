@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { useCopy } from "@/lib/hooks";
 import { celebrate } from "@/lib/confetti";
+import { CONTACT_EMAIL } from "@/lib/ui-copy";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
@@ -14,7 +15,7 @@ export function EasterEgg() {
 
   useEffect(() => {
     console.log(
-      "%c👋 Hey, fellow developer! %cTry the Konami code on this page. Want to talk? kyan775909@gmail.com",
+      `%c👋 Hey, fellow developer! %cTry the Konami code on this page. Want to talk? ${CONTACT_EMAIL}`,
       "font-size:14px;font-weight:bold;color:#a78bfa",
       "color:inherit"
     );

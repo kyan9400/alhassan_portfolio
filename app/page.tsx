@@ -10,6 +10,7 @@ import { SignatureCase } from "@/components/sections/SignatureCase";
 import { Skills } from "@/components/sections/Skills";
 import { Services } from "@/components/sections/Services";
 import { GithubRepos } from "@/components/sections/GithubRepos";
+import { Recommendations } from "@/components/sections/Recommendations";
 import { Contact } from "@/components/sections/Contact";
 import { MobileContactBar } from "@/components/app/MobileContactBar";
 import { SectionRail } from "@/components/app/SectionRail";
@@ -24,7 +25,7 @@ export const revalidate = 3600;
 
 /**
  * Story order: who I am → where I've worked → what I built there → proof in depth → toolkit →
- * how I can help → more code → get in touch.
+ * how I can help → more code → what colleagues say (only once there is a recommendation) → get in touch.
  *
  * Every section below the fold is its own Suspense boundary. Nothing suspends (the HTML is complete),
  * but React then hydrates each boundary as a separate unit and yields to the browser in between,
@@ -58,6 +59,9 @@ export default async function HomePage() {
       </Suspense>
       <Suspense>
         <GithubRepos repos={github.ok ? github.repos : []} />
+      </Suspense>
+      <Suspense>
+        <Recommendations />
       </Suspense>
       <Suspense>
         <Contact />

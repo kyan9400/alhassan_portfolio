@@ -108,8 +108,8 @@ function RepoCard({ repo }: { repo: GithubRepo }) {
 
   return (
     <>
-      {/* Text-only headers are shorter on phones, where the cards stack in one column. */}
-      <div className={`relative overflow-hidden border-b hairline bg-surface ${repo.previewImage ? "aspect-[16/10]" : "aspect-[5/2] sm:aspect-[16/10]"}`}>
+      {/* Headers are shorter on phones, where the cards stack in one column (screenshots are cropped from the top). */}
+      <div className={`relative overflow-hidden border-b hairline bg-surface ${repo.previewImage ? "aspect-[2/1] sm:aspect-[16/10]" : "aspect-[5/2] sm:aspect-[16/10]"}`}>
         {repo.previewImage ? (
           <Image
             src={repo.previewImage}

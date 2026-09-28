@@ -1,5 +1,7 @@
 "use client";
 
+import { useId, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { useCopy } from "@/lib/hooks";
 import { copyByLocale } from "@/lib/copy";
 import { usePortfolioStore } from "@/store/portfolioStore";
@@ -43,9 +45,12 @@ function NameInThreeScripts() {
 export function About() {
   const copy = useCopy();
   const how = copy.howIWork;
+  const howId = useId();
+  // Phones: the four habits start as titles only; "Show details" reveals the explanations.
+  const [howOpen, setHowOpen] = useState(false);
 
   return (
-    <section id="about" className="section cv-auto [--cv-h:2100px] md:[--cv-h:1650px] lg:[--cv-h:1350px]">
+    <section id="about" className="section cv-auto [--cv-h:1600px] sm:[--cv-h:2100px] md:[--cv-h:1650px] lg:[--cv-h:1350px]">
       <div className="shell">
         <Reveal className="mb-12 md:mb-16">
           <NameInThreeScripts />
@@ -87,12 +92,12 @@ export function About() {
         </div>
 
         {/* How I work: four habits as one compact strip. */}
-        <Reveal className="mt-16 border-t hairline pt-10 md:mt-24">
+        <Reveal className="mt-12 border-t hairline pt-8 sm:mt-16 sm:pt-10 md:mt-24">
           <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between md:gap-8">
             <h3 className="font-display text-xl font-semibold md:text-2xl">{how.eyebrow}</h3>
             <p className="text-pretty text-sm text-muted md:text-base">{how.description}</p>
           </div>
-          <ol className="mt-8 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
+          <ol id={howId} className={`mt-8 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4 ${howOpen ? "" : "max-sm:mt-6 max-sm:gap-y-3"}`}>
             {how.items.map((step, i) => (
               <li key={step.title} className="min-w-0">
                 <p className="flex items-baseline gap-3">
@@ -101,10 +106,20 @@ export function About() {
                   </span>
                   <span className="font-semibold">{step.title}</span>
                 </p>
-                <p className="mt-2 text-pretty text-sm leading-relaxed text-muted">{step.body}</p>
+                <p className={`mt-2 text-pretty text-sm leading-relaxed text-muted ${howOpen ? "" : "max-sm:hidden"}`}>{step.body}</p>
               </li>
             ))}
           </ol>
+          <button
+            type="button"
+            onClick={() => setHowOpen((o) => !o)}
+            aria-expanded={howOpen}
+            aria-controls={howId}
+            className="mt-4 inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text sm:hidden"
+          >
+            {howOpen ? copy.ui.hideDetails : copy.ui.showDetails}
+            <ChevronDown className={`h-4 w-4 transition-transform ${howOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+          </button>
         </Reveal>
       </div>
     </section>

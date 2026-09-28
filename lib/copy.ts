@@ -32,6 +32,13 @@ export type EducationItem = { period: string; degree: string; school: string; ma
  * A certification. `verifyUrl` is the public credential link; the "Verify" link renders only when
  * it is set. Leave it empty rather than guessing a URL.
  */
+/**
+ * A recommendation from someone I have worked with: their own words, published with their permission.
+ * `role` and `company` are theirs (e.g. "Head of IT", "Elektroservis"); `linkedin` is an optional
+ * profile URL. Add the same person to all three locales (quote translated or kept in the original).
+ */
+export type Recommendation = { quote: string; name: string; role: string; company: string; linkedin?: string };
+
 export type Certification = { name: string; issuer?: string; year?: string; verifyUrl?: string };
 
 export type CopyDictionary = {
@@ -44,6 +51,8 @@ export type CopyDictionary = {
   brandName: string;
   heroAvailability: string;
   heroEyebrow: string;
+  /** Phones only (<640px), when heroEyebrow would push the name + role block past three lines. */
+  heroEyebrowShort?: string;
   heroTitle: string;
   heroHeadlineTop: string;
   heroHeadlineFocus: string;
@@ -151,6 +160,14 @@ export type CopyDictionary = {
   projectBackLabel: string;
   projectTechStackLabel: string;
   projectWhatItDoesLabel: string;
+  /** Recommendations section (before Contact). It renders nothing while `items` is empty. */
+  recommendations: {
+    eyebrow: string;
+    title: string;
+    /** Accessible name of the LinkedIn link next to a name; "{name}" is replaced. */
+    linkedinLabel: string;
+    items: Recommendation[];
+  };
 };
 
 /** Course titles are proper names, so they stay in English in every locale. */
@@ -436,7 +453,13 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     projectViewGithubLabel: "GitHub",
     projectBackLabel: "Back to projects",
     projectTechStackLabel: "Tech stack",
-    projectWhatItDoesLabel: "What it does"
+    projectWhatItDoesLabel: "What it does",
+    recommendations: {
+      eyebrow: "Recommendations",
+      title: "In their words.",
+      linkedinLabel: "{name} on LinkedIn",
+      items: []
+    }
   },
   ru: {
     dir: "ltr",
@@ -447,6 +470,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     brandName: "Альхассан",
     heroAvailability: "Готов приступить сразу",
     heroEyebrow: "Full-stack / Python-разработчик — веб- и AI-системы",
+    heroEyebrowShort: "Full-stack / Python-разработчик",
     heroTitle: "Альхассан Альфарран",
     heroHeadlineTop: "Веб-платформы",
     heroHeadlineFocus: "и AI-поиск",
@@ -704,7 +728,13 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     projectViewGithubLabel: "GitHub",
     projectBackLabel: "Назад к проектам",
     projectTechStackLabel: "Стек",
-    projectWhatItDoesLabel: "Что делает"
+    projectWhatItDoesLabel: "Что делает",
+    recommendations: {
+      eyebrow: "Рекомендации",
+      title: "Что говорят коллеги.",
+      linkedinLabel: "{name} в LinkedIn",
+      items: []
+    }
   },
   ar: {
     dir: "rtl",
@@ -974,6 +1004,12 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     projectViewGithubLabel: "GitHub",
     projectBackLabel: "العودة إلى المشاريع",
     projectTechStackLabel: "التقنيات",
-    projectWhatItDoesLabel: "ماذا يفعل"
+    projectWhatItDoesLabel: "ماذا يفعل",
+    recommendations: {
+      eyebrow: "توصيات",
+      title: "بكلمات من عملت معهم.",
+      linkedinLabel: "{name} على LinkedIn",
+      items: []
+    }
   }
 };

@@ -7,14 +7,17 @@ import { usePortfolioStore } from "@/store/portfolioStore";
 import type { ExperienceItem } from "@/lib/copy";
 import { Bidi, OrgMark, Reveal, SectionHeader } from "@/components/ui/primitives";
 
-/** Bullets shown per role before "More". */
+/** Bullets shown per role before "More" (phones show one, so the section stays short there). */
 const BULLETS_SHOWN = 2;
+const BULLETS_SHOWN_PHONE = 1;
+/** Certificates listed on phones before "More". */
+const CERTS_SHOWN_PHONE = 3;
 
 export function Experience() {
   const copy = useCopy();
 
   return (
-    <section id="experience" className="section cv-auto [--cv-h:2900px] md:[--cv-h:2200px] lg:[--cv-h:1800px]">
+    <section id="experience" className="section cv-auto [--cv-h:2600px] sm:[--cv-h:2900px] md:[--cv-h:2200px] lg:[--cv-h:1800px]">
       <div className="shell">
         <SectionHeader eyebrow={copy.experienceEyebrow} title={copy.experienceTitle} description={copy.experienceDescription} />
 
@@ -40,6 +43,7 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
   const listId = useId();
   const [open, setOpen] = useState(false);
   const extra = item.highlights.length - BULLETS_SHOWN;
+  const extraPhone = item.highlights.length - BULLETS_SHOWN_PHONE;
 
   return (
     <Reveal
@@ -95,7 +99,7 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
             <li
               key={h}
               // A class, not the hidden attribute: `flex` would override the attribute's display: none.
-              className={`${!open && j >= BULLETS_SHOWN ? "hidden" : "flex"} gap-3 text-pretty text-[15px] leading-relaxed text-text/85`}
+              className={`${!open && j >= BULLETS_SHOWN ? "hidden" : !open && j >= BULLETS_SHOWN_PHONE ? "flex max-sm:hidden" : "flex"} gap-3 text-pretty text-[15px] leading-relaxed text-text/85`}
             >
               <span className="mt-[0.65em] h-1 w-1 shrink-0 rounded-full bg-text/40" aria-hidden="true" />
               <span>
@@ -104,15 +108,22 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
             </li>
           ))}
         </ul>
-        {extra > 0 ? (
+        {extraPhone > 0 ? (
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls={listId}
-            className="mt-2 inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text"
+            className={`mt-2 inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text ${extra > 0 ? "" : "sm:hidden"}`}
           >
-            {open ? ui.showLess : `${ui.showMore} (+${extra})`}
+            {open ? (
+              ui.showLess
+            ) : (
+              <>
+                <span className="sm:hidden">{`${ui.showMore} (+${extraPhone})`}</span>
+                {extra > 0 ? <span className="max-sm:hidden">{`${ui.showMore} (+${extra})`}</span> : null}
+              </>
+            )}
             <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden="true" />
           </button>
         ) : null}
@@ -131,9 +142,12 @@ function Education() {
   const copy = useCopy();
   const locale = usePortfolioStore((s) => s.locale);
   const certs = copy.certifications;
+  const certsId = useId();
+  const [allCerts, setAllCerts] = useState(false);
+  const certsHiddenPhone = certs.length - CERTS_SHOWN_PHONE;
 
   return (
-    <div className="mt-16 grid gap-12 md:mt-20 lg:grid-cols-2 lg:gap-16">
+    <div className="mt-12 grid gap-12 sm:mt-16 md:mt-20 lg:grid-cols-2 lg:gap-16">
       <Reveal>
         <h3 className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted rtl:tracking-normal">
           {copy.ui.educationTitle}
@@ -164,11 +178,14 @@ function Education() {
             {copy.ui.certificationsTitle}
           </h3>
           {/* Course titles are English proper names in every locale; in the Arabic page they align to its start edge. */}
-          <ul className="mt-5 divide-y divide-line/10 border-y hairline rtl:text-right" dir="ltr" lang="en">
-            {certs.map((cert) => {
+          <ul id={certsId} className="mt-5 divide-y divide-line/10 border-y hairline rtl:text-right" dir="ltr" lang="en">
+            {certs.map((cert, idx) => {
               const meta = [cert.issuer, cert.year].filter(Boolean).join(" · ");
               return (
-                <li key={cert.name} className="flex items-start justify-between gap-4 py-3">
+                <li
+                  key={cert.name}
+                  className={`flex items-start justify-between gap-4 py-3 ${!allCerts && idx >= CERTS_SHOWN_PHONE ? "max-sm:hidden" : ""}`}
+                >
                   <div className="min-w-0">
                     <span className="block text-sm font-medium leading-snug">{cert.name}</span>
                     {meta ? <span className="mt-0.5 block text-xs text-muted">{meta}</span> : null}
@@ -192,6 +209,18 @@ function Education() {
               );
             })}
           </ul>
+          {certsHiddenPhone > 0 ? (
+            <button
+              type="button"
+              onClick={() => setAllCerts((o) => !o)}
+              aria-expanded={allCerts}
+              aria-controls={certsId}
+              className="mt-2 inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text sm:hidden"
+            >
+              {allCerts ? copy.ui.showLess : `${copy.ui.showMore} (+${certsHiddenPhone})`}
+              <ChevronDown className={`h-4 w-4 transition-transform ${allCerts ? "rotate-180" : ""}`} aria-hidden="true" />
+            </button>
+          ) : null}
         </Reveal>
       ) : null}
     </div>

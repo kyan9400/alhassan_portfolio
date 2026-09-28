@@ -53,7 +53,7 @@ export function Footer({ className = "" }: { className?: string }) {
       {/* Decorative sign-off: the name, very large and faint. */}
       <p
         aria-hidden="true"
-        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-text/[0.07] rtl:tracking-normal"
+        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] max-sm:text-[8vw] font-semibold leading-[0.95] tracking-[-0.04em] text-text/[0.07] rtl:tracking-normal"
       >
         {copy.heroTitle}
       </p>

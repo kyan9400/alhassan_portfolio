@@ -124,7 +124,7 @@ html.lenis body {
   }
 
   .section {
-    @apply relative scroll-mt-24 py-12 md:py-20;
+    @apply relative scroll-mt-24 py-10 sm:py-12 md:py-20;
   }
 
   .hairline {

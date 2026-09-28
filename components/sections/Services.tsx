@@ -80,7 +80,7 @@ export function Services() {
       <div className="shell">
         <SectionHeader eyebrow={copy.servicesEyebrow} title={copy.servicesTitle} description={copy.availableBody} />
 
-        {/* Full-width rows with hairlines: number, service, one line, and the proof on the end side. */}
+        {/* Full-width rows with hairlines: number, service, one line, and the proof on the end side (under the text below lg). */}
         <ol className="border-b hairline">
           {copy.servicesItems.map((s, i) => (
             <Reveal
@@ -88,7 +88,7 @@ export function Services() {
               key={s.title}
               delay={Math.min(i, 3) * 0.05}
               y={16}
-              className="group relative grid gap-x-8 gap-y-2 border-t py-6 ps-4 [border-top-color:rgb(var(--line)/var(--line-alpha))] before:absolute before:inset-y-0 before:start-0 before:w-0.5 before:origin-top before:scale-y-0 before:bg-accent before:transition-transform before:duration-300 before:content-[''] hover:before:scale-y-100 focus-within:before:scale-y-100 sm:grid-cols-[2.5rem_minmax(0,1fr)] md:py-7 md:ps-5 lg:grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,17rem)] lg:items-baseline"
+              className="group relative grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-2 gap-y-2 border-t py-6 ps-4 max-sm:items-baseline sm:gap-x-8 [border-top-color:rgb(var(--line)/var(--line-alpha))] before:absolute before:inset-y-0 before:start-0 before:w-0.5 before:origin-top before:scale-y-0 before:bg-accent before:transition-transform before:duration-300 before:content-[''] hover:before:scale-y-100 focus-within:before:scale-y-100 sm:grid-cols-[2.5rem_minmax(0,1fr)] md:py-7 md:ps-5 lg:grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,17rem)] lg:items-baseline"
             >
               <span className="font-mono text-sm tabular-nums text-muted" aria-hidden="true">
                 0{i + 1}
@@ -101,7 +101,7 @@ export function Services() {
                   <Bidi text={s.description} />
                 </p>
               </div>
-              <div className="sm:col-start-2 lg:col-start-auto lg:justify-self-end lg:text-end">
+              <div className="col-start-2 lg:col-start-auto lg:justify-self-end lg:text-end">
                 <ProofLink index={i} label={s.proof} />
               </div>
             </Reveal>

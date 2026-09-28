@@ -113,7 +113,7 @@ export function SectionHeader({
   align?: "start" | "center";
 }) {
   return (
-    <Reveal className={`mb-10 max-w-3xl md:mb-12 ${align === "center" ? "mx-auto text-center" : ""}`}>
+    <Reveal className={`mb-8 max-w-3xl sm:mb-10 md:mb-12 ${align === "center" ? "mx-auto text-center" : ""}`}>
       <p className="eyebrow mb-4">{eyebrow}</p>
       <h2 className="text-balance text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] rtl:leading-[1.25]">{title}</h2>
       {description ? <p className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted md:text-lg">{description}</p> : null}

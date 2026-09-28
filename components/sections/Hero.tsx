@@ -89,7 +89,19 @@ export function Hero() {
                   {copy.heroTitle}
                 </p>
                 <p className="mt-1 text-balance text-[15px] font-medium leading-snug text-accent-ink">
-                  <Bidi text={copy.heroEyebrow} />
+                  {copy.heroEyebrowShort ? (
+                    <>
+                      {/* Phones: the short role keeps name + role within three lines (the headline below names the focus). */}
+                      <span className="max-sm:hidden">
+                        <Bidi text={copy.heroEyebrow} />
+                      </span>
+                      <span className="whitespace-nowrap text-[14px] sm:hidden">
+                        <Bidi text={copy.heroEyebrowShort} />
+                      </span>
+                    </>
+                  ) : (
+                    <Bidi text={copy.heroEyebrow} />
+                  )}
                 </p>
               </div>
             </div>

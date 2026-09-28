@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_HOST } from "@/lib/ui-copy";
 
 export const alt = "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available immediately";
 export const size = { width: 1200, height: 630 };
@@ -41,7 +42,7 @@ export default function OpengraphImage() {
             >
               AA
             </div>
-            <div style={{ fontSize: 26, color: "#9698aa" }}>alhassan-portfolio-sigma.vercel.app</div>
+            <div style={{ fontSize: 26, color: "#9698aa" }}>{SITE_HOST}</div>
           </div>
           <div
             style={{

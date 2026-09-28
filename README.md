@@ -63,6 +63,7 @@ All optional — the site builds and runs without any of them.
 
 | Variable             | Used by              | Purpose                                                                                     |
 | -------------------- | -------------------- | ------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL` | `lib/ui-copy.ts` (`SITE_URL`), `cv-src/render.mjs` | Canonical origin, e.g. `https://your-domain.com` (no path; a trailing slash is ignored). Used for metadata, canonical and hreflang URLs, the sitemap, robots.txt, OG images, JSON-LD, the RSS feed, the online CV and the PDF CVs. Defaults to `https://alhassan-portfolio-sigma.vercel.app`. Inlined at build time, so a change needs a redeploy. |
 | `RESEND_API_KEY`     | `/api/contact`       | Sends contact-form email. Without it the endpoint answers `{ ok: false, error: "not_configured" }` and the form shows the direct email fallback. |
 | `CONTACT_FROM_EMAIL` | `/api/contact`       | Sender, e.g. `Portfolio <hello@your-domain>` (must be a Resend-verified domain). Defaults to `onboarding@resend.dev`. |
 | `CONTACT_TO_EMAIL`   | `/api/contact`       | Recipient. Defaults to the address in `lib/ui-copy.ts`.                                     |
@@ -70,8 +71,53 @@ All optional — the site builds and runs without any of them.
 
 For local development put them in `.env.local` (git-ignored).
 
+The contact email is defined once, as `CONTACT_EMAIL` in `lib/ui-copy.ts`; the site, the contact form and the PDF CVs
+all read it from there.
+
+## PDF CVs
+
+The PDFs in `public/cv/` are rendered from `cv-src/{en,ru,ar}.html` by `node cv-src/render.mjs all` (Playwright).
+The sources use `{{CONTACT_EMAIL}}`, `{{SITE_URL}}` and `{{SITE_HOST}}` placeholders, filled from `lib/ui-copy.ts` and
+`NEXT_PUBLIC_SITE_URL`. To pick up the variable from `.env.local`: `node --env-file=.env.local cv-src/render.mjs all`.
+Re-render and commit the PDFs after changing the domain or the email.
+
+## Recommendations
+
+The Recommendations section (before Contact) is driven by `recommendations.items` in `lib/copy.ts`, one array per
+locale, and renders nothing while the array is empty. Add only real recommendations, with the person's permission:
+
+```ts
+items: [
+  {
+    quote: "Their words, unedited (translated for the other locales).",
+    name: "Full Name",
+    role: "Their role",
+    company: "Company",
+    linkedin: "https://www.linkedin.com/in/their-profile/" // optional
+  }
+]
+```
+
+Add the same entries, in the same order, to `en`, `ru` and `ar`.
+
 ## Deployment
 
 Vercel builds and deploys every push to `main`. Set the environment variables in the Vercel project settings.
+
+## Custom domain
+
+1. **Add the domain in Vercel**: Project → Settings → Domains → Add, e.g. `your-domain.com` (and `www.your-domain.com`
+   redirecting to it). Create the DNS records Vercel shows (an `A` record for the apex, a `CNAME` for `www`) at the
+   registrar, and wait for the domain to be verified; Vercel issues the certificate.
+2. **Set the canonical origin**: Settings → Environment Variables → `NEXT_PUBLIC_SITE_URL=https://your-domain.com`
+   for Production, then redeploy (the value is inlined at build time). Canonical URLs, hreflang, the sitemap,
+   robots.txt, OG images, JSON-LD, RSS and the online CV switch to the new domain.
+3. **Redirect the old address**: in Settings → Domains, edit `alhassan-portfolio-sigma.vercel.app` and set it to
+   redirect to `your-domain.com` with **301 (Moved Permanently)**. Paths and query strings are kept, so old links
+   and `?lang=` URLs land on the same page.
+4. **Update the PDFs**: `node --env-file=.env.local cv-src/render.mjs all` with the new value in `.env.local`
+   (or `NEXT_PUBLIC_SITE_URL=https://your-domain.com node cv-src/render.mjs all`), then commit `public/cv/`.
+5. Update the links elsewhere: the GitHub repository's website field, LinkedIn, job profiles, and the sitemap in
+   Google Search Console / Yandex Webmaster (add the new domain as a property).
 
 Security headers (nosniff, referrer policy, permissions policy, frame blocking, COOP, HSTS) are configured in `next.config.mjs`.

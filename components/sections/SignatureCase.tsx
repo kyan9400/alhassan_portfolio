@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useId, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Building2, CornerDownLeft } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, CornerDownLeft } from "lucide-react";
 import { useCopy } from "@/lib/hooks";
 import { Bidi, Reveal } from "@/components/ui/primitives";
 
@@ -94,6 +94,9 @@ export function SignatureCase() {
   const copy = useCopy();
   const s = copy.signature;
   const metric = s.metrics[0];
+  const lessonsId = useId();
+  // Phones: the lessons list starts closed behind "Show details" (the problem and solution stay open).
+  const [lessonsOpen, setLessonsOpen] = useState(false);
 
   const steps = [
     {
@@ -117,8 +120,9 @@ export function SignatureCase() {
     },
     {
       title: s.lessonsTitle,
+      collapsible: true,
       body: (
-        <ul className="space-y-2">
+        <ul id={lessonsId} className={`space-y-2 ${lessonsOpen ? "" : "max-sm:hidden"}`}>
           {s.lessons.map((l) => (
             <li key={l} className="flex gap-2.5">
               <span className="inline-block text-accent-ink rtl:-scale-x-100" aria-hidden="true">
@@ -187,6 +191,18 @@ export function SignatureCase() {
                   {step.title}
                 </h3>
                 <div className="mt-4 text-pretty text-[15px] leading-relaxed text-text/85 md:text-base">{step.body}</div>
+                {"collapsible" in step ? (
+                  <button
+                    type="button"
+                    onClick={() => setLessonsOpen((o) => !o)}
+                    aria-expanded={lessonsOpen}
+                    aria-controls={lessonsId}
+                    className={`inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text sm:hidden ${lessonsOpen ? "mt-2" : "-mt-3"}`}
+                  >
+                    {lessonsOpen ? copy.ui.hideDetails : copy.ui.showDetails}
+                    <ChevronDown className={`h-4 w-4 transition-transform ${lessonsOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+                  </button>
+                ) : null}
               </Reveal>
             ))}
           </ol>
