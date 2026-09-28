@@ -43,7 +43,7 @@ export function MobileContactBar() {
       aria-label={ui.contactBarLabel}
       // `inert` while hidden: off-screen links must not be reachable with Tab or a screen reader.
       inert={!shown}
-      className={`fixed inset-x-0 bottom-0 z-40 border-t hairline bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl transition-transform duration-300 md:hidden ${
+      className={`fixed inset-x-0 bottom-0 z-40 border-t hairline bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl transition-transform duration-300 md:hidden print:hidden ${
         shown ? "translate-y-0" : "translate-y-full"
       }`}
     >

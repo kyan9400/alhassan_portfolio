@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects, getProject } from "@/lib/projects";
 import { SITE_URL } from "@/lib/ui-copy";
+import { PERSON_ID, WEBSITE_ID, jsonLdHtml, languageAlternates } from "@/lib/seo";
+import type { Project } from "@/lib/projects";
 import { ProjectDetail } from "@/components/sections/ProjectDetail";
 
 type PageProps = {
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: project.title,
     description: project.description,
-    alternates: { canonical: path },
+    alternates: { canonical: path, languages: languageAlternates(path) },
     openGraph: {
       title: fullTitle,
       description: project.description,
@@ -46,6 +48,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+/**
+ * Structured data for a case study: open-source projects are SoftwareSourceCode with their public
+ * repository; work projects (private code) are a CreativeWork. Only facts from lib/projects.ts.
+ */
+function projectJsonLd(project: Project) {
+  const url = `${SITE_URL}/projects/${project.slug}`;
+  const common = {
+    "@context": "https://schema.org",
+    "@id": `${url}#work`,
+    name: project.title,
+    description: project.description,
+    url,
+    image: `${SITE_URL}${project.image}`,
+    inLanguage: "en",
+    keywords: project.tech.join(", "),
+    author: { "@id": PERSON_ID },
+    isPartOf: { "@id": WEBSITE_ID },
+    ...(project.year ? { dateCreated: String(project.year) } : {})
+  };
+  if (project.kind === "open-source" && project.github) {
+    return {
+      ...common,
+      "@type": "SoftwareSourceCode",
+      codeRepository: project.github
+    };
+  }
+  return { ...common, "@type": "CreativeWork" };
+}
+
 export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
   const index = projects.findIndex((p) => p.slug === slug);
@@ -54,5 +85,10 @@ export default async function ProjectPage({ params }: PageProps) {
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
 
-  return <ProjectDetail project={projects[index]} prev={prev} next={next} />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(projectJsonLd(projects[index]))} />
+      <ProjectDetail project={projects[index]} prev={prev} next={next} />
+    </>
+  );
 }

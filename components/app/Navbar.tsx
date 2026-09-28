@@ -4,9 +4,9 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValueEvent, useSpring } from "framer-motion";
-import { Command, Download, Menu, Moon, Sun, X } from "lucide-react";
+import { BookOpen, Command, Download, FileText, Menu, Moon, Sun, X } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
-import { SECTION_IDS, useActiveSection, useCopy, useCvDownload, useSections, useTheme } from "@/lib/hooks";
+import { SECTION_IDS, useActiveSection, useCopy, useCvDownload, useNotesEnabled, useSections, useTheme } from "@/lib/hooks";
 import { TELEGRAM_URL } from "@/lib/ui-copy";
 import { usePageScroll } from "@/lib/scroll";
 import { trackEvent } from "@/lib/analytics";
@@ -45,6 +45,8 @@ export function Navbar() {
   const setPaletteOpen = usePortfolioStore((s) => s.setPaletteOpen);
   const { isDark, toggle } = useTheme();
   const isApple = useIsApple();
+  const notesEnabled = useNotesEnabled();
+  const onNotes = pathname === "/notes" || pathname.startsWith("/notes/");
 
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -108,12 +110,14 @@ export function Navbar() {
   };
 
   const navLinks = sections.filter((s) => s.id !== "hero" && s.id !== "contact");
+  const menuAction =
+    "flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-center text-[12px] font-medium leading-tight text-muted transition hover:bg-surface hover:text-text";
   const iconButton = "flex h-9 w-9 items-center justify-center rounded-full text-muted transition hover:bg-surface hover:text-text";
 
   return (
     <>
       <motion.div
-        className="fixed inset-x-0 top-0 z-[70] h-[2px] origin-left bg-accent rtl:origin-right"
+        className="fixed inset-x-0 top-0 z-[70] h-[2px] origin-left bg-accent rtl:origin-right print:hidden"
         style={{ scaleX: progress }}
         aria-hidden="true"
       />
@@ -124,7 +128,7 @@ export function Navbar() {
         animate={{ y: hidden ? -110 : 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 30 }}
         onFocusCapture={() => setHidden(false)}
-        className="fixed inset-x-0 top-3 z-50 sm:top-4"
+        className="fixed inset-x-0 top-3 z-50 sm:top-4 print:hidden"
       >
         {/* Same width as .shell. Wrapper + 1px border + bar padding + link padding = the shell gutter (16px, 24px from sm), so the logo lines up with the content. */}
         <div className="mx-auto max-w-6xl px-2 sm:px-3">
@@ -241,6 +245,28 @@ export function Navbar() {
                 </AnimatePresence>
               </button>
 
+              {notesEnabled ? (
+                <Link
+                  href="/notes"
+                  aria-current={pathname === "/notes" ? "page" : undefined}
+                  className={`hidden h-9 items-center rounded-full px-3 text-[13px] font-medium transition hover:bg-surface hover:text-text md:inline-flex ${
+                    onNotes ? "bg-surface text-text" : "text-muted"
+                  }`}
+                >
+                  {ui.notes.navLabel}
+                </Link>
+              ) : null}
+
+              <Link
+                href="/cv"
+                aria-current={pathname === "/cv" ? "page" : undefined}
+                className={`hidden h-9 items-center rounded-full px-3 text-[13px] font-medium transition hover:bg-surface hover:text-text md:inline-flex ${
+                  pathname === "/cv" ? "bg-surface text-text" : "text-muted"
+                }`}
+              >
+                {copy.navCvLabel}
+              </Link>
+
               <Link href="/#contact" onClick={go("contact")} className="btn-solid hidden !min-h-[36px] !px-4 text-[13px] md:inline-flex">
                 {copy.navContact}
               </Link>
@@ -289,7 +315,28 @@ export function Navbar() {
                     );
                   })}
                 </ul>
-                <div className="mt-2 grid grid-cols-2 gap-1 border-t hairline pt-2">
+                {/* Compact actions: notes (when published), the CV page, the PDF, and Telegram. */}
+                <div className={`mt-2 grid gap-1 border-t hairline pt-2 ${notesEnabled ? "grid-cols-4" : "grid-cols-3"}`}>
+                  {notesEnabled ? (
+                    <Link
+                      href="/notes"
+                      onClick={() => setMenuOpen(false)}
+                      aria-current={pathname === "/notes" ? "page" : undefined}
+                      className={menuAction}
+                    >
+                      <BookOpen className="h-4 w-4 shrink-0" aria-hidden="true" />
+                      {ui.notes.navLabel}
+                    </Link>
+                  ) : null}
+                  <Link
+                    href="/cv"
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={pathname === "/cv" ? "page" : undefined}
+                    className={menuAction}
+                  >
+                    <FileText className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    {copy.navCvLabel}
+                  </Link>
                   <a
                     href={cv.href}
                     download
@@ -297,7 +344,7 @@ export function Navbar() {
                       cv.onClick();
                       setMenuOpen(false);
                     }}
-                    className="flex min-h-[44px] items-center gap-2 rounded-2xl px-4 text-sm font-medium text-muted transition hover:bg-surface hover:text-text"
+                    className={menuAction}
                   >
                     <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
                     {copy.contactCvLabel}
@@ -310,7 +357,7 @@ export function Navbar() {
                       trackEvent("telegram_click");
                       setMenuOpen(false);
                     }}
-                    className="flex min-h-[44px] items-center gap-2 rounded-2xl px-4 text-sm font-medium text-muted transition hover:bg-surface hover:text-text"
+                    className={menuAction}
                   >
                     <TelegramIcon className="h-4 w-4 shrink-0" />
                     {ui.telegramLabel}

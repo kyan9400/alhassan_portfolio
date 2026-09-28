@@ -3,9 +3,9 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Copy, Download, FolderGit2, Hash, Languages, Moon, Search } from "lucide-react";
+import { ArrowRight, Archive, BookOpen, Copy, Download, FileText, FolderGit2, Hash, Languages, Moon, Search } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
-import { useCopy, useCopyEmail, useCvDownload, useSections, useTheme } from "@/lib/hooks";
+import { useCopy, useCopyEmail, useCvDownload, useNotesEnabled, useSections, useTheme } from "@/lib/hooks";
 import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/ui-copy";
 import { localizeProject, projects } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
@@ -46,6 +46,7 @@ export function CommandPalette() {
   const cv = useCvDownload();
   const copyEmail = useCopyEmail();
   const { toggle } = useTheme();
+  const notesEnabled = useNotesEnabled();
   const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -86,6 +87,14 @@ export function CommandPalette() {
           }
         };
       }),
+      {
+        id: "archive",
+        label: copy.ui.archive.linkLabel,
+        keywords: "archive all projects repositories table",
+        group: copy.nav[2],
+        icon: <Archive className="h-4 w-4" />,
+        run: () => router.push("/projects/archive")
+      },
       { id: "email", label: c.copyEmail, keywords: "email mail", group: c.actions, icon: <Copy className="h-4 w-4" />, run: () => void copyEmail() },
       {
         id: "cv",
@@ -101,6 +110,27 @@ export function CommandPalette() {
           a.click();
         }
       },
+      {
+        id: "cv-page",
+        label: c.openCv,
+        keywords: "cv resume print page",
+        group: c.actions,
+        icon: <FileText className="h-4 w-4" />,
+        run: () => router.push("/cv")
+      },
+      // Only while the notes section exists (NOTES_ENABLED, lib/notes-config.ts).
+      ...(notesEnabled
+        ? [
+            {
+              id: "notes",
+              label: copy.ui.notes.navLabel,
+              keywords: "notes blog articles posts",
+              group: c.actions,
+              icon: <BookOpen className="h-4 w-4" />,
+              run: () => router.push("/notes")
+            } satisfies Item
+          ]
+        : []),
       {
         id: "telegram",
         label: copy.ui.telegramLabel,
@@ -124,7 +154,7 @@ export function CommandPalette() {
         run: () => setLocale(l)
       }))
     ];
-  }, [copy, sections, locale, pathname, router, copyEmail, cv, toggle, setLocale]);
+  }, [copy, sections, locale, pathname, router, copyEmail, cv, toggle, setLocale, notesEnabled]);
 
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();

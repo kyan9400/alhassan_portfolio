@@ -1,0 +1,37 @@
+---
+title: Example draft — the shape of a note
+description: A template post that shows the frontmatter, headings and code blocks a note can use. It is a draft, so it is never published.
+date: 2026-09-28
+lang: en
+draft: true
+---
+
+This file is a template. Copy it to `content/notes/<slug>.mdx`, replace the text, and set
+`draft: false` when the post is ready. The file name becomes the URL: `/notes/<slug>`.
+
+## Frontmatter
+
+Every note starts with a block of `key: value` lines:
+
+- `title` and `description` appear in the list, the RSS feed and search results;
+- `date` is `YYYY-MM-DD`;
+- `lang` is `en`, `ru` or `ar` — Arabic posts are laid out right to left;
+- `draft: true` keeps a post out of the list, the feed, the sitemap and production builds.
+
+## Headings build the table of contents
+
+Second- and third-level headings are listed at the top of the post and get their own anchors.
+
+### A third-level heading
+
+It is indented under its section in the table of contents.
+
+## Code
+
+```ts
+export function add(a: number, b: number) {
+  return a + b;
+}
+```
+
+> The notes section stays hidden until at least two posts are published (see `lib/notes-config.ts`).

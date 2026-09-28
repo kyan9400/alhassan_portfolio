@@ -22,6 +22,8 @@ type UiCopy = {
     copyEmail: string;
     toggleTheme: string;
     downloadCv: string;
+    /** Opens the /cv page. */
+    openCv: string;
     empty: string;
   };
   toastEmailCopied: string;
@@ -97,6 +99,57 @@ type UiCopy = {
   projectCta: { eyebrow: string; title: string; body: string; contact: string };
   /** Localized document titles; the server metadata stays English. */
   meta: { homeTitle: string; nameSuffix: string };
+  /** Certifications: link to the public credential, shown only when a URL is set. */
+  verify: string;
+  /** /projects/archive: every project and curated repository in one table. */
+  archive: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    /** Link from the Projects and GitHub sections. */
+    linkLabel: string;
+    metaTitle: string;
+    columns: { year: string; project: string; context: string; stack: string; links: string };
+    context: { job: string; freelance: string; openSource: string };
+    caseStudy: string;
+    /** Screen-reader text for the "—" shown when a year is not known. */
+    unknownYear: string;
+  };
+  /** /cv: the printable one-page CV. */
+  cv: {
+    metaTitle: string;
+    toolbarLabel: string;
+    downloadPdf: string;
+    print: string;
+    summary: string;
+    experience: string;
+    projects: string;
+    skills: string;
+    education: string;
+    certifications: string;
+    languages: string;
+    contacts: string;
+    portfolio: string;
+  };
+  /** Desktop side navigation on the home page (accessible name of the <nav>). */
+  sectionRail: { label: string };
+  /** Footer disclosure: how the site is built. `body` is prose; `source` labels the repository link. */
+  colophon: { summary: string; items: { title: string; body: string }[]; source: string };
+  /** /notes (only linked when NOTES_ENABLED, see lib/notes-config.ts). */
+  notes: {
+    navLabel: string;
+    eyebrow: string;
+    title: string;
+    description: string;
+    metaTitle: string;
+    /** `{n}` = minutes. Keys are Intl.PluralRules categories; `other` is the fallback. */
+    readingTime: Partial<Record<Intl.LDMLPluralRule, string>> & { other: string };
+    toc: string;
+    previous: string;
+    next: string;
+    back: string;
+    rss: string;
+  };
 };
 
 const LANGUAGE_NAMES: Record<Locale, string> = { en: "English", ru: "Русский", ar: "العربية" };
@@ -140,6 +193,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       copyEmail: "Copy email address",
       toggleTheme: "Toggle light / dark",
       downloadCv: "Download CV",
+      openCv: "Open CV page",
       empty: "Nothing found."
     },
     toastEmailCopied: "Email copied — talk soon!",
@@ -223,6 +277,66 @@ export const uiCopy: Record<Locale, UiCopy> = {
     meta: {
       homeTitle: "Alhassan Alfarran — Full-Stack & Python Developer, Moscow",
       nameSuffix: "Alhassan Alfarran"
+    },
+    verify: "Verify",
+    archive: {
+      eyebrow: "Archive",
+      title: "Every project, in one table.",
+      description:
+        "Work, freelance and open-source projects plus the hand-picked GitHub repositories — by year, context and stack.",
+      linkLabel: "Full project archive",
+      metaTitle: "Project archive",
+      columns: { year: "Year", project: "Project", context: "Context", stack: "Stack", links: "Links" },
+      context: { job: "Work", freelance: "Freelance", openSource: "Open source" },
+      caseStudy: "Case study",
+      unknownYear: "Year not specified"
+    },
+    cv: {
+      metaTitle: "CV",
+      toolbarLabel: "CV actions",
+      downloadPdf: "Download PDF",
+      print: "Print",
+      summary: "Summary",
+      experience: "Experience",
+      projects: "Selected projects",
+      skills: "Skills",
+      education: "Education",
+      certifications: "Certifications",
+      languages: "Languages",
+      contacts: "Contacts",
+      portfolio: "Portfolio"
+    },
+    sectionRail: { label: "Page sections" },
+    colophon: {
+      summary: "How this site is built",
+      items: [
+        {
+          title: "Stack",
+          body: "Next.js (App Router) and React, styled with Tailwind CSS and animated with Framer Motion. The contact form sends email through Resend; the site is hosted on Vercel."
+        },
+        {
+          title: "Three languages, one layout",
+          body: "English, Russian and Arabic share one URL and one set of components. The layout uses logical CSS properties (start/end instead of left/right), so Arabic mirrors right to left without separate styles. A small script sets the language and text direction before the first paint, so nothing flips after loading, and the Arabic font is only downloaded when Arabic text is on screen."
+        },
+        {
+          title: "Performance and accessibility",
+          body: "Sections below the first screen skip rendering until you scroll near them, and the quick menu loads on first use. Everything works from the keyboard, with a skip link and visible focus, and animations switch off when your system asks for reduced motion."
+        }
+      ],
+      source: "Source code on GitHub"
+    },
+    notes: {
+      navLabel: "Notes",
+      eyebrow: "Notes",
+      title: "Notes on building software.",
+      description: "Short write-ups on engineering work: architecture, tooling and lessons from real projects.",
+      metaTitle: "Notes",
+      readingTime: { one: "{n} min read", other: "{n} min read" },
+      toc: "On this page",
+      previous: "Previous note",
+      next: "Next note",
+      back: "All notes",
+      rss: "RSS feed"
     }
   },
   ru: {
@@ -263,6 +377,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       copyEmail: "Скопировать email",
       toggleTheme: "Светлая / тёмная тема",
       downloadCv: "Скачать резюме",
+      openCv: "Открыть резюме на сайте",
       empty: "Ничего не найдено."
     },
     toastEmailCopied: "Email скопирован — до связи!",
@@ -345,6 +460,66 @@ export const uiCopy: Record<Locale, UiCopy> = {
     meta: {
       homeTitle: "Альхассан Альфарран — Full-stack / Python-разработчик, Москва",
       nameSuffix: "Альхассан Альфарран"
+    },
+    verify: "Проверить",
+    archive: {
+      eyebrow: "Архив",
+      title: "Все проекты в одной таблице.",
+      description:
+        "Коммерческие, фриланс- и open-source-проекты, а также отобранные репозитории GitHub — по годам, контексту и стеку.",
+      linkLabel: "Полный архив проектов",
+      metaTitle: "Архив проектов",
+      columns: { year: "Год", project: "Проект", context: "Контекст", stack: "Стек", links: "Ссылки" },
+      context: { job: "Работа", freelance: "Фриланс", openSource: "Open source" },
+      caseStudy: "Кейс",
+      unknownYear: "Год не указан"
+    },
+    cv: {
+      metaTitle: "Резюме",
+      toolbarLabel: "Действия с резюме",
+      downloadPdf: "Скачать PDF",
+      print: "Печать",
+      summary: "О себе",
+      experience: "Опыт работы",
+      projects: "Избранные проекты",
+      skills: "Навыки",
+      education: "Образование",
+      certifications: "Сертификаты",
+      languages: "Языки",
+      contacts: "Контакты",
+      portfolio: "Портфолио"
+    },
+    sectionRail: { label: "Разделы страницы" },
+    colophon: {
+      summary: "Как устроен этот сайт",
+      items: [
+        {
+          title: "Стек",
+          body: "Next.js (App Router) и React, стили на Tailwind CSS, анимации на Framer Motion. Форма обратной связи отправляет письма через Resend, сайт размещён на Vercel."
+        },
+        {
+          title: "Три языка, одна вёрстка",
+          body: "Английская, русская и арабская версии открываются по одному адресу и собраны из одних и тех же компонентов. В вёрстке используются логические CSS-свойства (start/end вместо left/right), поэтому арабская версия отражается справа налево без отдельных стилей. Небольшой скрипт выставляет язык и направление текста ещё до первой отрисовки, так что после загрузки ничего не перескакивает, а арабский шрифт загружается, только когда на экране есть арабский текст."
+        },
+        {
+          title: "Скорость и доступность",
+          body: "Секции ниже первого экрана не отрисовываются, пока страница не прокручена до них, а быстрое меню загружается при первом открытии. Всем можно пользоваться с клавиатуры — есть ссылка для перехода к содержимому и заметный фокус, — а анимации отключаются, если в системе включено уменьшение движения."
+        }
+      ],
+      source: "Исходный код на GitHub"
+    },
+    notes: {
+      navLabel: "Заметки",
+      eyebrow: "Заметки",
+      title: "Заметки о разработке.",
+      description: "Короткие разборы инженерной работы: архитектура, инструменты и выводы из реальных проектов.",
+      metaTitle: "Заметки",
+      readingTime: { other: "{n} мин чтения" },
+      toc: "Содержание",
+      previous: "Предыдущая заметка",
+      next: "Следующая заметка",
+      back: "Все заметки",
+      rss: "RSS-лента"
     }
   },
   ar: {
@@ -385,6 +560,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       copyEmail: "نسخ البريد الإلكتروني",
       toggleTheme: "تبديل الوضع الفاتح / الداكن",
       downloadCv: "تحميل السيرة الذاتية",
+      openCv: "فتح صفحة السيرة الذاتية",
       empty: "لا توجد نتائج."
     },
     toastEmailCopied: "تم نسخ البريد — نتحدث قريباً!",
@@ -467,6 +643,72 @@ export const uiCopy: Record<Locale, UiCopy> = {
     meta: {
       homeTitle: "الحسن الفران — مطوّر Full-Stack وPython، موسكو",
       nameSuffix: "الحسن الفران"
+    },
+    verify: "تحقّق",
+    archive: {
+      eyebrow: "الأرشيف",
+      title: "كل المشاريع في جدول واحد.",
+      description:
+        "مشاريع العمل والعمل الحر والمشاريع مفتوحة المصدر، إلى جانب مستودعات GitHub المختارة — حسب السنة والسياق والتقنيات.",
+      linkLabel: "الأرشيف الكامل للمشاريع",
+      metaTitle: "أرشيف المشاريع",
+      columns: { year: "السنة", project: "المشروع", context: "السياق", stack: "التقنيات", links: "الروابط" },
+      context: { job: "عمل", freelance: "عمل حر", openSource: "مفتوح المصدر" },
+      caseStudy: "دراسة الحالة",
+      unknownYear: "السنة غير محددة"
+    },
+    cv: {
+      metaTitle: "السيرة الذاتية",
+      toolbarLabel: "إجراءات السيرة الذاتية",
+      downloadPdf: "تحميل PDF",
+      print: "طباعة",
+      summary: "نبذة",
+      experience: "الخبرة",
+      projects: "مشاريع مختارة",
+      skills: "المهارات",
+      education: "التعليم",
+      certifications: "الشهادات",
+      languages: "اللغات",
+      contacts: "التواصل",
+      portfolio: "الموقع"
+    },
+    sectionRail: { label: "أقسام الصفحة" },
+    colophon: {
+      summary: "كيف بُني هذا الموقع",
+      items: [
+        {
+          title: "التقنيات",
+          body: "Next.js (App Router) وReact، مع Tailwind CSS للتنسيق وFramer Motion للحركة. يُرسل نموذج التواصل الرسائل عبر Resend، والموقع مستضاف على Vercel."
+        },
+        {
+          title: "ثلاث لغات وتصميم واحد",
+          body: "النسخ الإنجليزية والروسية والعربية على الرابط نفسه وتستخدم المكوّنات نفسها. يعتمد التصميم على خصائص CSS المنطقية (start/end بدلاً من left/right)، فتنعكس النسخة العربية من اليمين إلى اليسار دون أنماط منفصلة. ويحدّد سكربت صغير لغة الصفحة واتجاه النص قبل أول عرض لها، فلا ينقلب شيء بعد التحميل، ولا يُنزَّل الخط العربي إلا عند ظهور نص عربي على الشاشة."
+        },
+        {
+          title: "الأداء وسهولة الوصول",
+          body: "لا تُعرض الأقسام الواقعة أسفل الشاشة الأولى إلا عند الاقتراب منها، ولا تُحمَّل القائمة السريعة إلا عند أول استخدام لها. يمكن استخدام كل شيء من لوحة المفاتيح، مع رابط للانتقال مباشرة إلى المحتوى وتركيز ظاهر، وتتوقف الحركة إذا طلب نظامك تقليلها."
+        }
+      ],
+      source: "الكود المصدري على GitHub"
+    },
+    notes: {
+      navLabel: "ملاحظات",
+      eyebrow: "ملاحظات",
+      title: "ملاحظات عن تطوير البرمجيات.",
+      description: "كتابات قصيرة عن العمل الهندسي: البنية والأدوات والدروس المستفادة من مشاريع حقيقية.",
+      metaTitle: "ملاحظات",
+      readingTime: {
+        one: "قراءة في دقيقة واحدة",
+        two: "قراءة في دقيقتين",
+        few: "قراءة في {n} دقائق",
+        many: "قراءة في {n} دقيقة",
+        other: "قراءة في {n} دقيقة"
+      },
+      toc: "المحتويات",
+      previous: "الملاحظة السابقة",
+      next: "الملاحظة التالية",
+      back: "كل الملاحظات",
+      rss: "خلاصة RSS"
     }
   }
 };

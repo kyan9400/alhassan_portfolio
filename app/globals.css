@@ -423,3 +423,60 @@ html.lenis body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ==========================================================
+   Print (the /cv page above all): black on white A4, no site chrome.
+   The navbar, progress bar, backdrop, mobile bar and toasts carry `print:hidden`;
+   the grain, cursor and skip link are hidden here.
+   ========================================================== */
+@media print {
+  @page {
+    size: A4;
+    margin: 9mm 11mm;
+  }
+
+  :root,
+  .dark {
+    --bg: 255 255 255;
+    --text: 0 0 0;
+    --muted: 64 64 72;
+    --card: 255 255 255;
+    --surface: 255 255 255;
+    --line: 0 0 0;
+    --line-alpha: 0.22;
+    --accent: 0 0 0;
+    --accent-2: 0 0 0;
+    --accent-ink: 0 0 0;
+    --glow: 0 0 0;
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .grain,
+  .cursor-dot,
+  .skip-link {
+    display: none !important;
+  }
+
+  /* Entrance animations would print half-faded if a print starts mid-animation. */
+  .fade-in {
+    animation: none !important;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  /* One role, degree or project never splits across a page break. */
+  .cv-block {
+    break-inside: avoid;
+  }
+  .cv-heading {
+    break-after: avoid;
+  }
+}

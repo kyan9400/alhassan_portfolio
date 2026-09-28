@@ -9,6 +9,7 @@ import { GITHUB_URL } from "@/lib/ui-copy";
 import { useCopy } from "@/lib/hooks";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { Bidi, SectionHeader, GithubIcon } from "@/components/ui/primitives";
+import { ArchiveLink } from "./Projects";
 
 /** Web and AI work first; platform tooling last. */
 const FILTERS = ["all", "ai", "backend", "frontend", "platform"] as const;
@@ -329,6 +330,8 @@ export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
             </button>
           </div>
         ) : null}
+
+        <ArchiveLink className="mt-8" />
       </div>
     </section>
   );

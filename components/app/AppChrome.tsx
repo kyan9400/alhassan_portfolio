@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { MotionConfig } from "framer-motion";
 import { hydrateLocale, usePortfolioStore } from "@/store/portfolioStore";
-import { useCopy, useDocumentTitle } from "@/lib/hooks";
+import { NotesEnabledContext, useCopy, useDocumentTitle } from "@/lib/hooks";
 import { SmoothScroll, focusTarget } from "./SmoothScroll";
 import { Background } from "./Background";
 import { Cursor } from "./Cursor";
@@ -27,7 +27,8 @@ function skipToContent(e: React.MouseEvent<HTMLAnchorElement>) {
   focusTarget(main);
 }
 
-export function AppChrome({ children }: { children: React.ReactNode }) {
+/** `notesEnabled`: NOTES_ENABLED from lib/notes-config.ts (server-only), shared with the client chrome. */
+export function AppChrome({ children, notesEnabled }: { children: React.ReactNode; notesEnabled: boolean }) {
   const copy = useCopy();
   const locale = usePortfolioStore((s) => s.locale);
   const localeReady = usePortfolioStore((s) => s.localeReady);
@@ -52,21 +53,23 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   useDocumentTitle(localeReady && pathname === "/" ? copy.ui.meta.homeTitle : null);
 
   return (
-    <MotionConfig reducedMotion="user">
-      <a href="#main" className="skip-link" onClick={skipToContent}>
-        {copy.skipToContent}
-      </a>
-      <SmoothScroll />
-      <Background />
-      <div className="grain" aria-hidden="true" />
-      <Navbar />
-      <div id="main" className="relative z-10">
-        {children}
-      </div>
-      <Cursor />
-      {paletteUsed ? <CommandPalette /> : null}
-      <Toast />
-      <EasterEgg />
-    </MotionConfig>
+    <NotesEnabledContext value={notesEnabled}>
+      <MotionConfig reducedMotion="user">
+        <a href="#main" className="skip-link" onClick={skipToContent}>
+          {copy.skipToContent}
+        </a>
+        <SmoothScroll />
+        <Background />
+        <div className="grain" aria-hidden="true" />
+        <Navbar />
+        <div id="main" className="relative z-10">
+          {children}
+        </div>
+        <Cursor />
+        {paletteUsed ? <CommandPalette /> : null}
+        <Toast />
+        <EasterEgg />
+      </MotionConfig>
+    </NotesEnabledContext>
   );
 }

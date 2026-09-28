@@ -1,10 +1,14 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { ArrowUpRight } from "lucide-react";
-import { useCopy } from "@/lib/hooks";
+import Link from "next/link";
+import { ArrowUpRight, Plus } from "lucide-react";
+import { useCopy, useNotesEnabled } from "@/lib/hooks";
+import { Bidi } from "@/components/ui/primitives";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import type { Locale } from "@/lib/types";
+
+const SOURCE_URL = "https://github.com/kyan9400/alhassan_portfolio";
 
 /** Fallback until the client clock is known (only differs on New Year's Eve). */
 const RENDER_YEAR = new Date().getFullYear();
@@ -29,11 +33,14 @@ function greetingFor(hour: number, g: { morning: string; afternoon: string; even
 
 /**
  * Site footer: a large quiet sign-off with the name, then name, a time-aware greeting next to my local
- * time in Moscow, and "back to top". Shared by home and the case studies.
+ * time in Moscow, and "back to top"; below, a closed-by-default colophon ("How this site is built").
+ * Shared by home, the case studies, the archive and notes.
  */
 export function Footer({ className = "" }: { className?: string }) {
   const copy = useCopy();
   const locale = usePortfolioStore((s) => s.locale);
+  const notesEnabled = useNotesEnabled();
+  const colophon = copy.ui.colophon;
   const minute = useSyncExternalStore<number | null>(subscribeClock, getMinute, getServerMinute);
 
   const now = minute === null ? null : new Date(minute * 60_000);
@@ -68,15 +75,49 @@ export function Footer({ className = "" }: { className?: string }) {
         </time>{" "}
         · {copy.ui.city}
       </p>
-      <button
-        type="button"
-        onClick={() => (window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" }))}
-        className="btn-ghost !min-h-[40px] text-[13px]"
-      >
-        {copy.ui.footerBackToTop}
-        <ArrowUpRight className="h-4 w-4 -rotate-45" aria-hidden="true" />
-      </button>
+      <div className="flex shrink-0 items-center gap-2">
+        {notesEnabled ? (
+          <Link href="/notes" className="btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]">
+            {copy.ui.notes.navLabel}
+          </Link>
+        ) : null}
+        <button
+          type="button"
+          onClick={() => (window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" }))}
+          className="btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]"
+        >
+          {copy.ui.footerBackToTop}
+          <ArrowUpRight className="h-4 w-4 -rotate-45" aria-hidden="true" />
+        </button>
       </div>
+      </div>
+
+      {/* Colophon: native <details>, so it opens with the keyboard and works before hydration. */}
+      <details className="group mt-6 border-t border-line/10 pt-2 text-sm print:hidden">
+        <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-center gap-2 rounded-md text-xs font-medium text-muted transition-colors hover:text-text md:justify-start [&::-webkit-details-marker]:hidden">
+          <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none" aria-hidden="true" />
+          {colophon.summary}
+        </summary>
+        <div className="grid gap-x-10 gap-y-6 pb-4 pt-4 md:grid-cols-3">
+          {colophon.items.map((item) => (
+            <div key={item.title}>
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-text rtl:tracking-normal">{item.title}</p>
+              <p className="mt-2 text-pretty text-[13px] leading-relaxed text-muted">
+                <Bidi text={item.body} />
+              </p>
+            </div>
+          ))}
+        </div>
+        <a
+          href={SOURCE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-link mb-2 min-h-[44px] text-[13px]"
+        >
+          {colophon.source}
+          <ArrowUpRight className="h-3.5 w-3.5 rtl:-scale-x-100" aria-hidden="true" />
+        </a>
+      </details>
     </footer>
   );
 }

@@ -51,7 +51,7 @@ export function typographAr(text: string): string {
  * Keys whose values are identifiers, paths or document titles, never flowing prose.
  * `meta` holds the <title> strings: no-break spaces there only make tab titles harder to read.
  */
-const SKIP_KEYS = new Set(["file", "code", "dir", "slug", "image", "github", "live", "imageKind", "kind", "meta", "resultLabel", "codeNote"]);
+const SKIP_KEYS = new Set(["file", "code", "dir", "slug", "image", "github", "live", "imageKind", "kind", "meta", "resultLabel", "codeNote", "verifyUrl", "logo", "monogram", "year", "href"]);
 
 function deep<T>(value: T, fn: (text: string) => string): T {
   if (typeof value === "string") return fn(value) as T;

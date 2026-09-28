@@ -39,7 +39,7 @@ export function Background() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden print:hidden">
       <div className="absolute -left-[10%] -top-[20%] h-[60vmax] w-[60vmax] rounded-full bg-[radial-gradient(circle,rgb(var(--accent)/0.18),transparent_65%)]" />
       <div
         className="absolute -right-[15%] top-[30%] h-[55vmax] w-[55vmax] rounded-full bg-[radial-gradient(circle,rgb(var(--accent-2)/0.12),transparent_65%)]"

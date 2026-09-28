@@ -8,17 +8,31 @@ import type { Locale } from "@/lib/types";
  * Solutions), Russian is conversational. Keep all three locales in sync when editing.
  */
 
+/**
+ * Organisation mark next to a role or degree. `monogram` is the typographic fallback (Latin initials
+ * in English, Cyrillic in Russian where the name is Russian); `logo` is an optional path to a
+ * monochrome logo dropped into public/images/logos/ (e.g. "/images/logos/misis.svg"). None ship yet.
+ */
+export type OrgMark = { monogram: string; logo?: string };
+
 export type ExperienceItem = {
   period: string;
   title: string;
   company: string;
+  mark: OrgMark;
   location?: string;
   summary: string;
   highlights: string[];
   stack: string[];
 };
 
-export type EducationItem = { period: string; degree: string; school: string };
+export type EducationItem = { period: string; degree: string; school: string; mark: OrgMark };
+
+/**
+ * A certification. `verifyUrl` is the public credential link; the "Verify" link renders only when
+ * it is set. Leave it empty rather than guessing a URL.
+ */
+export type Certification = { name: string; issuer?: string; year?: string; verifyUrl?: string };
 
 export type CopyDictionary = {
   dir: "ltr" | "rtl";
@@ -61,7 +75,9 @@ export type CopyDictionary = {
   experienceItems: ExperienceItem[];
   education: EducationItem[];
   /** Real items from the EN CV only; the site shows the relevant subset (the full list is in the CV). */
-  certifications: string[];
+  certifications: Certification[];
+  /** Spoken languages with levels (CV page). EN C1, Arabic native, Russian conversational. */
+  languages: { name: string; level: string }[];
   contactEyebrow: string;
   contactTitle: string;
   contactDescription: string;
@@ -138,12 +154,12 @@ export type CopyDictionary = {
 };
 
 /** Course titles are proper names, so they stay in English in every locale. */
-const CERTIFICATIONS = [
-  "Server-side Development with Node.js, Express and MongoDB — Coursera",
-  "Introduction to SQL — Coursera, University of Michigan",
-  "Understanding and Visualizing Data with Python — Coursera, University of Michigan",
-  "Machine Learning for All — Coursera, University of London",
-  "Programming with Google Go Specialization — Coursera"
+const CERTIFICATIONS: Certification[] = [
+  { name: "Server-side Development with Node.js, Express and MongoDB", issuer: "Coursera", verifyUrl: "" },
+  { name: "Introduction to SQL", issuer: "Coursera, University of Michigan", verifyUrl: "" },
+  { name: "Understanding and Visualizing Data with Python", issuer: "Coursera, University of Michigan", verifyUrl: "" },
+  { name: "Machine Learning for All", issuer: "Coursera, University of London", verifyUrl: "" },
+  { name: "Programming with Google Go Specialization", issuer: "Coursera", verifyUrl: "" }
 ];
 
 const CV_FILES = {
@@ -222,6 +238,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Jan 2026 — Present",
         title: "Python / Full-Stack Developer",
         company: "Elektroservis",
+        mark: { monogram: "E" },
         location: "Moscow",
         summary: "Building a document search and RAG system for engineering and technical documentation.",
         highlights: [
@@ -235,6 +252,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Jan 2025 — Dec 2025",
         title: "Chief Full-Stack Developer",
         company: "Avenue Group",
+        mark: { monogram: "AG" },
         location: "Moscow · on-site",
         summary: "Designed and shipped OKKP from scratch — a full-stack operational management platform.",
         highlights: [
@@ -249,6 +267,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Oct 2024 — Jul 2025",
         title: "Full-Stack Web Developer",
         company: "Junzi Tech Solutions",
+        mark: { monogram: "JT" },
         summary: "Delivered full-stack features for client web applications in Agile teams.",
         highlights: [
           "Cut the average response time of a critical API endpoint by ~60% with a caching layer and query refactoring.",
@@ -260,6 +279,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Jan 2020 — Present",
         title: "Full-Stack Developer",
         company: "Freelance",
+        mark: { monogram: "F" },
         location: "Remote",
         summary: "Projects for international clients, alongside my studies and full-time roles.",
         highlights: [
@@ -274,15 +294,22 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       {
         period: "2024 — 2026",
         degree: "Master's — Computer and Information Sciences",
-        school: "NUST MISIS, Moscow"
+        school: "NUST MISIS, Moscow",
+        mark: { monogram: "M" }
       },
       {
         period: "2020 — 2024",
         degree: "Bachelor's — Computer Science",
-        school: "Ural Federal University, Yekaterinburg"
+        school: "Ural Federal University, Yekaterinburg",
+        mark: { monogram: "U" }
       }
     ],
     certifications: CERTIFICATIONS,
+    languages: [
+      { name: "English", level: "C1" },
+      { name: "Arabic", level: "Native" },
+      { name: "Russian", level: "Conversational" }
+    ],
     contactEyebrow: "Contact",
     contactTitle: "Hiring, or have a project? Let's talk.",
     contactDescription:
@@ -480,6 +507,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Январь 2026 — сейчас",
         title: "Python / full-stack разработчик",
         company: "Электросервис",
+        mark: { monogram: "Э" },
         location: "Москва",
         summary: "Разрабатываю систему поиска и RAG по технической документации ПТО.",
         highlights: [
@@ -493,6 +521,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Январь 2025 — декабрь 2025",
         title: "Главный full-stack разработчик",
         company: "Avenue Group",
+        mark: { monogram: "AG" },
         location: "Москва · офис",
         summary: "С нуля спроектировал и запустил OKKP — full-stack платформу операционного управления.",
         highlights: [
@@ -507,6 +536,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Октябрь 2024 — июль 2025",
         title: "Full-stack веб-разработчик",
         company: "Junzi Tech Solutions",
+        mark: { monogram: "JT" },
         summary: "Разрабатывал full-stack функциональность клиентских веб-приложений в Agile-командах.",
         highlights: [
           "Сократил среднее время ответа критичного эндпоинта API примерно на 60% с помощью слоя кеширования и переработки запросов.",
@@ -518,6 +548,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "Январь 2020 — сейчас",
         title: "Full-stack разработчик",
         company: "Фриланс",
+        mark: { monogram: "Ф" },
         location: "Удалённо",
         summary: "Проекты для международных клиентов — параллельно с учёбой и основной работой.",
         highlights: [
@@ -532,15 +563,22 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       {
         period: "2024 — 2026",
         degree: "Магистратура — компьютерные и информационные науки",
-        school: "НИТУ МИСИС, Москва"
+        school: "НИТУ МИСИС, Москва",
+        mark: { monogram: "М" }
       },
       {
         period: "2020 — 2024",
         degree: "Бакалавриат — информатика и вычислительная техника",
-        school: "Уральский федеральный университет (УрФУ), Екатеринбург"
+        school: "Уральский федеральный университет (УрФУ), Екатеринбург",
+        mark: { monogram: "У" }
       }
     ],
     certifications: CERTIFICATIONS,
+    languages: [
+      { name: "Английский", level: "C1" },
+      { name: "Арабский", level: "родной" },
+      { name: "Русский", level: "разговорный" }
+    ],
     contactEyebrow: "Контакты",
     contactTitle: "Вакансия или проект? Давайте обсудим.",
     contactDescription:
@@ -739,6 +777,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "يناير 2026 — حتى الآن",
         title: "مطوّر Python / Full-Stack",
         company: "Elektroservis",
+        mark: { monogram: "E" },
         location: "موسكو",
         summary: "أبني نظام بحث وRAG للوثائق الهندسية والفنية.",
         highlights: [
@@ -752,6 +791,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "يناير 2025 — ديسمبر 2025",
         title: "كبير مطوري Full-Stack",
         company: "Avenue Group",
+        mark: { monogram: "AG" },
         location: "موسكو · من المكتب",
         summary: "صمّمت منصة OKKP وأطلقتها من الصفر — منصة متكاملة لإدارة العمليات.",
         highlights: [
@@ -766,6 +806,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "أكتوبر 2024 — يوليو 2025",
         title: "مطوّر ويب Full-Stack",
         company: "Junzi Tech Solutions",
+        mark: { monogram: "JT" },
         summary: "طوّرت ميزات متكاملة لتطبيقات ويب خاصة بعملاء الشركة ضمن فرق Agile.",
         highlights: [
           "خفّضت متوسط زمن استجابة نقطة نهاية API حرجة بنحو 60% عبر طبقة تخزين مؤقت وإعادة هيكلة الاستعلامات.",
@@ -777,6 +818,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
         period: "يناير 2020 — حتى الآن",
         title: "مطوّر Full-Stack",
         company: "عمل حر",
+        mark: { monogram: "ع" },
         location: "عن بُعد",
         summary: "مشاريع لعملاء دوليين، بالتوازي مع الدراسة والعمل بدوام كامل.",
         highlights: [
@@ -791,15 +833,22 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       {
         period: "2024 — 2026",
         degree: "ماجستير — علوم الحاسوب والمعلومات",
-        school: "الجامعة الوطنية للعلوم والتكنولوجيا MISIS، موسكو"
+        school: "الجامعة الوطنية للعلوم والتكنولوجيا MISIS، موسكو",
+        mark: { monogram: "M" }
       },
       {
         period: "2020 — 2024",
         degree: "بكالوريوس — علوم الحاسوب",
-        school: "جامعة الأورال الفيدرالية، يكاترينبورغ"
+        school: "جامعة الأورال الفيدرالية، يكاترينبورغ",
+        mark: { monogram: "U" }
       }
     ],
     certifications: CERTIFICATIONS,
+    languages: [
+      { name: "الإنجليزية", level: "C1" },
+      { name: "العربية", level: "اللغة الأم" },
+      { name: "الروسية", level: "مستوى المحادثة" }
+    ],
     contactEyebrow: "تواصل",
     contactTitle: "توظيف أو مشروع؟ لنتحدث.",
     contactDescription:

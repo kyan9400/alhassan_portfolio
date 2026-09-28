@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { getGithubRepos } from "@/lib/github";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
@@ -11,6 +12,13 @@ import { Services } from "@/components/sections/Services";
 import { GithubRepos } from "@/components/sections/GithubRepos";
 import { Contact } from "@/components/sections/Contact";
 import { MobileContactBar } from "@/components/app/MobileContactBar";
+import { SectionRail } from "@/components/app/SectionRail";
+import { languageAlternates } from "@/lib/seo";
+
+/** Same canonical as the layout, plus hreflang alternates: one URL, the language picked by ?lang= (lib/seo.ts). */
+export const metadata: Metadata = {
+  alternates: { canonical: "/", languages: languageAlternates("/") }
+};
 
 export const revalidate = 3600;
 
@@ -55,6 +63,7 @@ export default async function HomePage() {
         <Contact />
       </Suspense>
       <MobileContactBar />
+      <SectionRail />
     </main>
   );
 }

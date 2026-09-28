@@ -22,6 +22,10 @@ export type GithubRepo = {
   previewImage?: string;
   /** Russian and Arabic translations of `description` (the English one is the source). */
   descriptionI18n?: { ru?: string; ar?: string };
+  /** Year the repository was created on GitHub. */
+  year: number;
+  /** Display names for the language and the topics that are technologies (project archive). */
+  stack: string[];
 };
 
 export type GithubReposResult = { ok: true; repos: GithubRepo[] } | { ok: false };
@@ -38,6 +42,8 @@ type CuratedRepo = {
   topics: string[];
   /** Last known star count, used when the API is unavailable. */
   stars: number;
+  /** Creation year, baked from `gh repo view kyan9400/<name> --json createdAt`. */
+  created: number;
 };
 
 /*
@@ -55,6 +61,7 @@ type CuratedRepo = {
 const CURATED: CuratedRepo[] = [
   {
     name: "stockroom-ledger",
+    created: 2026,
     displayName: "Stockroom Ledger",
     category: "backend",
     language: "Python",
@@ -67,6 +74,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "my-gpt",
+    created: 2025,
     displayName: "MyGPT",
     category: "ai",
     language: "Python",
@@ -80,6 +88,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "leasequeue",
+    created: 2026,
     displayName: "LeaseQueue",
     category: "backend",
     language: "Python",
@@ -92,6 +101,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "access-verdict",
+    created: 2026,
     displayName: "Access Verdict",
     category: "backend",
     language: "TypeScript",
@@ -104,6 +114,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "smart-platform",
+    created: 2026,
     displayName: "Smart Platform",
     category: "frontend",
     language: "TypeScript",
@@ -117,6 +128,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "retry-lab",
+    created: 2026,
     displayName: "Retry Lab",
     category: "backend",
     language: "TypeScript",
@@ -129,6 +141,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "incident-canvas",
+    created: 2026,
     displayName: "Incident Canvas",
     category: "platform",
     language: "TypeScript",
@@ -141,6 +154,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "togglebench",
+    created: 2026,
     displayName: "ToggleBench",
     category: "platform",
     language: "TypeScript",
@@ -153,6 +167,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "repo-vitals",
+    created: 2026,
     displayName: "Repo Vitals",
     category: "platform",
     language: "TypeScript",
@@ -165,6 +180,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "sehati-client",
+    created: 2025,
     displayName: "Sehati Client",
     category: "frontend",
     language: "TypeScript",
@@ -178,6 +194,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "green-api-max-chat",
+    created: 2026,
     displayName: "GREEN-API MAX Chat",
     category: "frontend",
     language: "TypeScript",
@@ -191,6 +208,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "file-finder-mcp",
+    created: 2025,
     displayName: "File Finder MCP",
     category: "ai",
     language: "Python",
@@ -202,6 +220,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "opsmind",
+    created: 2026,
     displayName: "OpsMind",
     category: "ai",
     language: "TypeScript",
@@ -213,6 +232,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "micrograd-plus",
+    created: 2025,
     displayName: "Micrograd+",
     category: "ai",
     language: "Python",
@@ -225,6 +245,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "oktoberfest-ai",
+    created: 2025,
     displayName: "Oktoberfest AI",
     category: "ai",
     language: "Python",
@@ -236,6 +257,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "tampertrail",
+    created: 2026,
     displayName: "TamperTrail",
     category: "backend",
     language: "Go",
@@ -247,6 +269,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "sehati-server",
+    created: 2025,
     displayName: "Sehati API",
     category: "backend",
     language: "JavaScript",
@@ -258,6 +281,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "resto-pro",
+    created: 2025,
     displayName: "Resto Pro",
     category: "frontend",
     language: "TypeScript",
@@ -270,6 +294,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "alkajal2",
+    created: 2026,
     displayName: "Al-Sami Contracting",
     category: "frontend",
     language: "TypeScript",
@@ -283,6 +308,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "schema-sentry",
+    created: 2026,
     displayName: "Schema Sentry",
     category: "platform",
     language: "Python",
@@ -294,6 +320,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "openapi-impact",
+    created: 2026,
     displayName: "OpenAPI Impact",
     category: "platform",
     language: "Python",
@@ -305,6 +332,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "git-hotspots",
+    created: 2026,
     displayName: "Git Hotspots",
     category: "platform",
     language: "Go",
@@ -316,6 +344,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "slo-forge",
+    created: 2026,
     displayName: "SLO Forge",
     category: "platform",
     language: "Go",
@@ -328,6 +357,7 @@ const CURATED: CuratedRepo[] = [
   },
   {
     name: "platform-blueprint",
+    created: 2026,
     displayName: "Platform Blueprint",
     category: "platform",
     language: "HCL",
@@ -339,6 +369,46 @@ const CURATED: CuratedRepo[] = [
   }
 ];
 
+
+/** Topics that name a technology, with their display names. Other topics (concepts) are not stack. */
+const TOPIC_TECH: Record<string, string> = {
+  python: "Python",
+  golang: "Go",
+  typescript: "TypeScript",
+  react: "React",
+  nextjs: "Next.js",
+  nodejs: "Node.js",
+  express: "Express",
+  fastapi: "FastAPI",
+  tailwindcss: "Tailwind CSS",
+  postgresql: "PostgreSQL",
+  mongodb: "MongoDB",
+  mongoose: "Mongoose",
+  prisma: "Prisma",
+  jwt: "JWT",
+  docker: "Docker",
+  terraform: "Terraform",
+  prometheus: "Prometheus",
+  grafana: "Grafana",
+  fluxcd: "Flux",
+  flagger: "Flagger",
+  kyverno: "Kyverno",
+  pytorch: "PyTorch",
+  gradio: "Gradio",
+  huggingface: "Hugging Face",
+  transformers: "Transformers",
+  "github-actions": "GitHub Actions",
+  "github-api": "GitHub API",
+  "green-api": "GREEN-API",
+  openapi: "OpenAPI",
+  sql: "SQL",
+  sarif: "SARIF"
+};
+
+function repoStack(curated: CuratedRepo): string[] {
+  const names = [curated.language, ...curated.topics.map((t) => TOPIC_TECH[t]).filter((t): t is string => Boolean(t))];
+  return Array.from(new Set(names));
+}
 
 type ApiRepo = { stars: number; description: string | null; topics: string[] };
 
@@ -402,26 +472,35 @@ async function fetchApiRepos(): Promise<Map<string, ApiRepo> | null> {
 export async function getGithubRepos(): Promise<GithubReposResult> {
   const live = await fetchApiRepos();
 
-  const repos = CURATED.map((curated): GithubRepo => {
-    const api = live?.get(curated.name.toLowerCase());
-    return {
-      name: curated.name,
-      displayName: curated.displayName,
-      description: curated.description || api?.description || null,
-      html_url: `${REPO_BASE}/${curated.name}`,
-      homepage: liveHomepage(curated.homepage),
-      language: curated.language || null,
-      stargazers_count: api ? Math.max(api.stars, 0) : curated.stars,
-      topics: curated.topics.length > 0 ? curated.topics : (api?.topics ?? []),
-      category: curated.category,
-      previewImage: publicPathForRepoScreenshot(curated.name),
-      descriptionI18n: curated.ru || curated.ar ? { ru: curated.ru, ar: curated.ar } : undefined
-    };
-  });
+  const repos = CURATED.map((curated) => toRepo(curated, live?.get(curated.name.toLowerCase())));
 
   // Repos with a screenshot first (a stable sort keeps the curated order within each group), so the
   // section never opens on text-only cards.
   repos.sort((a, b) => Number(Boolean(b.previewImage)) - Number(Boolean(a.previewImage)));
 
   return { ok: true, repos };
+}
+
+/** The curated repos in curated order, from the baked-in data only (no network): the project archive. */
+export function getCuratedRepos(): GithubRepo[] {
+  return CURATED.map((curated) => toRepo(curated));
+}
+
+/** Curated data, enriched with the API entry when there is one (stars; description/topics where missing). */
+function toRepo(curated: CuratedRepo, api?: ApiRepo): GithubRepo {
+  return {
+    name: curated.name,
+    displayName: curated.displayName,
+    description: curated.description || api?.description || null,
+    html_url: `${REPO_BASE}/${curated.name}`,
+    homepage: liveHomepage(curated.homepage),
+    language: curated.language || null,
+    stargazers_count: api ? Math.max(api.stars, 0) : curated.stars,
+    topics: curated.topics.length > 0 ? curated.topics : (api?.topics ?? []),
+    category: curated.category,
+    previewImage: publicPathForRepoScreenshot(curated.name),
+    descriptionI18n: curated.ru || curated.ar ? { ru: curated.ru, ar: curated.ar } : undefined,
+    year: curated.created,
+    stack: repoStack(curated)
+  };
 }

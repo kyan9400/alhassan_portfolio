@@ -210,6 +210,19 @@ function GroupHeading({ title, count }: { title: string; count: number }) {
   );
 }
 
+/** "Full project archive →": shared with the GitHub section. */
+export function ArchiveLink({ className = "mt-12 md:mt-14" }: { className?: string }) {
+  const { ui } = useCopy();
+  return (
+    <p className={`flex justify-end ${className}`}>
+      <Link href="/projects/archive" className="text-link group min-h-[44px] text-sm">
+        {ui.archive.linkLabel}
+        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" aria-hidden="true" />
+      </Link>
+    </p>
+  );
+}
+
 /** Reads the catalog directly: it is already in the client bundle, so it isn't passed (and serialized) as a prop. */
 export function Projects() {
   const copy = useCopy();
@@ -250,6 +263,8 @@ export function Projects() {
             ) : null}
           </div>
         )}
+
+        <ArchiveLink />
       </div>
     </section>
   );

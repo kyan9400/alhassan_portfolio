@@ -4,6 +4,8 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppChrome } from "@/components/app/AppChrome";
 import { SITE_URL, GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/ui-copy";
+import { PERSON_ID, WEBSITE_ID, jsonLdHtml } from "@/lib/seo";
+import { NOTES_ENABLED } from "@/lib/notes-config";
 import "./globals.css";
 
 /*
@@ -77,27 +79,29 @@ export const viewport: Viewport = {
  * - js: marks that scripts run, so scroll-reveal content may start hidden (see globals.css);
  * - cv-all: a deep link (/#section) renders every section at once, for an exact landing (.cv-auto);
  * - theme: dark by default, respects a stored "light" choice (no flash);
- * - locale: a stored "ru"/"ar" choice sets <html lang/dir> immediately, so Arabic does not
- *   paint LTR and then flip to RTL after hydration (layout shift). With no stored choice, a
- *   Russian browser (navigator.language "ru…") opens in Russian. hydrateLocale() in
- *   store/portfolioStore.ts applies the same rule and reads the same "locale" key.
+ * - locale: a `?lang=en|ru|ar` URL parameter (the hreflang alternates, see lib/seo.ts) wins; otherwise
+ *   a stored "ru"/"ar" choice. Either sets <html lang/dir> immediately, so Arabic does not paint LTR
+ *   and then flip to RTL after hydration (layout shift). With neither, a Russian browser
+ *   (navigator.language "ru…") opens in Russian. hydrateLocale() in store/portfolioStore.ts applies
+ *   the same rule, reads the same "locale" key and saves a URL choice there.
+ *   The URL is read outside the storage try block, so ?lang works even when storage is blocked.
  */
-const prePaintScript = `(function(){var d=document.documentElement;d.classList.add("js");if(location.hash)d.classList.add("cv-all");try{if(localStorage.getItem("theme")!=="light"){d.classList.add("dark")}var l=localStorage.getItem("locale");if(!l&&/^ru/i.test(navigator.language||""))l="ru";if(l==="ru"||l==="ar"){d.lang=l;d.dir=l==="ar"?"rtl":"ltr"}}catch(e){d.classList.add("dark")}})();`;
+const prePaintScript = `(function(){var d=document.documentElement;d.classList.add("js");if(location.hash)d.classList.add("cv-all");var q=null;try{q=new URLSearchParams(location.search).get("lang")}catch(e){}if(q!=="en"&&q!=="ru"&&q!=="ar")q=null;var l=q;try{if(localStorage.getItem("theme")!=="light"){d.classList.add("dark")}if(!l)l=localStorage.getItem("locale");if(!l&&/^ru/i.test(navigator.language||""))l="ru"}catch(e){d.classList.add("dark")}if(l==="en"||l==="ru"||l==="ar"){d.lang=l;d.dir=l==="ar"?"rtl":"ltr"}})();`;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
+      "@id": WEBSITE_ID,
       url: SITE_URL,
       name: "Alhassan Alfarran",
       inLanguage: ["en", "ru", "ar"],
-      publisher: { "@id": `${SITE_URL}/#person` }
+      publisher: { "@id": PERSON_ID }
     },
     {
       "@type": "Person",
-      "@id": `${SITE_URL}/#person`,
+      "@id": PERSON_ID,
       name: "Alhassan Alfarran",
       alternateName: ["Альхассан Альфарран"],
       jobTitle: "Full-Stack & Python Developer",
@@ -140,13 +144,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: prePaintScript }} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
       </head>
       <body>
-        <AppChrome>{children}</AppChrome>
+        <AppChrome notesEnabled={NOTES_ENABLED}>{children}</AppChrome>
         <Analytics />
         <SpeedInsights />
       </body>

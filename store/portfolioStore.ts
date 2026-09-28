@@ -43,6 +43,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     } catch {
       /* storage unavailable */
     }
+    syncLangParam(locale);
     set({ locale, localeReady: true });
   },
   toast: null,
@@ -55,13 +56,54 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
   setContactReason: (contactReason) => set({ contactReason })
 }));
 
+/** URL parameter that opens a page in one language (`/?lang=ar`); the hreflang alternates use it (lib/seo.ts). */
+const LANG_PARAM = "lang";
+
+function readLangParam(): Locale | null {
+  try {
+    const value = new URLSearchParams(window.location.search).get(LANG_PARAM);
+    return isLocale(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Restore the saved locale once on the client, then mark the locale as ready. With nothing saved, a
- * Russian browser gets Russian: the same rule as the pre-paint script in app/layout.tsx, so the
- * <html lang> it set before first paint and the store agree. The guess is not saved; only an
- * explicit choice (setLocale) is.
+ * A page opened with ?lang= keeps the parameter in step with the language switcher, so the address
+ * bar never names a language other than the one shown (a reload or a shared link stays correct).
+ * Without the parameter, the URL is left alone.
+ */
+function syncLangParam(locale: Locale) {
+  try {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has(LANG_PARAM) || url.searchParams.get(LANG_PARAM) === locale) return;
+    url.searchParams.set(LANG_PARAM, locale);
+    // `null` state: Next.js's patched replaceState copies its own router state into the entry.
+    window.history.replaceState(null, "", url);
+  } catch {
+    /* history unavailable (sandboxed iframe) */
+  }
+}
+
+/**
+ * Restore the locale once on the client, then mark it as ready. Order, the same as the pre-paint
+ * script in app/layout.tsx so the <html lang> it set before first paint and the store agree:
+ * 1. `?lang=en|ru|ar` in the URL — an explicit choice, so it is saved like a switcher click;
+ * 2. the saved choice;
+ * 3. a Russian browser gets Russian. This guess is not saved; only an explicit choice is.
  */
 export function hydrateLocale() {
+  const fromUrl = readLangParam();
+  if (fromUrl) {
+    try {
+      localStorage.setItem(LOCALE_KEY, fromUrl);
+    } catch {
+      /* storage unavailable: the URL still decides for this page view */
+    }
+    usePortfolioStore.setState({ locale: fromUrl, localeReady: true });
+    return;
+  }
+
   let saved: string | null = null;
   try {
     saved = localStorage.getItem(LOCALE_KEY);

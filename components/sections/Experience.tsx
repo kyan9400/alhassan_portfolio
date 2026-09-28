@@ -1,10 +1,11 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ChevronDown, MapPin } from "lucide-react";
+import { ArrowUpRight, ChevronDown, MapPin } from "lucide-react";
 import { useCopy } from "@/lib/hooks";
+import { usePortfolioStore } from "@/store/portfolioStore";
 import type { ExperienceItem } from "@/lib/copy";
-import { Bidi, Reveal, SectionHeader } from "@/components/ui/primitives";
+import { Bidi, OrgMark, Reveal, SectionHeader } from "@/components/ui/primitives";
 
 /** Bullets shown per role before "More". */
 const BULLETS_SHOWN = 2;
@@ -61,18 +62,23 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
 
       {/* Where and as what */}
       <div className="min-w-0">
-        <h3 className="text-[1.625rem] font-semibold leading-tight md:text-[1.75rem]">
-          <Bidi text={item.company} />
-        </h3>
-        <p className="mt-1.5 font-medium leading-snug text-text/85">
-          <Bidi text={item.title} />
-        </p>
-        {item.location ? (
-          <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
-            <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            {item.location}
-          </p>
-        ) : null}
+        <div className="flex items-start gap-3.5">
+          <OrgMark mark={item.mark} className="mt-0.5 h-10 w-10 text-[13px]" />
+          <div className="min-w-0">
+            <h3 className="text-[1.625rem] font-semibold leading-tight md:text-[1.75rem]">
+              <Bidi text={item.company} />
+            </h3>
+            <p className="mt-1.5 font-medium leading-snug text-text/85">
+              <Bidi text={item.title} />
+            </p>
+            {item.location ? (
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
+                <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                {item.location}
+              </p>
+            ) : null}
+          </div>
+        </div>
         {/* Desktop: the one-line summary sits under the role, so the bullets column stays short. */}
         <p className="mt-4 hidden text-pretty text-[15px] leading-relaxed text-muted lg:block">
           <Bidi text={item.summary} />
@@ -120,15 +126,10 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
   );
 }
 
-/** Split "Course — Provider" so the provider can sit on a quieter second line. */
-function splitCertification(cert: string) {
-  const at = cert.lastIndexOf(" — ");
-  return at === -1 ? { title: cert, provider: "" } : { title: cert.slice(0, at), provider: cert.slice(at + 3) };
-}
-
 /** Education and certifications as a plain two-column list. */
 function Education() {
   const copy = useCopy();
+  const locale = usePortfolioStore((s) => s.locale);
   const certs = copy.certifications;
 
   return (
@@ -141,13 +142,16 @@ function Education() {
           {copy.education.map((e) => (
             <li key={`${e.school}-${e.period}`} className="grid gap-1 py-4 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-4">
               <p className="font-mono text-[13px] tabular-nums text-muted">{e.period}</p>
-              <div className="min-w-0">
-                <p className="text-pretty font-semibold leading-snug">
-                  <Bidi text={e.degree} />
-                </p>
-                <p className="mt-1 text-sm text-muted">
-                  <Bidi text={e.school} />
-                </p>
+              <div className="flex min-w-0 items-start gap-3">
+                <OrgMark mark={e.mark} className="h-9 w-9 text-[12px]" />
+                <div className="min-w-0">
+                  <p className="text-pretty font-semibold leading-snug">
+                    <Bidi text={e.degree} />
+                  </p>
+                  <p className="mt-1 text-sm text-muted">
+                    <Bidi text={e.school} />
+                  </p>
+                </div>
               </div>
             </li>
           ))}
@@ -162,11 +166,28 @@ function Education() {
           {/* Course titles are English proper names in every locale; in the Arabic page they align to its start edge. */}
           <ul className="mt-5 divide-y divide-line/10 border-y hairline rtl:text-right" dir="ltr" lang="en">
             {certs.map((cert) => {
-              const { title, provider } = splitCertification(cert);
+              const meta = [cert.issuer, cert.year].filter(Boolean).join(" · ");
               return (
-                <li key={cert} className="py-3">
-                  <span className="block text-sm font-medium leading-snug">{title}</span>
-                  {provider ? <span className="mt-0.5 block text-xs text-muted">{provider}</span> : null}
+                <li key={cert.name} className="flex items-start justify-between gap-4 py-3">
+                  <div className="min-w-0">
+                    <span className="block text-sm font-medium leading-snug">{cert.name}</span>
+                    {meta ? <span className="mt-0.5 block text-xs text-muted">{meta}</span> : null}
+                  </div>
+                  {cert.verifyUrl ? (
+                    // The label is in the page's language, so it leaves the English list's lang/dir.
+                    <a
+                      href={cert.verifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      lang={locale}
+                      dir={copy.dir}
+                      aria-label={`${copy.ui.verify}: ${cert.name}`}
+                      className="inline-flex min-h-[32px] shrink-0 items-center gap-1 text-xs font-semibold text-accent-ink underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current"
+                    >
+                      {copy.ui.verify}
+                      <ArrowUpRight className="h-3.5 w-3.5 rtl:-scale-x-100" aria-hidden="true" />
+                    </a>
+                  ) : null}
                 </li>
               );
             })}

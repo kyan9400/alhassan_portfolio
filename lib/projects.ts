@@ -14,6 +14,11 @@ export type Project = {
   kind: "work" | "open-source";
   /** Work projects only, e.g. "Avenue Group". Omit when unknown. */
   company?: string;
+  /**
+   * Year the work started, for the project archive: the role's dates for work projects, the repo's
+   * GitHub creation year for open source. Omit when it is not known (the archive then shows "—").
+   */
+  year?: number;
   /** One-line context under the title. */
   rolePurpose: string;
   description: string;
@@ -64,6 +69,7 @@ type ProjectText = Pick<Project, "title" | "rolePurpose" | "description" | "long
 export const projects: Project[] = [
   {
     slug: "okkp-platform",
+    year: 2025,
     title: "OKKP Operations Platform",
     kind: "work",
     company: "Avenue Group",
@@ -114,6 +120,7 @@ export const projects: Project[] = [
   },
   {
     slug: "document-intelligence-rag",
+    year: 2026,
     title: "Engineering Document Search (RAG)",
     kind: "work",
     company: "Elektroservis",
@@ -175,6 +182,7 @@ export const projects: Project[] = [
   },
   {
     slug: "pulseboard",
+    year: 2026,
     title: "Pulseboard",
     kind: "open-source",
     rolePurpose: "Open source · Uptime & SLO monitoring",
@@ -201,6 +209,7 @@ export const projects: Project[] = [
   },
   {
     slug: "deployledger",
+    year: 2026,
     title: "DeployLedger",
     kind: "open-source",
     rolePurpose: "Open source · Release operations & DORA metrics",
@@ -227,6 +236,7 @@ export const projects: Project[] = [
   },
   {
     slug: "gatehouse",
+    year: 2026,
     title: "Gatehouse",
     kind: "open-source",
     rolePurpose: "Open source · Just-in-time access control",
@@ -252,6 +262,7 @@ export const projects: Project[] = [
   },
   {
     slug: "webhook-workbench",
+    year: 2026,
     title: "Webhook Workbench",
     kind: "open-source",
     rolePurpose: "Open source · Webhook debugging in Go",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { getCopy, CONTACT_EMAIL } from "@/lib/ui-copy";
 import { trackEvent } from "@/lib/analytics";
@@ -35,6 +35,17 @@ export function useSections(): { id: SectionId; label: string }[] {
     };
     return SECTION_IDS.map((id) => ({ id, label: labels[id] }));
   }, [copy]);
+}
+
+/**
+ * Whether /notes is live (NOTES_ENABLED in lib/notes-config.ts, computed on the server from the posts
+ * on disk). The root layout passes it to AppChrome, which provides it here, so client chrome (navbar,
+ * command palette, footer) links to /notes only when the section exists.
+ */
+export const NotesEnabledContext = createContext(false);
+
+export function useNotesEnabled() {
+  return useContext(NotesEnabledContext);
 }
 
 export function useCvFile() {

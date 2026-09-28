@@ -27,6 +27,23 @@ lib/github.ts         curated repository showcase (static data, enriched by the 
 public/               CVs, images, repository screenshots
 ```
 
+## Notes (MDX blog)
+
+Posts live in `content/notes/<slug>.mdx` with a frontmatter block (`title`, `description`, `date: YYYY-MM-DD`,
+`lang: en|ru|ar`, `draft: true|false`) and are compiled by `@next/mdx` (`mdx-components.tsx`).
+`content/notes/example-draft.mdx` is a template.
+
+The section is switched by `NOTES_ENABLED` in `lib/notes-config.ts`: it is true once **two or more** posts are
+published. Until then `/notes`, `/notes/<slug>` and `/notes/rss.xml` return 404, nothing links to `/notes`
+(navbar, command palette, footer) and the sitemap lists no notes. Drafts are never listed, never in RSS or the
+sitemap, and 404 in production; in `next dev` a draft opens at `/notes/<slug>` for proofreading.
+
+## Languages and SEO
+
+The language is client-side state, so all three languages share one URL. `?lang=en|ru|ar` opens a page in that
+language (applied before first paint in `app/layout.tsx`, then saved by `hydrateLocale()`), and the pages declare
+hreflang alternates `/`, `/?lang=ru`, `/?lang=ar` (x-default `/`) via `lib/seo.ts`.
+
 ## Scripts
 
 | Command                 | What it does                                                    |

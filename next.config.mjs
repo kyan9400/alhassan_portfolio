@@ -1,4 +1,5 @@
 import path from "node:path";
+import createMDX from "@next/mdx";
 import { fileURLToPath } from "node:url";
 
 /** This project's own folder. A package-lock.json higher up (e.g. in the home folder) must not become the workspace root. */
@@ -23,8 +24,8 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  // Next 16.3's `next dev` writes AGENTS.md/CLAUDE.md into the project root when it detects a coding
-  // agent. Keep the tree deterministic; the bundled docs stay at node_modules/next/dist/docs.
+  // Stop `next dev` from writing agent instruction files into the project root.
+  // Keeps the tree deterministic; the bundled docs stay at node_modules/next/dist/docs.
   agentRules: false,
   turbopack: { root: projectRoot },
   images: {
@@ -36,7 +37,20 @@ const nextConfig = {
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
-  }
+  },
+  // lib/notes.ts reads content/notes/*.mdx with fs (frontmatter for the list, RSS, sitemap and the
+  // NOTES_ENABLED flag). Pages that revalidate at runtime must still find those files on the server.
+  outputFileTracingIncludes: { "/*": ["./content/notes/**/*.mdx"] }
 };
 
-export default nextConfig;
+/*
+ * MDX for /notes (official @next/mdx setup; see mdx-components.tsx). The posts are imported from
+ * content/notes, not used as routes, so pageExtensions stays default. remark-frontmatter parses the
+ * YAML block at the top of each post so it is not rendered; lib/notes.ts reads the same block.
+ * Plugins are passed by name so they also work under Turbopack.
+ */
+const withMDX = createMDX({
+  options: { remarkPlugins: ["remark-frontmatter"] }
+});
+
+export default withMDX(nextConfig);
