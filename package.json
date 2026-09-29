@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "capture:repos": "node scripts/capture-repo-screenshots.mjs"
+    "capture:repos": "node scripts/capture-repo-screenshots.mjs",
+    "test:ask-cv": "node --experimental-strip-types --no-warnings scripts/test-ask-cv.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "3.1.1",

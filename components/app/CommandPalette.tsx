@@ -1,17 +1,30 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Archive, BookOpen, Copy, Download, FileText, FolderGit2, Hash, Languages, Moon, Search } from "lucide-react";
+import { ArrowRight, Archive, BookOpen, Copy, Download, FileText, FolderGit2, Hash, Languages, MessageCircleQuestionMark, Moon, Search } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
-import { useCopy, useCopyEmail, useCvDownload, useNotesEnabled, useSections, useTheme } from "@/lib/hooks";
+import {
+  rememberLocale,
+  useCopy,
+  useCopyEmail,
+  useCvDownload,
+  useLanguageHref,
+  useLocale,
+  useLocalePath,
+  useNotesEnabled,
+  usePagePath,
+  useSections,
+  useTheme
+} from "@/lib/hooks";
+import { LOCALES } from "@/lib/i18n";
 import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/ui-copy";
 import { localizeProject, projects } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
 import { GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
+import { ASK_CV_FOCUS_EVENT, ASK_CV_ID } from "@/components/sections/AskCv";
 import { renderAllSections, scrollToId } from "./SmoothScroll";
-import type { Locale } from "@/lib/types";
 
 type Item = {
   id: string;
@@ -23,7 +36,6 @@ type Item = {
   run: () => void;
 };
 
-const LOCALES: Locale[] = ["en", "ru", "ar"];
 /** Everything outside the palette that must be unreachable while it is open. */
 const BACKGROUND_IDS = ["main", "site-header"];
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -39,15 +51,16 @@ function openExternal(url: string) {
 export function CommandPalette() {
   const open = usePortfolioStore((s) => s.paletteOpen);
   const setOpen = usePortfolioStore((s) => s.setPaletteOpen);
-  const locale = usePortfolioStore((s) => s.locale);
-  const setLocale = usePortfolioStore((s) => s.setLocale);
+  const locale = useLocale();
   const copy = useCopy();
   const sections = useSections();
   const cv = useCvDownload();
   const copyEmail = useCopyEmail();
   const { toggle } = useTheme();
   const notesEnabled = useNotesEnabled();
-  const pathname = usePathname();
+  const pagePath = usePagePath();
+  const lp = useLocalePath();
+  const languageHref = useLanguageHref();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
@@ -68,9 +81,9 @@ export function CommandPalette() {
         group: c.sections,
         icon: <Hash className="h-4 w-4" />,
         run: () => {
-          if (pathname === "/") return scrollToId(s.id);
+          if (pagePath === "/") return scrollToId(s.id);
           renderAllSections();
-          router.push(`/#${s.id}`);
+          router.push(lp(`/#${s.id}`));
         }
       })),
       ...projects.map<Item>((p) => {
@@ -83,7 +96,7 @@ export function CommandPalette() {
           icon: <FolderGit2 className="h-4 w-4" />,
           run: () => {
             trackEvent("project_open", { slug: p.slug, source: "palette" });
-            router.push(`/projects/${p.slug}`);
+            router.push(lp(`/projects/${p.slug}`));
           }
         };
       }),
@@ -93,7 +106,24 @@ export function CommandPalette() {
         keywords: "archive all projects repositories table",
         group: copy.nav[2],
         icon: <Archive className="h-4 w-4" />,
-        run: () => router.push("/projects/archive")
+        run: () => router.push(lp("/projects/archive"))
+      },
+      {
+        id: "ask-cv",
+        label: copy.ui.askCv.palette,
+        keywords: "ask cv question search answer resume faq спросить резюме вопрос اسأل سؤال",
+        group: c.actions,
+        icon: <MessageCircleQuestionMark className="h-4 w-4" />,
+        run: () => {
+          // On home: scroll to the question box and focus it. Elsewhere: open home at it (AskCv focuses on #ask).
+          if (pagePath === "/") {
+            scrollToId(ASK_CV_ID);
+            window.dispatchEvent(new Event(ASK_CV_FOCUS_EVENT));
+            return;
+          }
+          renderAllSections();
+          router.push(lp(`/#${ASK_CV_ID}`));
+        }
       },
       { id: "email", label: c.copyEmail, keywords: "email mail", group: c.actions, icon: <Copy className="h-4 w-4" />, run: () => void copyEmail() },
       {
@@ -116,7 +146,7 @@ export function CommandPalette() {
         keywords: "cv resume print page",
         group: c.actions,
         icon: <FileText className="h-4 w-4" />,
-        run: () => router.push("/cv")
+        run: () => router.push(lp("/cv"))
       },
       // Only while the notes section exists (NOTES_ENABLED, lib/notes-config.ts).
       ...(notesEnabled
@@ -127,7 +157,7 @@ export function CommandPalette() {
               keywords: "notes blog articles posts",
               group: c.actions,
               icon: <BookOpen className="h-4 w-4" />,
-              run: () => router.push("/notes")
+              run: () => router.push(lp("/notes"))
             } satisfies Item
           ]
         : []),
@@ -151,10 +181,13 @@ export function CommandPalette() {
         keywords: `${l} language`,
         group: copy.languageLabel,
         icon: <Languages className="h-4 w-4" />,
-        run: () => setLocale(l)
+        run: () => {
+          rememberLocale(l);
+          router.push(languageHref(l));
+        }
       }))
     ];
-  }, [copy, sections, locale, pathname, router, copyEmail, cv, toggle, setLocale, notesEnabled]);
+  }, [copy, sections, locale, pagePath, lp, languageHref, router, copyEmail, cv, toggle, notesEnabled]);
 
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();

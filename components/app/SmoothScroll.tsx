@@ -9,6 +9,9 @@ declare global {
   }
 }
 
+/** A link to a section of a home page in any language: "/en#projects", "/ar#contact". */
+const HOME_HASH_LINK = /^\/(en|ru|ar)#/;
+
 /** Distance kept clear for the floating navbar when scrolling to a section. */
 const NAV_OFFSET = 80;
 
@@ -26,11 +29,12 @@ export function renderAllSections() {
  * so its setup and frame loop stay out of the first paint and hydration (native scrolling works meanwhile).
  */
 export function SmoothScroll() {
-  // Links to a home section (/#projects), e.g. from a case study: render every section before the
+  // Links to a home section (/en#projects), e.g. from a case study: render every section before the
   // router scrolls to it. Capture phase, so this runs before the link's own click handling.
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if ((e.target as Element | null)?.closest?.('a[href^="/#"]')) renderAllSections();
+      const link = (e.target as Element | null)?.closest?.("a[href*='#']");
+      if (link && HOME_HASH_LINK.test(link.getAttribute("href") ?? "")) renderAllSections();
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
@@ -87,7 +91,7 @@ function updateHash(id: string) {
 /** Smooth-scrolls to a section on the current page, then focuses it and updates the URL hash. */
 export function scrollToId(id: string) {
   const el = document.getElementById(id);
-  // Only home has these sections; off the home page callers navigate with <Link href="/#id"> or router.push.
+  // Only home has these sections; off the home page callers navigate with <Link href="/en#id"> or router.push.
   if (!el) return;
 
   // Sections not yet rendered (content-visibility: auto) only have estimated heights: render them all

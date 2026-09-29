@@ -28,6 +28,9 @@ const nextConfig = {
   // Keeps the tree deterministic; the bundled docs stay at node_modules/next/dist/docs.
   agentRules: false,
   turbopack: { root: projectRoot },
+  // app/global-not-found.tsx: the 404 for unmatched URLs. The root layout sits under app/[lang]/, so
+  // there is no single layout above every route to compose a 404 from.
+  experimental: { globalNotFound: true },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 90]

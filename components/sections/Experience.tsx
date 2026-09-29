@@ -2,8 +2,7 @@
 
 import { useId, useState } from "react";
 import { ArrowUpRight, ChevronDown, MapPin } from "lucide-react";
-import { useCopy } from "@/lib/hooks";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { useCopy, useLocale } from "@/lib/hooks";
 import type { ExperienceItem } from "@/lib/copy";
 import { Bidi, OrgMark, Reveal, SectionHeader } from "@/components/ui/primitives";
 
@@ -140,7 +139,7 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
 /** Education and certifications as a plain two-column list. */
 function Education() {
   const copy = useCopy();
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   const certs = copy.certifications;
   const certsId = useId();
   const [allCerts, setAllCerts] = useState(false);

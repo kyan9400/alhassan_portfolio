@@ -5,7 +5,7 @@ import { getAllNotes, getPublishedNotes, type NoteMeta } from "@/lib/notes";
  *
  * NOTES_ENABLED is true once at least MIN_PUBLISHED_NOTES posts are published (`draft: false` in
  * content/notes/*.mdx). A section with a single post looks abandoned, so until then:
- *   - /notes, /notes/<slug> and /notes/rss.xml answer 404;
+ *   - /{lang}/notes, /{lang}/notes/<slug> and /notes/rss.xml answer 404;
  *   - no link to /notes appears in the navbar, the command palette or the footer
  *     (the root layout passes the flag to AppChrome, which shares it through useNotesEnabled());
  *   - the sitemap lists no notes.
@@ -13,7 +13,7 @@ import { getAllNotes, getPublishedNotes, type NoteMeta } from "@/lib/notes";
  * build; there is nothing else to change.
  *
  * Drafts (`draft: true`) are never published, whatever the flag: they are not listed, not in RSS or
- * the sitemap, and not routable in production. In `next dev` a draft opens at /notes/<slug> for
+ * the sitemap, and not routable in production. In `next dev` a draft opens at /{lang}/notes/<slug> for
  * proofreading (only by typing the URL; nothing links to it).
  */
 export const MIN_PUBLISHED_NOTES = 2;

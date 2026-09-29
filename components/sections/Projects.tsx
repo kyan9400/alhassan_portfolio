@@ -7,8 +7,7 @@ import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } fro
 import { ArrowRight, ArrowUpRight, Building2, ChevronDown, Lock } from "lucide-react";
 import { localizeProject, projects, type Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
-import { trackPointer, useCopy } from "@/lib/hooks";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { trackPointer, useCopy, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi, Reveal, SectionHeader, GithubIcon } from "@/components/ui/primitives";
 import { ArchitectureFlow } from "./ArchitectureFlow";
 
@@ -29,6 +28,7 @@ const GRID_STYLE: React.CSSProperties = {
  */
 function ProjectCard({ project, index, featured, collapsible = false }: { project: Project; index: number; featured: boolean; collapsible?: boolean }) {
   const copy = useCopy();
+  const lp = useLocalePath();
   const { ui } = copy;
   const titleId = useId();
   const detailsId = useId();
@@ -175,7 +175,7 @@ function ProjectCard({ project, index, featured, collapsible = false }: { projec
 
           <div className={`mt-auto flex flex-wrap items-center gap-2.5 pt-6 md:pt-7 ${compact ? "max-sm:gap-x-2 max-sm:pt-3" : ""}`}>
             <Link
-              href={`/projects/${project.slug}`}
+              href={lp(`/projects/${project.slug}`)}
               data-cursor={ui.cursorView}
               onClick={() => trackEvent("project_open", { slug: project.slug, source: "card" })}
               className={`text-link me-2 min-h-[40px] text-sm ${compact ? "max-sm:me-1" : ""} after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:decoration-current`}
@@ -235,9 +235,10 @@ function GroupHeading({ title, count }: { title: string; count: number }) {
 /** "Full project archive →": shared with the GitHub section. */
 export function ArchiveLink({ className = "mt-8 sm:mt-12 md:mt-14" }: { className?: string }) {
   const { ui } = useCopy();
+  const lp = useLocalePath();
   return (
     <p className={`flex justify-end ${className}`}>
-      <Link href="/projects/archive" className="text-link group min-h-[44px] text-sm">
+      <Link href={lp("/projects/archive")} className="text-link group min-h-[44px] text-sm">
         {ui.archive.linkLabel}
         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" aria-hidden="true" />
       </Link>
@@ -248,7 +249,7 @@ export function ArchiveLink({ className = "mt-8 sm:mt-12 md:mt-14" }: { classNam
 /** Reads the catalog directly: it is already in the client bundle, so it isn't passed (and serialized) as a prop. */
 export function Projects() {
   const copy = useCopy();
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   const localized = projects.map((p) => localizeProject(p, locale));
   const work = localized.filter((p) => p.kind === "work");
   const openSource = localized.filter((p) => p.kind === "open-source");

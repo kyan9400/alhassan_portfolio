@@ -4,20 +4,27 @@ import { getPublishedNotes } from "@/lib/notes";
 import { NOTES_ENABLED } from "@/lib/notes-config";
 import { SITE_URL } from "@/lib/ui-copy";
 import { languageAlternates } from "@/lib/seo";
+import { LOCALES, localePath } from "@/lib/i18n";
 
-/** Absolute hreflang alternates for a translated page (same URL, `?lang=`; see lib/seo.ts). */
-function alternates(path: string): MetadataRoute.Sitemap[number]["alternates"] {
-  const languages = Object.fromEntries(Object.entries(languageAlternates(path)).map(([lang, href]) => [lang, href === "/" ? SITE_URL : `${SITE_URL}${href}`]));
-  return { languages };
+type Entry = MetadataRoute.Sitemap[number];
+
+/**
+ * A translated page: one entry per language (/en/cv, /ru/cv, /ar/cv), each listing all three plus
+ * x-default as absolute hreflang alternates (lib/seo.ts).
+ */
+function translated(path: string, extra: Omit<Entry, "url" | "alternates">): Entry[] {
+  const languages = Object.fromEntries(Object.entries(languageAlternates(path)).map(([lang, href]) => [lang, `${SITE_URL}${href}`]));
+  return LOCALES.map((locale) => ({ url: `${SITE_URL}${localePath(locale, path)}`, ...extra, alternates: { languages } }));
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Notes are listed only once the section is live; drafts never (getPublishedNotes excludes them).
+  // A post exists in one language only, at /{lang}/notes/<slug>, so it has no alternates.
   const notes: MetadataRoute.Sitemap = NOTES_ENABLED
     ? [
-        { url: `${SITE_URL}/notes`, changeFrequency: "weekly", priority: 0.6, alternates: alternates("/notes") },
+        ...translated("/notes", { changeFrequency: "weekly", priority: 0.6 }),
         ...getPublishedNotes().map((n) => ({
-          url: `${SITE_URL}/notes/${n.slug}`,
+          url: `${SITE_URL}${localePath(n.lang, `/notes/${n.slug}`)}`,
           lastModified: n.date,
           changeFrequency: "yearly" as const,
           priority: 0.5
@@ -26,15 +33,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     : [];
 
   return [
-    { url: SITE_URL, changeFrequency: "monthly", priority: 1, alternates: alternates("/") },
-    { url: `${SITE_URL}/cv`, changeFrequency: "monthly", priority: 0.8, alternates: alternates("/cv") },
-    { url: `${SITE_URL}/projects/archive`, changeFrequency: "monthly", priority: 0.6, alternates: alternates("/projects/archive") },
-    ...projects.map((p) => ({
-      url: `${SITE_URL}/projects/${p.slug}`,
-      changeFrequency: "yearly" as const,
-      priority: 0.7,
-      alternates: alternates(`/projects/${p.slug}`)
-    })),
+    ...translated("/", { changeFrequency: "monthly", priority: 1 }),
+    ...translated("/cv", { changeFrequency: "monthly", priority: 0.8 }),
+    ...translated("/projects/archive", { changeFrequency: "monthly", priority: 0.6 }),
+    ...projects.flatMap((p) => translated(`/projects/${p.slug}`, { changeFrequency: "yearly", priority: 0.7 })),
     ...notes
   ];
 }

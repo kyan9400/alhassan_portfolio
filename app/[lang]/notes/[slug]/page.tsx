@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getRoutableNotes } from "@/lib/notes-config";
-import { SITE_URL } from "@/lib/ui-copy";
-import { PERSON_ID, WEBSITE_ID, jsonLdHtml } from "@/lib/seo";
+import { SITE_URL, getCopy } from "@/lib/ui-copy";
+import { OG_LOCALES, localePath } from "@/lib/i18n";
+import { PERSON_ID, WEBSITE_ID, jsonLdHtml, siteOgImage } from "@/lib/seo";
 import { createHeadingComponents } from "@/mdx-components";
 import { NotePost } from "@/components/sections/Notes";
 
-type PageProps = { params: Promise<{ slug: string }> };
+type PageProps = { params: Promise<{ lang: string; slug: string }> };
 
 /**
  * Only routable notes are prerendered (lib/notes-config.ts): published posts once NOTES_ENABLED, drafts
  * in development only. Every other slug, drafts in production included, is a 404.
+ *
+ * A note is written in one language and lives at /{note.lang}/notes/<slug>. It is prerendered under
+ * every language so the other two URLs exist and permanently redirect there (see NotePage).
  */
 export const dynamicParams = false;
 
@@ -27,9 +31,12 @@ function findNote(slug: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const found = findNote(slug);
-  if (!found) return { title: "Note not found", robots: { index: false } };
+  // The title template (app/[lang]/layout.tsx) is in the route's language; a post is always shown
+  // under its own language (other URLs redirect), so the two agree.
+  if (!found) return { robots: { index: false } };
   const { note } = found;
-  const path = `/notes/${note.slug}`;
+  const path = localePath(note.lang, `/notes/${note.slug}`);
+  const fullTitle = `${note.title} — ${getCopy(note.lang).ui.meta.nameSuffix}`;
   return {
     title: note.title,
     description: note.description,
@@ -37,24 +44,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: { canonical: path },
     robots: note.draft ? { index: false, follow: false } : undefined,
     openGraph: {
-      title: `${note.title} — Alhassan Alfarran`,
+      title: fullTitle,
       description: note.description,
       url: `${SITE_URL}${path}`,
       type: "article",
       publishedTime: note.date,
       authors: [SITE_URL],
       siteName: "Alhassan Alfarran",
-      locale: { en: "en_US", ru: "ru_RU", ar: "ar_AR" }[note.lang]
+      locale: OG_LOCALES[note.lang],
+      images: [siteOgImage(note.lang)]
     },
-    twitter: { card: "summary_large_image", title: `${note.title} — Alhassan Alfarran`, description: note.description }
+    twitter: { card: "summary_large_image", title: fullTitle, description: note.description, images: [siteOgImage(note.lang)] }
   };
 }
 
 export default async function NotePage({ params }: PageProps) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const found = findNote(slug);
   if (!found) notFound();
   const { notes, index, note } = found;
+  // One URL per post: the same slug under another language goes to the post's own language.
+  if (lang !== note.lang) permanentRedirect(localePath(note.lang, `/notes/${note.slug}`));
 
   // Official @next/mdx dynamic import (node_modules/next/dist/docs/01-app/02-guides/mdx.md).
   const { default: Post } = await import(`@/content/notes/${note.slug}.mdx`);
@@ -62,7 +72,7 @@ export default async function NotePage({ params }: PageProps) {
   // `notes` is newest first: the previous (older) post is the next item, the newer one the item before.
   const older = notes[index + 1] ?? null;
   const newer = notes[index - 1] ?? null;
-  const url = `${SITE_URL}/notes/${note.slug}`;
+  const url = `${SITE_URL}${localePath(note.lang, `/notes/${note.slug}`)}`;
 
   const jsonLd = {
     "@context": "https://schema.org",

@@ -4,8 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Download, Printer } from "lucide-react";
 import { localizeProject, projects } from "@/lib/projects";
 import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
-import { useCopy, useCvDownload, useDocumentTitle } from "@/lib/hooks";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { useCopy, useCvDownload, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi } from "@/components/ui/primitives";
 
 /** "https://github.com/kyan9400" → "github.com/kyan9400": readable on paper, still a link on screen. */
@@ -29,10 +28,9 @@ export function CvPage() {
   const { ui } = copy;
   const t = ui.cv;
   const cv = useCvDownload();
-  const locale = usePortfolioStore((s) => s.locale);
-  const localeReady = usePortfolioStore((s) => s.localeReady);
+  const locale = useLocale();
+  const lp = useLocalePath();
 
-  useDocumentTitle(localeReady ? `${t.metaTitle} — ${ui.meta.nameSuffix}` : null);
 
   const localized = projects.map((p) => localizeProject(p, locale));
 
@@ -41,14 +39,14 @@ export function CvPage() {
     { label: ui.emailShort, value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
     { label: copy.githubLabel, value: bare(GITHUB_URL), href: GITHUB_URL },
     { label: copy.linkedinLabel, value: bare(LINKEDIN_URL), href: LINKEDIN_URL },
-    { label: t.portfolio, value: bare(SITE_URL), href: SITE_URL }
+    { label: t.portfolio, value: bare(SITE_URL), href: `${SITE_URL}${lp("/")}` }
   ];
 
   return (
     <main className="cv-main pb-16 pt-28 md:pt-36 print:p-0">
       <div className="shell max-w-4xl print:max-w-none print:px-0">
         <div role="toolbar" aria-label={t.toolbarLabel} className="fade-in flex flex-wrap items-center gap-2.5 print:hidden">
-          <Link href="/" className="btn-ghost group me-auto !min-h-[40px] text-[13px]">
+          <Link href={lp("/")} className="btn-ghost group me-auto !min-h-[40px] text-[13px]">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1" aria-hidden="true" />
             {copy.notFoundCta}
           </Link>

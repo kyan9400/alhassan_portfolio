@@ -1,74 +1,76 @@
 ---
 title: Hybrid search for engineering documents: why keyword + FAISS beats pure vector search
-description: A decision log on building document search over PDF, Word, Excel and scanned files: OCR before indexing, chunking with metadata, keyword plus dense retrieval, rank fusion and grounded answers.
+description: Notes on search over PDF, Word, Excel and scanned files: OCR before indexing, chunking with metadata, keyword plus dense retrieval, rank fusion and grounded answers.
 date: 2026-09-28
 lang: en
 draft: false
 ---
 
-Since January 2026 I have been working at Elektroservis in Moscow on search over engineering documentation:
-PDF, Word and Excel files, and scanned documents. Engineers ask questions in natural language,
-but they also search for exact equipment codes, part numbers and standard references. This note explains why
-I ended up with hybrid retrieval (keyword search plus dense vectors in FAISS) rather than pure vector search.
-The system and its data are under NDA, so everything here stays at the level of technique.
+Since January 2026 I have been working at Elektroservis in Moscow on search and RAG over engineering
+documentation: PDF, Word and Excel files, and scanned documents. The stack is OCR for scans, hybrid keyword and
+semantic search (sentence-transformers embeddings in FAISS) and FastAPI pipelines for ingestion and queries. This
+note explains why hybrid retrieval is a better fit for this kind of corpus than pure vector search. The system
+and its data are under NDA, so everything here stays at the level of general technique, and the snippets are
+simplified and illustrative.
 
 ## Context
 
 Engineering documents are not blog posts. A single file can mix prose, tables, drawings with text labels and
-long lists of identifiers. The questions people ask come in two very different kinds:
+long lists of identifiers. Queries against such a corpus typically fall into two very different kinds:
 
 - **Descriptive questions**, such as how a certain type of equipment is protected against overload, where the
   answer is phrased differently from the question.
-- **Exact lookups**, such as a specific part number, an article code or a clause of a standard, where only the
-  exact string is useful and a "similar" string is wrong.
+- **Exact lookups**, such as a part number, an article code or a clause of a standard, where only the exact
+  string is useful and a "similar" string is wrong.
 
 A search that handles only one of these is a search people stop trusting.
 
-## Options I considered
+## Options
 
-### Pure keyword search (BM25)
+### Pure keyword search (for example, BM25)
 
-Keyword ranking is fast, easy to explain and excellent at exact tokens. It fails on paraphrase: if the
-document says "thermal protection" and the user asks about "overheating", the lexical overlap may be too small
-to find it.
+Keyword ranking is fast, easy to explain and excellent at exact tokens. It fails on paraphrase: if the document
+says "thermal protection" and the user asks about "overheating", the lexical overlap may be too small to find
+it.
 
 ### Pure vector search
 
 Embedding models from sentence-transformers handle paraphrase well, and FAISS makes nearest-neighbour search
-over many chunks cheap. But dense vectors are built to capture meaning, not exact character sequences. Two
-part numbers that differ by one digit can end up very close in embedding space, and the model has no reason to
-prefer the exact one. For an engineer that is the worst possible failure: a confident, plausible, wrong result.
+over many chunks cheap. But dense vectors capture meaning, not exact character sequences. Two part numbers that
+differ by one digit can end up very close in embedding space, and the model has no reason to prefer the exact
+one. For an engineer that is the worst possible failure: a confident, plausible, wrong result.
 
 ### Hybrid retrieval
 
-Run both retrievers over the same chunks and merge the results. Keyword search anchors exact identifiers;
-dense retrieval covers the descriptive questions. The cost is more moving parts and a fusion step to design.
+Run both retrievers over the same chunks and merge the results. Keyword search anchors exact identifiers; dense
+retrieval covers descriptive questions. The cost is more moving parts and a merge step to design.
 
-## Decision
+## Approach
 
-I chose hybrid retrieval, with FastAPI services for ingestion and querying. The pipeline has four stages.
+Hybrid retrieval, with ingestion and querying as separate FastAPI pipelines. Below are the stages such a
+pipeline needs and the design choices I consider important at each one.
 
 ### OCR before indexing
 
-A scanned page is an image. Without OCR it contributes nothing to either index, and the search silently
-behaves as if those documents do not exist. So text extraction is the first stage of ingestion, not an
+A scanned page is an image. Without OCR it contributes nothing to either index, and the search silently behaves
+as if those documents did not exist. So text extraction belongs at the start of ingestion, not as an
 afterthought:
 
-- native text is extracted directly from PDF, Word and Excel files;
-- pages with no text layer go through OCR;
-- the output is normalised (whitespace, hyphenation at line breaks, common OCR confusions) before chunking.
+- extract native text directly from PDF, Word and Excel files;
+- send pages with no text layer through OCR;
+- normalise the output (whitespace, hyphenation at line breaks, common OCR confusions) before chunking.
 
-Normalisation matters most for identifiers. An OCR engine that reads a zero as the letter O turns an exact
-code into a different code, and no ranking trick recovers from that later.
+Normalisation matters most for identifiers. If OCR reads a zero as the letter O, an exact code becomes a
+different code, and no ranking trick can recover from that later.
 
 ### Chunking with metadata
 
-Documents are split into chunks small enough to embed well and large enough to keep a thought together.
-Tables and spreadsheet rows are kept intact where possible, because splitting a row separates a part number
-from its description. Every chunk carries metadata:
+Split documents into chunks small enough to embed well and large enough to keep a thought together. Keep table
+and spreadsheet rows intact where possible, because splitting a row separates a part number from its
+description. Every chunk should carry metadata:
 
 ```python
-# Generic shape of an indexed chunk
+# Simplified, illustrative shape of an indexed chunk
 chunk = {
     "id": "doc-123#p4#c2",
     "text": "...",
@@ -80,25 +82,25 @@ chunk = {
 }
 ```
 
-The metadata does two jobs: it enables filtering (by document, by type) and it makes every answer traceable
-to a file and a page.
+Metadata does two jobs: it enables filtering (by document, by type) and it makes every answer traceable to a
+file and a page.
 
 ### Keyword and dense retrieval side by side
 
-The same chunks go into two indexes: a keyword index for BM25-style ranking, and a FAISS index of
-sentence-transformers embeddings. At query time both run, each returning its own top results.
+The same chunks go into two indexes: a keyword index and a FAISS index of sentence-transformers embeddings. At
+query time both run, and each returns its own top results.
 
-The tokenizer for the keyword side needs care. A default tokenizer may split a code like "AB-1200/3" into
-fragments that match half the corpus. Keeping identifier-like tokens whole, in addition to the normal tokens,
-is what makes exact lookups reliable.
+The keyword side needs a careful tokenizer. A default one may split a code like "AB-1200/3" into fragments that
+match half the corpus. Keeping identifier-like tokens whole, in addition to the normal tokens, is what makes
+exact lookups reliable.
 
-### Merging with reciprocal rank fusion
+### Merging the two result lists
 
-BM25 scores and cosine similarities live on different scales, so adding them directly is meaningless without
-careful calibration. Reciprocal rank fusion avoids the problem by using only ranks:
+Keyword scores and cosine similarities live on different scales, so adding them directly is meaningless
+without careful calibration. A common way around this is reciprocal rank fusion (RRF), which uses only ranks:
 
 ```python
-# Generic reciprocal rank fusion over several ranked lists of chunk ids
+# Simplified, illustrative reciprocal rank fusion over ranked lists of chunk ids
 def rrf(result_lists, k=60):
     scores = {}
     for results in result_lists:
@@ -109,46 +111,46 @@ def rrf(result_lists, k=60):
 merged = rrf([keyword_ids, dense_ids])
 ```
 
-A chunk that ranks well in both lists rises to the top; a chunk that only one retriever finds still has a
-chance. It is simple, needs no training data, and is easy to reason about when a result looks wrong.
+A chunk that ranks well in both lists rises to the top; a chunk only one retriever finds still has a chance. It
+is simple, needs no training data and is easy to reason about when a result looks wrong.
 
 ### Grounding answers in retrieved passages
 
-When the system produces an answer rather than a list, the answer is built only from the retrieved passages,
-and each claim points back to its chunk: file, page, section. If the passages do not contain the answer, the
-correct output is "not found in the documents", not a guess. For engineering data, a cited "I don't know" is
-far more useful than an uncited fluent paragraph.
+When the system produces an answer rather than a list, the answer should be built only from retrieved passages,
+and each claim should point back to its source: file, page, section. If the passages do not contain the answer,
+the correct output is "not found in the documents", not a guess. For engineering data, a cited "I don't know"
+is far more useful than a fluent paragraph with no sources.
 
 ## Trade-offs
 
-- **Two indexes to keep in sync.** Every document update has to reach both the keyword index and FAISS, and
-  a partial update produces confusing results. Ingestion has to treat indexing a document as all or nothing.
-- **More latency per query.** Two retrievers and a fusion step cost more than one. The retrieval stages are usually
-  cheap next to OCR and embedding, which happen once at ingestion time.
+- **Two indexes to keep in sync.** Every document update has to reach both the keyword index and FAISS, and a
+  partial update produces confusing results. Ingestion should treat indexing a document as all or nothing.
+- **More work per query.** Two retrievers and a merge step cost more than one. Still, retrieval is usually
+  cheap next to OCR and embedding, which happen once, at ingestion time.
 - **OCR is the ceiling.** Retrieval cannot be better than the extracted text. Poor scans limit every stage that
-  follows, which is why normalisation gets as much attention as ranking.
+  follows, so normalisation deserves as much attention as ranking.
 - **Rank fusion discards score strength.** RRF ignores how confident each retriever was. That is a reasonable
-  default, and a weighted variant is an option if one retriever proves consistently more reliable for a type
-  of query.
+  default; a weighted variant is an option if one retriever proves consistently more reliable for some type of
+  query.
 
 ## Lessons
 
 ### Exact strings are a first-class requirement
 
-In engineering documentation, identifiers are often the whole question. Any design that treats them as just
-more semantics will fail on the queries people care about most.
+In engineering documentation, the identifier is often the whole question. A design that treats it as just more
+semantics will fail on the queries that matter most.
 
 ### Ingestion quality decides search quality
 
-OCR, normalisation and chunk boundaries did more for result quality than any change on the ranking side. If a
-result is wrong, the first place to look is the chunk that was indexed.
+OCR, normalisation and chunk boundaries set the upper bound for everything the ranking can do. When a result is
+wrong, the first place to look is the chunk that was indexed.
 
 ### Keep every answer traceable
 
-Metadata on every chunk made debugging possible and made answers checkable. Engineers trust a result they can
-open at the right page.
+Metadata on every chunk makes debugging possible and answers checkable. Engineers trust a result they can open
+at the right page.
 
 ### Start simple on fusion
 
-Reciprocal rank fusion was a good first choice because it needs no tuning to be reasonable. Anything more
-complex should earn its place against it.
+A rank-based merge like RRF is a sensible starting point because it is reasonable without tuning. Anything more
+complex should prove itself against it.

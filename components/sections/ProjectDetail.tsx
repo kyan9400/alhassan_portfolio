@@ -18,9 +18,8 @@ import {
 } from "lucide-react";
 import { localizeProject, type Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
-import { useCopy, useCopyEmail, useCvDownload, useDocumentTitle } from "@/lib/hooks";
+import { useCopy, useCopyEmail, useCvDownload, useLocale, useLocalePath } from "@/lib/hooks";
 import { CONTACT_EMAIL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
-import { usePortfolioStore } from "@/store/portfolioStore";
 import { Bidi, Reveal, GithubIcon, TelegramIcon } from "@/components/ui/primitives";
 import { Footer } from "@/components/app/Footer";
 import { ArchitectureFlow } from "./ArchitectureFlow";
@@ -34,12 +33,10 @@ const delay = (ms: number) => ({ "--d": `${ms}ms` }) as React.CSSProperties;
 export function ProjectDetail({ project, prev, next }: { project: Project; prev: Project; next: Project }) {
   const copy = useCopy();
   const { ui } = copy;
-  const locale = usePortfolioStore((s) => s.locale);
-  const localeReady = usePortfolioStore((s) => s.localeReady);
+  const locale = useLocale();
+  const lp = useLocalePath();
   const p = localizeProject(project, locale);
 
-  // The tab title follows the chosen language (the server metadata is English).
-  useDocumentTitle(localeReady ? `${p.title} — ${ui.meta.nameSuffix}` : null);
   const prevTitle = localizeProject(prev, locale).title;
   const nextTitle = localizeProject(next, locale).title;
 
@@ -61,7 +58,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
     <main className="pb-10 pt-28 md:pt-36">
       <div className="shell max-w-5xl">
         <div className="fade-in">
-          <Link href="/#projects" className="btn-ghost group !min-h-[40px] text-[13px]">
+          <Link href={lp("/#projects")} className="btn-ghost group !min-h-[40px] text-[13px]">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1" aria-hidden="true" />
             {copy.projectBackLabel}
           </Link>
@@ -259,7 +256,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
 
         <nav className="mt-24 grid gap-4 border-t hairline pt-10 sm:grid-cols-2" aria-label={ui.allProjects}>
           <Link
-            href={`/projects/${prev.slug}`}
+            href={lp(`/projects/${prev.slug}`)}
             className="card card-hover group p-6"
             data-cursor={ui.cursorView}
             onClick={() => trackEvent("project_open", { slug: prev.slug, source: "detail-nav" })}
@@ -273,7 +270,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
             </span>
           </Link>
           <Link
-            href={`/projects/${next.slug}`}
+            href={lp(`/projects/${next.slug}`)}
             className="card card-hover group p-6 text-end"
             data-cursor={ui.cursorView}
             onClick={() => trackEvent("project_open", { slug: next.slug, source: "detail-nav" })}
@@ -298,6 +295,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
 /** Closing call to action: a recruiter who has just read the proof can act on it right here. */
 function ProjectCta() {
   const copy = useCopy();
+  const lp = useLocalePath();
   const { ui } = copy;
   const cv = useCvDownload();
   const copyEmail = useCopyEmail();
@@ -312,7 +310,7 @@ function ProjectCta() {
         <p className="mt-4 max-w-xl text-pretty text-muted md:text-lg">{ui.projectCta.body}</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Link href="/#contact" className="btn-primary group !px-6">
+          <Link href={lp("/#contact")} className="btn-primary group !px-6">
             {ui.projectCta.contact}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" aria-hidden="true" />
           </Link>

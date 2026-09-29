@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { useCopy } from "@/lib/hooks";
+import { useCopy, useLocalePath } from "@/lib/hooks";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { trackEvent } from "@/lib/analytics";
 import { Bidi, Reveal, SectionHeader } from "@/components/ui/primitives";
@@ -24,6 +24,7 @@ const PROOF_TARGETS: ({ kind: "project"; slug: string } | { kind: "section"; id:
 ];
 
 function ProofLink({ index, label }: { index: number; label: string }) {
+  const lp = useLocalePath();
   const target = PROOF_TARGETS[index];
   if (!target) return null;
   const className = "text-link text-sm";
@@ -32,7 +33,7 @@ function ProofLink({ index, label }: { index: number; label: string }) {
   if (target.kind === "project") {
     return (
       <Link
-        href={`/projects/${target.slug}`}
+        href={lp(`/projects/${target.slug}`)}
         onClick={() => trackEvent("project_open", { slug: target.slug, source: "services" })}
         className={className}
       >

@@ -6,8 +6,7 @@ import { ArrowLeft, ArrowUpRight, Lock } from "lucide-react";
 import { localizeProject, projects } from "@/lib/projects";
 import type { GithubRepo } from "@/lib/github";
 import { trackEvent } from "@/lib/analytics";
-import { useCopy, useDocumentTitle } from "@/lib/hooks";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { useCopy, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi, GithubIcon } from "@/components/ui/primitives";
 import { Footer } from "@/components/app/Footer";
 
@@ -44,10 +43,8 @@ export function ProjectArchive({ repos }: { repos: GithubRepo[] }) {
   const copy = useCopy();
   const { ui } = copy;
   const a = ui.archive;
-  const locale = usePortfolioStore((s) => s.locale);
-  const localeReady = usePortfolioStore((s) => s.localeReady);
-
-  useDocumentTitle(localeReady ? `${a.metaTitle} — ${ui.meta.nameSuffix}` : null);
+  const locale = useLocale();
+  const lp = useLocalePath();
 
   const rows = useMemo<Row[]>(() => {
     const fromProjects = projects.map<Row>((original) => {
@@ -61,7 +58,7 @@ export function ProjectArchive({ repos }: { repos: GithubRepo[] }) {
         context,
         company: context === "job" ? p.company : undefined,
         stack: p.tech,
-        href: `/projects/${p.slug}`,
+        href: lp(`/projects/${p.slug}`),
         live: p.live,
         github: p.github,
         privateNote: p.github ? undefined : p.codeNote === "client" ? ui.privateCodeClient : ui.privateCode
@@ -83,7 +80,7 @@ export function ProjectArchive({ repos }: { repos: GithubRepo[] }) {
     });
     // Newest first; unknown years last. The sort is stable, so projects stay ahead of repos within a year.
     return [...fromProjects, ...fromRepos].sort((x, y) => (y.year ?? -Infinity) - (x.year ?? -Infinity));
-  }, [repos, locale, ui.privateCode, ui.privateCodeClient]);
+  }, [repos, locale, lp, ui.privateCode, ui.privateCodeClient]);
 
   const contextLabel = (row: Row) => (row.company ? `${a.context[row.context]} · ${row.company}` : a.context[row.context]);
   const smallLink =
@@ -93,7 +90,7 @@ export function ProjectArchive({ repos }: { repos: GithubRepo[] }) {
     <main className="pb-10 pt-28 md:pt-36">
       <div className="shell">
         <div className="fade-in">
-          <Link href="/#projects" className="btn-ghost group !min-h-[40px] text-[13px]">
+          <Link href={lp("/#projects")} className="btn-ghost group !min-h-[40px] text-[13px]">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1" aria-hidden="true" />
             {copy.projectBackLabel}
           </Link>

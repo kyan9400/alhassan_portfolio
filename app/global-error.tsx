@@ -1,18 +1,48 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { localeDir, localePath, splitLocale } from "@/lib/i18n";
+
+/** Kept here (not lib/ui-copy.ts) so this last-resort page loads as little code as possible. */
+const TEXT = {
+  en: {
+    title: "Something went wrong — Alhassan Alfarran",
+    heading: "Something went wrong.",
+    body: "The page failed to load. Please try again — if it keeps happening, the home page is one click away.",
+    retry: "Try again",
+    home: "Go home"
+  },
+  ru: {
+    title: "Что-то пошло не так — Альхассан Альфарран",
+    heading: "Что-то пошло не так.",
+    body: "Страница не загрузилась. Попробуйте ещё раз — если ошибка повторяется, главная страница в одном клике.",
+    retry: "Попробовать снова",
+    home: "На главную"
+  },
+  ar: {
+    title: "حدث خطأ ما — الحسن الفران",
+    heading: "حدث خطأ ما.",
+    body: "تعذّر تحميل الصفحة. حاول مرة أخرى — وإذا تكرر الخطأ، فالصفحة الرئيسية على بُعد نقرة واحدة.",
+    retry: "حاول مرة أخرى",
+    home: "الصفحة الرئيسية"
+  }
+};
 
 /**
  * Last-resort boundary for errors in the root layout. It replaces the whole document, so the app's
- * CSS, fonts and locale store are not available: everything here is inline and English-only.
+ * CSS and fonts are not available: everything here is inline. The language comes from the URL.
  */
 export default function GlobalError({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
+  const locale = splitLocale(usePathname() ?? "/").locale ?? "en";
+  const t = TEXT[locale];
+
   useEffect(() => {
     console.error(error);
   }, [error]);
 
   return (
-    <html lang="en" dir="ltr">
+    <html lang={locale} dir={localeDir(locale)}>
       <body
         style={{
           margin: 0,
@@ -28,11 +58,11 @@ export default function GlobalError({ error, retry }: { error: Error & { digest?
           textAlign: "center"
         }}
       >
-        <title>Something went wrong — Alhassan Alfarran</title>
+        <title>{t.title}</title>
         <main style={{ maxWidth: 480 }} role="alert">
-          <h1 style={{ fontSize: 32, lineHeight: 1.2, margin: "0 0 12px", letterSpacing: "-0.02em" }}>Something went wrong.</h1>
+          <h1 style={{ fontSize: 32, lineHeight: 1.2, margin: "0 0 12px", letterSpacing: "-0.02em" }}>{t.heading}</h1>
           <p style={{ margin: 0, color: "#9698aa", lineHeight: 1.6 }}>
-            The page failed to load. Please try again — if it keeps happening, the home page is one click away.
+            {t.body}
           </p>
           <div style={{ marginTop: 32, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <button
@@ -50,12 +80,11 @@ export default function GlobalError({ error, retry }: { error: Error & { digest?
                 cursor: "pointer"
               }}
             >
-              Try again
+              {t.retry}
             </button>
             {/* A full page load on purpose: the client router may be what failed. */}
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a
-              href="/"
+              href={localePath(locale, "/")}
               style={{
                 minHeight: 44,
                 padding: "0 20px",
@@ -69,7 +98,7 @@ export default function GlobalError({ error, retry }: { error: Error & { digest?
                 alignItems: "center"
               }}
             >
-              Go home
+              {t.home}
             </a>
           </div>
         </main>

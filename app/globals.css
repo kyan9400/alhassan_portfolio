@@ -86,7 +86,7 @@
   /*
    * Script-aware font stacks. next/font's metric-adjusted fallbacks (local Arial) have no
    * unicode-range, so with the default stacks Arabic text would render in "Inter Fallback" instead
-   * of the real font. <html lang> is set before first paint (see app/layout.tsx), so these apply
+   * of the real font. <html lang> is rendered by the server (see app/[lang]/layout.tsx), so these apply
    * without a flash. Manrope (the display face) covers Latin and Cyrillic, so Russian needs no override.
    */
   html[lang="ar"] body,

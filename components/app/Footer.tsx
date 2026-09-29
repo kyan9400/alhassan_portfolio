@@ -3,9 +3,8 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Plus } from "lucide-react";
-import { useCopy, useNotesEnabled } from "@/lib/hooks";
+import { useCopy, useNotesEnabled, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi } from "@/components/ui/primitives";
-import { usePortfolioStore } from "@/store/portfolioStore";
 import type { Locale } from "@/lib/types";
 
 const SOURCE_URL = "https://github.com/kyan9400/alhassan_portfolio";
@@ -38,7 +37,8 @@ function greetingFor(hour: number, g: { morning: string; afternoon: string; even
  */
 export function Footer({ className = "" }: { className?: string }) {
   const copy = useCopy();
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
+  const lp = useLocalePath();
   const notesEnabled = useNotesEnabled();
   const colophon = copy.ui.colophon;
   const minute = useSyncExternalStore<number | null>(subscribeClock, getMinute, getServerMinute);
@@ -77,7 +77,7 @@ export function Footer({ className = "" }: { className?: string }) {
       </p>
       <div className="flex shrink-0 items-center gap-2">
         {notesEnabled ? (
-          <Link href="/notes" className="btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]">
+          <Link href={lp("/notes")} className="btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]">
             {copy.ui.notes.navLabel}
           </Link>
         ) : null}

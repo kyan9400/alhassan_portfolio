@@ -1,68 +1,66 @@
 ---
 title: Fix the query, then cache: how I cut a critical endpoint's response time by ~60%
-description: A decision log from a Node.js and MongoDB service: why I refactored the query before adding a cache, how the cache-aside layer works, and what I would do the same way again.
+description: Notes from a Node.js and MongoDB service: why the query should be fixed before a cache goes in, how a cache-aside layer works, and how to keep the response contract intact along the way.
 date: 2026-09-28
 lang: en
 draft: false
 ---
 
-At Junzi Tech I worked on a Node.js / Express service backed by MongoDB, with a React front end on top.
-One endpoint sat on a critical path of the product, so its latency was felt directly by users. I reduced its average response time by about 60% without changing its response
-contract. This note is the decision log behind that change. The code is not mine to share, so the snippets
-below are generic shapes that illustrate the technique, not the production code.
+At Junzi Tech I worked on a Node.js / Express service backed by MongoDB, with a React front end. By
+refactoring the queries behind one critical endpoint and adding caching, I cut its average response time by
+about 60% without changing its response contract. This note explains the approach and the reasoning behind it.
+The code is not mine to share, so the snippets below are simplified, illustrative shapes of the technique, not
+production code, and the details describe the pattern I use rather than a record of that specific system.
 
 ## Context
 
-The endpoint returned a list of records plus a few related fields that the UI needed to render a view.
-Over time it had grown the way endpoints usually grow: one more field here, one more lookup there. Nobody
-had broken it; it had simply accumulated work.
+Endpoints on a critical path tend to grow the same way: one more field here, one more lookup there. Nobody
+breaks them; they simply accumulate work until latency becomes a problem.
 
-Two constraints shaped every decision that followed:
+Two constraints shape every decision in this kind of work:
 
-- **The response contract could not change.** The front end depended on the exact shape of the JSON. A faster endpoint that returned something slightly different would have been a
-  regression, not an improvement.
-- **The data changed during the day.** Some of it was read far more often than it was written, but it was not
-  static, so "just cache it for an hour" was not an option.
+- **The response contract cannot change.** When the front end depends on the exact shape of the JSON, a faster
+  endpoint that returns something slightly different is a regression, not an improvement.
+- **The data is not static.** Some of it is read far more often than it is written, but it still changes, so
+  "just cache everything for an hour" is not an option.
 
-## Options I considered
+## Options
 
 ### Option 1: put a cache in front and move on
 
-This is the tempting one. A cache hides a slow query very well on a hit. But on a miss the user still pays
-the full cost, and misses happen after every invalidation, every deploy and every cold start. A cache over a
-slow query also makes the slow query harder to see, because average numbers improve while the worst requests
-stay just as bad.
+This is the tempting one. A cache hides a slow query very well on a hit. But on a miss the user still pays the
+full cost, and misses happen after every invalidation, every deploy and every cold start. A cache over a slow
+query also makes that query harder to see: the average improves while the worst requests stay just as bad.
 
 ### Option 2: scale the database or the service
 
-More resources would have helped a little, but the problem was not capacity. The query did more work than it
-needed to, and more hardware would only make that waste cheaper for a while.
+More resources help a little, but when a query does more work than it needs to, the problem is not capacity.
+More hardware only makes the waste cheaper for a while.
 
 ### Option 3: fix the query first, then add a cache
 
 Make the uncached path fast and predictable, then add caching where the read-to-write ratio justifies it. This
-is slower to deliver than option 1, but every later decision rests on a path I understand.
+takes longer than option 1, but every later decision rests on a path you understand.
 
-## Decision
+## Approach
 
-I chose option 3, in that order. The query refactor came first and shipped on its own, so I could see its
-effect in isolation. The cache came second.
+I went with option 3: query refactoring first, caching second. Shipping the query change on its own is worth
+it, because it lets you see its effect in isolation before a cache blurs the numbers.
 
 ### Step 1: measure and read the query plan
 
-Before changing anything I looked at what the database was actually doing. In MongoDB that means running
-the query with `explain("executionStats")` and comparing documents examined with documents returned. When
-the database reads far more documents than it sends back, it is not using an index for that filter.
+Before changing anything, look at what the database is actually doing. In MongoDB that means running the query
+with `explain("executionStats")` and comparing documents examined with documents returned. When the database
+reads far more documents than it sends back, the filter is not served by a suitable index.
 
-The fixes were the ordinary ones, applied carefully:
+The usual fixes are unglamorous:
 
-- a **compound index** whose field order matches the equality filters first, then the sort;
+- a **compound index** whose field order puts equality filters first, then the sort field;
 - a **projection**, so the database returns only the fields the response needs instead of whole documents;
-- removing **per-item lookups** in application code (the N+1 pattern) and fetching related data in one
-  batched query instead.
+- replacing **per-item lookups** in application code (the N+1 pattern) with one batched query.
 
 ```js
-// Generic example: filter + sort served by one compound index,
+// Simplified, illustrative example: filter + sort served by one compound index,
 // projection limited to the fields the response actually uses.
 await db.collection("items").createIndex({ accountId: 1, status: 1, updatedAt: -1 });
 
@@ -86,19 +84,19 @@ const owners = await db
 
 ### Step 2: protect the response contract
 
-Because the shape could not change, I treated the old response as the specification. Before and after the
-refactor I compared responses for the same inputs, field by field, including ordering and empty cases. The
-mapping from database documents to the response lived in one function, so a change in the projection could
-not quietly drop a field somewhere else.
+If the shape cannot change, treat the old response as the specification. Compare responses before and after
+the refactor for the same inputs, field by field, including ordering and empty cases. Keeping the mapping from
+database documents to the response in a single function also helps: a change in the projection cannot quietly
+drop a field somewhere else.
 
 ### Step 3: add a cache-aside layer
 
-Only after the uncached path was fast did I add caching, and only for the part of the data that is read much
-more often than it changes. I used the cache-aside pattern: read from the cache, fall back to the database on
-a miss, write the result back with a TTL, and delete the key when the underlying data changes.
+Only once the uncached path is fast does caching make sense, and only for data that is read much more often
+than it changes. The pattern I reach for is cache-aside: read from the cache, fall back to the database on a
+miss, write the result back with a TTL, and delete the key when the underlying data changes.
 
 ```js
-// Generic cache-aside wrapper with a TTL and explicit invalidation.
+// Simplified, illustrative cache-aside wrapper with a TTL and explicit invalidation.
 async function cached(key, ttlSeconds, load) {
   const hit = await cache.get(key);
   if (hit !== null) return JSON.parse(hit);
@@ -110,7 +108,7 @@ async function cached(key, ttlSeconds, load) {
 
 const listKey = (accountId) => `items:list:${accountId}`;
 
-// Read path
+// Read path (the TTL value is arbitrary here)
 const payload = await cached(listKey(accountId), 60, () => buildItemsResponse(accountId));
 
 // Write path: invalidate after the database write succeeds
@@ -118,39 +116,38 @@ await db.collection("items").updateOne({ _id }, { $set: changes });
 await cache.del(listKey(accountId));
 ```
 
-The TTL is a safety net, not the main invalidation strategy. Explicit deletes on write keep the data fresh;
-the TTL limits the damage if a write path ever forgets to invalidate.
+The TTL is a safety net, not the main invalidation strategy. Explicit deletes on write keep the data fresh; the
+TTL limits the damage if a write path ever forgets to invalidate.
 
 ## Trade-offs
 
-- **Delivery time.** Fixing the query took longer than adding a cache would have. I think it was the right
-  price, because it made the miss path fast as well.
-- **Index cost.** Every index speeds up some reads and slows down every write to that collection, and it takes
-  memory. I added only the index the query plan asked for, not one per field.
-- **Cache consistency.** Cache-aside means a short window where a reader can see stale data if an
-  invalidation races with a read. For this data that was acceptable; for balances or permissions it would not
-  be.
-- **More moving parts.** A cache is one more thing to monitor, and one more thing that can be down. The
-  endpoint had to keep working, only slower, if the cache was unavailable.
+- **Delivery time.** Fixing the query takes longer than adding a cache. It is worth the price, because it makes
+  the miss path fast as well.
+- **Index cost.** Every index speeds up some reads, slows down every write to that collection and takes memory.
+  Add the index the query plan asks for, not one per field.
+- **Cache consistency.** Cache-aside leaves a short window where a reader can see stale data if an invalidation
+  races with a read. That is fine for many kinds of data; for balances or permissions it is not.
+- **More moving parts.** A cache is one more thing to monitor and one more thing that can go down. The endpoint
+  has to keep working, only slower, when the cache is unavailable.
 
 ## Lessons
 
 ### Read the plan before you write the fix
 
-Most of the improvement came from things the query plan pointed at directly: a missing compound index, whole
-documents being returned, and a loop of small queries. None of it needed clever code.
+The query plan usually points straight at the problem: a missing compound index, whole documents being
+returned, a loop of small queries. None of it needs clever code.
 
 ### Cache a fast path, not a slow one
 
-A cache on top of a slow query improves the average and leaves the worst requests untouched. A cache on top
-of a fast query makes a good path better, and a miss is no longer a problem.
+A cache on top of a slow query improves the average and leaves the worst requests untouched. A cache on top of
+a fast query makes a good path better, and a miss stops being a problem.
 
 ### The contract is part of the performance work
 
-Keeping the response identical is what made the change safe to ship. Comparing old and new responses for the
-same inputs took little time and removed the main risk of the whole exercise.
+An unchanged response is what makes a change like this safe to ship. Comparing old and new responses for the
+same inputs is cheap and removes the main risk.
 
 ### Invalidation belongs next to the write
 
-Keeping the cache key builder and the invalidation next to the write code made it hard to forget. If I did it
-again, I would add a test that fails when a write path changes the data without deleting the matching key.
+Keep the cache key builder and the invalidation next to the write code, so they are hard to forget. A test that
+fails when a write path changes data without deleting the matching key is worth adding.

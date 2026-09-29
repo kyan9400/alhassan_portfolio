@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Rss } from "lucide-react";
-import { useCopy, useDocumentTitle } from "@/lib/hooks";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { useCopy, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi } from "@/components/ui/primitives";
 import { Footer } from "@/components/app/Footer";
+import { localePath } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
 
 /** What the client needs about a note (NoteMeta from lib/notes.ts, minus nothing it can't serialize). */
@@ -56,19 +56,18 @@ function NoteMetaLine({ note, locale }: { note: Pick<NoteSummary, "date" | "read
   );
 }
 
-/** /notes: every published note, newest first, as hairline rows. */
+/** /{lang}/notes: every published note, newest first, as hairline rows. */
 export function NotesIndex({ notes }: { notes: NoteSummary[] }) {
   const copy = useCopy();
   const n = copy.ui.notes;
-  const locale = usePortfolioStore((s) => s.locale);
-  const localeReady = usePortfolioStore((s) => s.localeReady);
-  useDocumentTitle(localeReady ? `${n.metaTitle} — ${copy.ui.meta.nameSuffix}` : null);
+  const locale = useLocale();
+  const lp = useLocalePath();
 
   return (
     <main className="pb-10 pt-28 md:pt-36">
       <div className="shell max-w-4xl">
         <div className="fade-in">
-          <Link href="/" className="btn-ghost group !min-h-[40px] text-[13px]">
+          <Link href={lp("/")} className="btn-ghost group !min-h-[40px] text-[13px]">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1" aria-hidden="true" />
             {copy.ui.errorPage.home}
           </Link>
@@ -93,7 +92,7 @@ export function NotesIndex({ notes }: { notes: NoteSummary[] }) {
         <ol className="fade-in mt-10 border-t hairline md:mt-14" style={delay(240)}>
           {notes.map((note) => (
             <li key={note.slug} className="border-b hairline">
-              <Link href={`/notes/${note.slug}`} className="group block py-7 md:py-8">
+              <Link href={localePath(note.lang, `/notes/${note.slug}`)} className="group block py-7 md:py-8">
                 <NoteMetaLine note={note} locale={locale} />
                 {/* Title and summary in the post's own language and direction. */}
                 <div lang={note.lang} dir={note.lang === "ar" ? "rtl" : "ltr"}>
@@ -114,7 +113,7 @@ export function NotesIndex({ notes }: { notes: NoteSummary[] }) {
 }
 
 /**
- * /notes/<slug>: the chrome around one post (translated with the site), with the post itself rendered
+ * /{note.lang}/notes/<slug>: the chrome around one post (translated with the site), with the post itself rendered
  * on the server from MDX and passed in as `children`. The article carries the post's own language and
  * direction, which may differ from the interface language.
  */
@@ -133,16 +132,15 @@ export function NotePost({
 }) {
   const copy = useCopy();
   const n = copy.ui.notes;
-  const locale = usePortfolioStore((s) => s.locale);
-  const localeReady = usePortfolioStore((s) => s.localeReady);
-  useDocumentTitle(localeReady ? `${note.title} — ${copy.ui.meta.nameSuffix}` : null);
+  const locale = useLocale();
+  const lp = useLocalePath();
   const postDir = note.lang === "ar" ? "rtl" : "ltr";
 
   return (
     <main className="pb-10 pt-28 md:pt-36">
       <div className="shell max-w-3xl">
         <div className="fade-in">
-          <Link href="/notes" className="btn-ghost group !min-h-[40px] text-[13px]">
+          <Link href={lp("/notes")} className="btn-ghost group !min-h-[40px] text-[13px]">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1" aria-hidden="true" />
             {n.back}
           </Link>
@@ -189,7 +187,7 @@ export function NotePost({
         {previous || next ? (
           <nav aria-label={n.eyebrow} className="mt-16 grid gap-3 border-t hairline pt-8 sm:grid-cols-2">
             {previous ? (
-              <Link href={`/notes/${previous.slug}`} className="group rounded-2xl border hairline p-5 transition-colors hover:border-accent/40">
+              <Link href={localePath(previous.lang, `/notes/${previous.slug}`)} className="group rounded-2xl border hairline p-5 transition-colors hover:border-accent/40">
                 <span className="flex items-center gap-1.5 text-[12px] font-medium text-muted">
                   <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true" />
                   {n.previous}
@@ -202,7 +200,7 @@ export function NotePost({
               <span className="hidden sm:block" />
             )}
             {next ? (
-              <Link href={`/notes/${next.slug}`} className="group rounded-2xl border hairline p-5 text-end transition-colors hover:border-accent/40">
+              <Link href={localePath(next.lang, `/notes/${next.slug}`)} className="group rounded-2xl border hairline p-5 text-end transition-colors hover:border-accent/40">
                 <span className="flex items-center justify-end gap-1.5 text-[12px] font-medium text-muted">
                   {n.next}
                   <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true" />

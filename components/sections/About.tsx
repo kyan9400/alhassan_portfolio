@@ -2,9 +2,8 @@
 
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { useCopy } from "@/lib/hooks";
+import { useCopy, useLocale } from "@/lib/hooks";
 import { copyByLocale } from "@/lib/copy";
-import { usePortfolioStore } from "@/store/portfolioStore";
 import { Bidi, Reveal } from "@/components/ui/primitives";
 import type { Locale } from "@/lib/types";
 
@@ -15,7 +14,7 @@ const SCRIPTS: Locale[] = ["en", "ru", "ar"];
  * page's language is read out, the other two are decorative.
  */
 function NameInThreeScripts() {
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   return (
     <p className="flex flex-wrap items-baseline gap-x-[0.35em] gap-y-1 font-display text-[clamp(2rem,5.4vw,4.5rem)] font-semibold leading-[1.15] tracking-[-0.03em]">
       {SCRIPTS.map((l, i) => {

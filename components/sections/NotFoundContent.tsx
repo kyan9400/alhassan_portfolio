@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion, useReducedMotion, type Transition } from "framer-motion";
 import { Home, Mail } from "lucide-react";
-import { useCopy } from "@/lib/hooks";
+import { useCopy, useLocalePath } from "@/lib/hooks";
 
 const BOB = { y: [0, -12, 0] };
 const SPIN = { rotate: [0, 360] };
@@ -22,6 +22,7 @@ const STILL: Transition = { duration: 0 };
  */
 export function NotFoundContent() {
   const copy = useCopy();
+  const lp = useLocalePath();
   const reduceMotion = useReducedMotion();
 
   return (
@@ -48,11 +49,11 @@ export function NotFoundContent() {
         <h1 className="mt-4 text-balance text-3xl font-semibold md:text-4xl">{copy.notFoundTitle}</h1>
         <p className="mt-4 text-pretty text-muted">{copy.ui.notFoundJoke}</p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/" className="btn-primary">
+          <Link href={lp("/")} className="btn-primary">
             <Home className="h-4 w-4" aria-hidden="true" />
             {copy.notFoundCta}
           </Link>
-          <Link href="/#contact" className="btn-ghost">
+          <Link href={lp("/#contact")} className="btn-ghost">
             <Mail className="h-4 w-4" aria-hidden="true" />
             {copy.navContact}
           </Link>

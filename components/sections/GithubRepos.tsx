@@ -6,8 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, BrainCircuit, LayoutTemplate, Search, Server, Star, Workflow, type LucideIcon } from "lucide-react";
 import type { GithubRepo, RepoCategory } from "@/lib/github";
 import { GITHUB_URL } from "@/lib/ui-copy";
-import { useCopy } from "@/lib/hooks";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { useCopy, useLocale } from "@/lib/hooks";
 import { Bidi, SectionHeader, GithubIcon } from "@/components/ui/primitives";
 import { ArchiveLink } from "./Projects";
 
@@ -102,7 +101,7 @@ function RepoArt({ repo }: { repo: GithubRepo }) {
 function RepoCard({ repo }: { repo: GithubRepo }) {
   const copy = useCopy();
   const { ui } = copy;
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   const primaryHref = repo.homepage ?? repo.html_url;
   const translated = locale === "en" ? undefined : repo.descriptionI18n?.[locale];
 

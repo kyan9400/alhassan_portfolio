@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Home, RotateCcw } from "lucide-react";
-import { useCopy } from "@/lib/hooks";
+import { useCopy, useLocalePath } from "@/lib/hooks";
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
@@ -14,6 +14,7 @@ type ErrorPageProps = {
 
 export default function ErrorPage({ error, retry }: ErrorPageProps) {
   const copy = useCopy();
+  const lp = useLocalePath();
   const t = copy.ui.errorPage;
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function ErrorPage({ error, retry }: ErrorPageProps) {
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
             {t.retry}
           </button>
-          <Link href="/" className="btn-ghost">
+          <Link href={lp("/")} className="btn-ghost">
             <Home className="h-4 w-4" aria-hidden="true" />
             {t.home}
           </Link>

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { usePortfolioStore } from "@/store/portfolioStore";
+import { useLocale } from "@/lib/hooks";
 import type { OrgMark as OrgMarkData } from "@/lib/copy";
 
 /**
@@ -26,7 +26,7 @@ const NOWRAP_MAX = 32;
  * Other locales render the plain string.
  */
 export function Bidi({ text }: { text: string }) {
-  const rtl = usePortfolioStore((s) => s.locale) === "ar";
+  const rtl = useLocale() === "ar";
   if (!rtl) return <>{text}</>;
 
   const parts: React.ReactNode[] = [];

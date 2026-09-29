@@ -1,14 +1,57 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { getCopy, CONTACT_EMAIL } from "@/lib/ui-copy";
 import { trackEvent } from "@/lib/analytics";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_COOKIE_MAX_AGE, localePath, splitLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/types";
+
+/**
+ * The page language: the [lang] route segment, provided by the root layout (app/[lang]/layout.tsx)
+ * through AppChrome. It is known on the server, so the server HTML and the first client render agree.
+ */
+export const LocaleContext = createContext<Locale>(DEFAULT_LOCALE);
+
+export function useLocale(): Locale {
+  return useContext(LocaleContext);
+}
 
 /** Copy for the current locale. Memoized so it is a stable reference between renders. */
 export function useCopy() {
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   return useMemo(() => getCopy(locale), [locale]);
+}
+
+/** Builds a link in the current language from a language-neutral path: "/cv" → "/ru/cv", "/#contact" → "/ru#contact". */
+export function useLocalePath() {
+  const locale = useLocale();
+  return useCallback((path: string) => localePath(locale, path), [locale]);
+}
+
+/** The current path without its language prefix: "/ru/projects/x" → "/projects/x", "/ar" → "/". */
+export function usePagePath() {
+  return splitLocale(usePathname() ?? "/").path;
+}
+
+/**
+ * The same page in another language, for the language switcher. A note is written in one language
+ * and exists only at that language's URL, so from a note the switcher opens the notes list instead.
+ */
+export function useLanguageHref() {
+  const path = usePagePath();
+  const target = path.startsWith("/notes/") ? "/notes" : path;
+  return useCallback((locale: Locale) => localePath(locale, target), [target]);
+}
+
+/** Remembers an explicit language choice; proxy.ts sends later visits to "/" (or any unprefixed URL) there. */
+export function rememberLocale(locale: Locale) {
+  try {
+    document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
+  } catch {
+    /* cookies unavailable */
+  }
 }
 
 /**
@@ -50,7 +93,7 @@ export function useNotesEnabled() {
 
 export function useCvFile() {
   const copy = useCopy();
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   return copy.cvDownloads.find((cv) => cv.code.toLowerCase() === locale)?.file ?? copy.cvDownloads[0].file;
 }
 
@@ -60,7 +103,7 @@ export function useCvFile() {
  */
 export function useCvDownload() {
   const href = useCvFile();
-  const locale = usePortfolioStore((s) => s.locale);
+  const locale = useLocale();
   const onClick = useCallback(() => trackEvent("cv_download", { lang: locale }), [locale]);
   return { href, onClick };
 }
@@ -159,24 +202,6 @@ export function useActiveSection(ids: readonly string[], key?: string) {
   }, [ids, key]);
   // A value recorded on another route is stale: fall back to the first section until the observer reports.
   return state.key === key ? state.id : ids[0];
-}
-
-/**
- * Keeps the tab title in the visitor's language. The server metadata is English, and React re-syncs
- * the metadata <title> after hydration and on navigation, so the title is re-applied whenever the
- * <head> changes (only when it differs, so this never loops). `null` leaves the title alone.
- */
-export function useDocumentTitle(title: string | null) {
-  useEffect(() => {
-    if (!title) return;
-    const apply = () => {
-      if (document.title !== title) document.title = title;
-    };
-    apply();
-    const observer = new MutationObserver(apply);
-    observer.observe(document.head, { subtree: true, childList: true, characterData: true });
-    return () => observer.disconnect();
-  }, [title]);
 }
 
 /** Sets --mx/--my on the element for the `.spotlight` hover glow. */

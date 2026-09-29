@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
 import { MotionConfig } from "framer-motion";
-import { hydrateLocale, usePortfolioStore } from "@/store/portfolioStore";
-import { NotesEnabledContext, useCopy, useDocumentTitle } from "@/lib/hooks";
+import { usePortfolioStore } from "@/store/portfolioStore";
+import { LocaleContext, NotesEnabledContext } from "@/lib/hooks";
+import { getCopy } from "@/lib/ui-copy";
+import type { Locale } from "@/lib/types";
 import { SmoothScroll, focusTarget } from "./SmoothScroll";
 import { Background } from "./Background";
 import { Cursor } from "./Cursor";
@@ -27,49 +27,35 @@ function skipToContent(e: React.MouseEvent<HTMLAnchorElement>) {
   focusTarget(main);
 }
 
-/** `notesEnabled`: NOTES_ENABLED from lib/notes-config.ts (server-only), shared with the client chrome. */
-export function AppChrome({ children, notesEnabled }: { children: React.ReactNode; notesEnabled: boolean }) {
-  const copy = useCopy();
-  const locale = usePortfolioStore((s) => s.locale);
-  const localeReady = usePortfolioStore((s) => s.localeReady);
+/**
+ * `locale`: the [lang] route segment (app/[lang]/layout.tsx), provided to every client component
+ * (useLocale / useCopy in lib/hooks.ts). The server already rendered <html lang dir> for it.
+ * `notesEnabled`: NOTES_ENABLED from lib/notes-config.ts (server-only), shared with the client chrome.
+ */
+export function AppChrome({ children, locale, notesEnabled }: { children: React.ReactNode; locale: Locale; notesEnabled: boolean }) {
+  const copy = getCopy(locale);
   const paletteUsed = usePortfolioStore((s) => s.paletteUsed);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    hydrateLocale();
-  }, []);
-
-  useEffect(() => {
-    // Until the saved locale is read, `locale` is the server default ("en"). Writing it here would
-    // undo the pre-paint script's lang/dir (app/layout.tsx) and flip Arabic to LTR for a frame.
-    if (!localeReady) return;
-    // Only write when different: even a same-value write can invalidate style for the whole page.
-    const root = document.documentElement;
-    if (root.lang !== locale) root.lang = locale;
-    if (root.dir !== copy.dir) root.dir = copy.dir;
-  }, [localeReady, locale, copy.dir]);
-
-  // The home tab title follows the chosen language (case studies set their own in ProjectDetail).
-  useDocumentTitle(localeReady && pathname === "/" ? copy.ui.meta.homeTitle : null);
 
   return (
-    <NotesEnabledContext value={notesEnabled}>
-      <MotionConfig reducedMotion="user">
-        <a href="#main" className="skip-link" onClick={skipToContent}>
-          {copy.skipToContent}
-        </a>
-        <SmoothScroll />
-        <Background />
-        <div className="grain" aria-hidden="true" />
-        <Navbar />
-        <div id="main" className="relative z-10">
-          {children}
-        </div>
-        <Cursor />
-        {paletteUsed ? <CommandPalette /> : null}
-        <Toast />
-        <EasterEgg />
-      </MotionConfig>
-    </NotesEnabledContext>
+    <LocaleContext value={locale}>
+      <NotesEnabledContext value={notesEnabled}>
+        <MotionConfig reducedMotion="user">
+          <a href="#main" className="skip-link" onClick={skipToContent}>
+            {copy.skipToContent}
+          </a>
+          <SmoothScroll />
+          <Background />
+          <div className="grain" aria-hidden="true" />
+          <Navbar />
+          <div id="main" className="relative z-10">
+            {children}
+          </div>
+          <Cursor />
+          {paletteUsed ? <CommandPalette /> : null}
+          <Toast />
+          <EasterEgg />
+        </MotionConfig>
+      </NotesEnabledContext>
+    </LocaleContext>
   );
 }

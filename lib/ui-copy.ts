@@ -100,8 +100,8 @@ type UiCopy = {
   diagram: { region: string; swipe: string; openFull: string };
   /** Closing call to action at the end of every case study. */
   projectCta: { eyebrow: string; title: string; body: string; contact: string };
-  /** Localized document titles; the server metadata stays English. */
-  meta: { homeTitle: string; nameSuffix: string };
+  /** Server metadata per language (app/[lang]/): titles, descriptions and the Open Graph image text. */
+  meta: { homeTitle: string; nameSuffix: string; homeDescription: string; cvDescription: string };
   /** Certifications: link to the public credential, shown only when a URL is set. */
   verify: string;
   /** /projects/archive: every project and curated repository in one table. */
@@ -136,6 +136,30 @@ type UiCopy = {
   };
   /** Desktop side navigation on the home page (accessible name of the <nav>). */
   sectionRail: { label: string };
+  /**
+   * "Ask my CV" (home, after About): a client-side search over the site's own facts (lib/ask-cv.ts).
+   * Answers are existing passages, never generated text. `examples` are four clickable questions;
+   * `status` gets "{n}" (the number of passages found).
+   */
+  askCv: {
+    eyebrow: string;
+    title: string;
+    note: string;
+    placeholder: string;
+    inputLabel: string;
+    submit: string;
+    clear: string;
+    examplesLabel: string;
+    examples: string[];
+    status: string;
+    noAnswer: string;
+    contact: string;
+    open: string;
+    /** Source labels for passages that have no section title of their own. */
+    sources: { availability: string; contact: string };
+    /** Command palette entry. */
+    palette: string;
+  };
   /** Footer disclosure: how the site is built. `body` is prose; `source` labels the repository link. */
   colophon: { summary: string; items: { title: string; body: string }[]; source: string };
   /** /notes (only linked when NOTES_ENABLED, see lib/notes-config.ts). */
@@ -281,7 +305,11 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     meta: {
       homeTitle: "Alhassan Alfarran — Full-Stack & Python Developer, Moscow",
-      nameSuffix: "Alhassan Alfarran"
+      nameSuffix: "Alhassan Alfarran",
+      homeDescription:
+        "Full-stack & Python developer in Moscow: React, TypeScript, Node.js, FastAPI, PostgreSQL and RAG document search. Built an operations platform from scratch as Chief Full-Stack Developer. Available now — on-site, hybrid or remote.",
+      cvDescription:
+        "One-page CV of Alhassan Alfarran, Full-Stack & Python Developer in Moscow: experience, projects, skills, education, certifications and languages. Printable, with a PDF download."
     },
     verify: "Verify",
     archive: {
@@ -312,6 +340,23 @@ export const uiCopy: Record<Locale, UiCopy> = {
       portfolio: "Portfolio"
     },
     sectionRail: { label: "Page sections" },
+    askCv: {
+      eyebrow: "Ask my CV",
+      title: "Ask my CV a question.",
+      note: "Answers are quoted from my CV — nothing is generated.",
+      placeholder: "Ask my CV — skills, experience, languages…",
+      inputLabel: "Question about my CV",
+      submit: "Ask",
+      clear: "Clear the question",
+      examplesLabel: "Try",
+      examples: ["Do you know FastAPI?", "What did you build at Avenue Group?", "What is your English level?", "Are you available now?"],
+      status: "{n} matching passages from my CV",
+      noAnswer: "I can only answer from my CV, and it doesn't cover that. Try one of these:",
+      contact: "Or ask me directly",
+      open: "Open",
+      sources: { availability: "Availability", contact: "Contact" },
+      palette: "Ask my CV…"
+    },
     colophon: {
       summary: "How this site is built",
       items: [
@@ -321,7 +366,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
         },
         {
           title: "Three languages, one layout",
-          body: "English, Russian and Arabic share one URL and one set of components. The layout uses logical CSS properties (start/end instead of left/right), so Arabic mirrors right to left without separate styles. A small script sets the language and text direction before the first paint, so nothing flips after loading, and the Arabic font is only downloaded when Arabic text is on screen."
+          body: "English, Russian and Arabic each have their own address (/en, /ru, /ar) and share one set of components. The layout uses logical CSS properties (start/end instead of left/right), so Arabic mirrors right to left without separate styles. The server sends every page with its language and text direction already set, so nothing flips after loading, and the Arabic font is only downloaded when Arabic text is on screen."
         },
         {
           title: "Performance and accessibility",
@@ -466,7 +511,11 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     meta: {
       homeTitle: "Альхассан Альфарран — Full-stack / Python-разработчик, Москва",
-      nameSuffix: "Альхассан Альфарран"
+      nameSuffix: "Альхассан Альфарран",
+      homeDescription:
+        "Full-stack и Python-разработчик в Москве: React, TypeScript, Node.js, FastAPI, PostgreSQL и RAG-поиск по документам. Как Chief Full-Stack Developer построил с нуля платформу для операционного управления. Готов приступить сразу — офис, гибрид или удалённо.",
+      cvDescription:
+        "Резюме Альхассана Альфаррана на одной странице, Full-stack / Python-разработчик в Москве: опыт, проекты, навыки, образование, сертификаты и языки. Можно распечатать или скачать PDF."
     },
     verify: "Проверить",
     archive: {
@@ -497,6 +546,23 @@ export const uiCopy: Record<Locale, UiCopy> = {
       portfolio: "Портфолио"
     },
     sectionRail: { label: "Разделы страницы" },
+    askCv: {
+      eyebrow: "Вопрос к резюме",
+      title: "Задайте вопрос моему резюме.",
+      note: "Ответы — цитаты из резюме, ничего не генерируется.",
+      placeholder: "Спросите резюме — навыки, опыт, языки…",
+      inputLabel: "Вопрос по резюме",
+      submit: "Спросить",
+      clear: "Очистить вопрос",
+      examplesLabel: "Например",
+      examples: ["Вы знаете FastAPI?", "Что вы сделали в Avenue Group?", "Какой у вас уровень английского?", "Когда вы готовы приступить?"],
+      status: "Найдено фрагментов резюме: {n}",
+      noAnswer: "Я отвечаю только по резюме, а об этом в нём нет. Попробуйте один из вопросов:",
+      contact: "Или спросите меня напрямую",
+      open: "Открыть",
+      sources: { availability: "Занятость", contact: "Контакты" },
+      palette: "Спросить резюме…"
+    },
     colophon: {
       summary: "Как устроен этот сайт",
       items: [
@@ -506,7 +572,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
         },
         {
           title: "Три языка, одна вёрстка",
-          body: "Английская, русская и арабская версии открываются по одному адресу и собраны из одних и тех же компонентов. В вёрстке используются логические CSS-свойства (start/end вместо left/right), поэтому арабская версия отражается справа налево без отдельных стилей. Небольшой скрипт выставляет язык и направление текста ещё до первой отрисовки, так что после загрузки ничего не перескакивает, а арабский шрифт загружается, только когда на экране есть арабский текст."
+          body: "У английской, русской и арабской версий свои адреса (/en, /ru, /ar), а собраны они из одних и тех же компонентов. В вёрстке используются логические CSS-свойства (start/end вместо left/right), поэтому арабская версия отражается справа налево без отдельных стилей. Сервер отдаёт каждую страницу сразу с нужным языком и направлением текста, так что после загрузки ничего не перескакивает, а арабский шрифт загружается, только когда на экране есть арабский текст."
         },
         {
           title: "Скорость и доступность",
@@ -651,7 +717,11 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     meta: {
       homeTitle: "الحسن الفران — مطوّر Full-Stack وPython، موسكو",
-      nameSuffix: "الحسن الفران"
+      nameSuffix: "الحسن الفران",
+      homeDescription:
+        "مطوّر Full-Stack وPython في موسكو: React وTypeScript وNode.js وFastAPI وPostgreSQL والبحث في المستندات بتقنية RAG. بنيت منصة لإدارة العمليات من الصفر بصفتي Chief Full-Stack Developer. متاح فوراً — حضورياً أو بنظام هجين أو عن بُعد.",
+      cvDescription:
+        "السيرة الذاتية للحسن الفران في صفحة واحدة، مطوّر Full-Stack وPython في موسكو: الخبرة والمشاريع والمهارات والتعليم والشهادات واللغات. قابلة للطباعة مع تنزيل بصيغة PDF."
     },
     verify: "تحقّق",
     archive: {
@@ -682,6 +752,23 @@ export const uiCopy: Record<Locale, UiCopy> = {
       portfolio: "الموقع"
     },
     sectionRail: { label: "أقسام الصفحة" },
+    askCv: {
+      eyebrow: "اسأل سيرتي الذاتية",
+      title: "اطرح سؤالاً على سيرتي الذاتية.",
+      note: "الإجابات مقتبسة من سيرتي الذاتية — لا يُولَّد أي نص.",
+      placeholder: "اسأل سيرتي الذاتية — المهارات، الخبرة، اللغات…",
+      inputLabel: "سؤال عن سيرتي الذاتية",
+      submit: "اسأل",
+      clear: "مسح السؤال",
+      examplesLabel: "جرّب",
+      examples: ["هل تعرف FastAPI؟", "ماذا بنيت في Avenue Group؟", "ما مستوى لغتك الإنجليزية؟", "هل أنت متاح الآن؟"],
+      status: "عدد المقاطع المطابقة من سيرتي الذاتية: {n}",
+      noAnswer: "أجيب من سيرتي الذاتية فقط، وهي لا تتناول ذلك. جرّب أحد هذه الأسئلة:",
+      contact: "أو اسألني مباشرة",
+      open: "فتح",
+      sources: { availability: "التوفّر", contact: "تواصل" },
+      palette: "اسأل سيرتي الذاتية…"
+    },
     colophon: {
       summary: "كيف بُني هذا الموقع",
       items: [
@@ -691,7 +778,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
         },
         {
           title: "ثلاث لغات وتصميم واحد",
-          body: "النسخ الإنجليزية والروسية والعربية على الرابط نفسه وتستخدم المكوّنات نفسها. يعتمد التصميم على خصائص CSS المنطقية (start/end بدلاً من left/right)، فتنعكس النسخة العربية من اليمين إلى اليسار دون أنماط منفصلة. ويحدّد سكربت صغير لغة الصفحة واتجاه النص قبل أول عرض لها، فلا ينقلب شيء بعد التحميل، ولا يُنزَّل الخط العربي إلا عند ظهور نص عربي على الشاشة."
+          body: "لكل من النسخ الإنجليزية والروسية والعربية عنوانها الخاص (/en و/ru و/ar)، وكلها تستخدم المكوّنات نفسها. يعتمد التصميم على خصائص CSS المنطقية (start/end بدلاً من left/right)، فتنعكس النسخة العربية من اليمين إلى اليسار دون أنماط منفصلة. ويُرسل الخادم كل صفحة بلغتها واتجاه نصها مسبقاً، فلا ينقلب شيء بعد التحميل، ولا يُنزَّل الخط العربي إلا عند ظهور نص عربي على الشاشة."
         },
         {
           title: "الأداء وسهولة الوصول",

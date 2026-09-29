@@ -6,15 +6,27 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValueEvent, useSpring } from "framer-motion";
 import { BookOpen, Command, Download, FileText, Menu, Moon, Sun, X } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
-import { SECTION_IDS, useActiveSection, useCopy, useCvDownload, useNotesEnabled, useSections, useTheme } from "@/lib/hooks";
+import {
+  SECTION_IDS,
+  rememberLocale,
+  useActiveSection,
+  useCopy,
+  useCvDownload,
+  useLanguageHref,
+  useLocale,
+  useLocalePath,
+  useNotesEnabled,
+  usePagePath,
+  useSections,
+  useTheme
+} from "@/lib/hooks";
+import { LOCALES } from "@/lib/i18n";
 import { TELEGRAM_URL } from "@/lib/ui-copy";
 import { usePageScroll } from "@/lib/scroll";
 import { trackEvent } from "@/lib/analytics";
 import { TelegramIcon } from "@/components/ui/primitives";
 import { scrollToId } from "./SmoothScroll";
-import type { Locale } from "@/lib/types";
 
-const LOCALES: Locale[] = ["en", "ru", "ar"];
 const MENU_ID = "mobile-menu";
 
 const noopSubscribe = () => () => {};
@@ -38,15 +50,18 @@ export function Navbar() {
   const sections = useSections();
   const cv = useCvDownload();
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const pagePath = usePagePath();
+  const isHome = pagePath === "/";
   const active = useActiveSection(SECTION_IDS, pathname);
-  const locale = usePortfolioStore((s) => s.locale);
-  const setLocale = usePortfolioStore((s) => s.setLocale);
+  const locale = useLocale();
+  const lp = useLocalePath();
+  const languageHref = useLanguageHref();
   const setPaletteOpen = usePortfolioStore((s) => s.setPaletteOpen);
   const { isDark, toggle } = useTheme();
   const isApple = useIsApple();
   const notesEnabled = useNotesEnabled();
-  const onNotes = pathname === "/notes" || pathname.startsWith("/notes/");
+  const onNotes = pagePath === "/notes" || pagePath.startsWith("/notes/");
+  const onCv = pagePath === "/cv";
 
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -140,7 +155,7 @@ export function Navbar() {
             }`}
           >
             <Link
-              href="/"
+              href={lp("/")}
               onClick={go("hero")}
               className="group flex shrink-0 items-center gap-2.5 rounded-full py-1 pe-3 ps-px sm:ps-[3px]"
               aria-label={copy.heroTitle}
@@ -162,7 +177,7 @@ export function Navbar() {
                   return (
                     <li key={s.id}>
                       <Link
-                        href={`/#${s.id}`}
+                        href={lp(`/#${s.id}`)}
                         onClick={go(s.id)}
                         aria-current={isActive ? "location" : undefined}
                         className={`relative block whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors ${
@@ -206,28 +221,27 @@ export function Navbar() {
 
               <div className="flex items-center rounded-full bg-surface/60 p-0.5" role="group" aria-label={copy.languageLabel}>
                 {LOCALES.map((l) => (
-                  <button
+                  // A link to the same page in that language (a full page load: each language has its own
+                  // root layout render). The click also saves the choice for unprefixed URLs (proxy.ts).
+                  <a
                     key={l}
-                    type="button"
+                    href={languageHref(l)}
+                    hrefLang={l}
                     lang={l}
-                    onClick={() => setLocale(l)}
-                    aria-pressed={locale === l}
+                    onClick={() => rememberLocale(l)}
+                    aria-current={locale === l ? "true" : undefined}
                     // The visible code stays in the name (WCAG 2.5.3) next to the language's own name.
                     aria-label={`${ui.languageNames[l]} (${l.toUpperCase()})`}
                     title={ui.languageNames[l]}
-                    className={`relative h-8 min-w-[2.1rem] rounded-full px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
+                    className={`relative flex h-8 min-w-[2.1rem] items-center justify-center rounded-full px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
                       locale === l ? "text-text" : "text-muted hover:text-text"
                     }`}
                   >
                     {locale === l ? (
-                      <motion.span
-                        layoutId="locale-pill"
-                        className="absolute inset-0 -z-0 rounded-full bg-card shadow-sm ring-1 ring-line/15"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                      />
+                      <span className="absolute inset-0 -z-0 rounded-full bg-card shadow-sm ring-1 ring-line/15" aria-hidden="true" />
                     ) : null}
                     <span className="relative">{l}</span>
-                  </button>
+                  </a>
                 ))}
               </div>
 
@@ -247,8 +261,8 @@ export function Navbar() {
 
               {notesEnabled ? (
                 <Link
-                  href="/notes"
-                  aria-current={pathname === "/notes" ? "page" : undefined}
+                  href={lp("/notes")}
+                  aria-current={pagePath === "/notes" ? "page" : undefined}
                   className={`hidden h-9 items-center rounded-full px-3 text-[13px] font-medium transition hover:bg-surface hover:text-text md:inline-flex ${
                     onNotes ? "bg-surface text-text" : "text-muted"
                   }`}
@@ -258,16 +272,16 @@ export function Navbar() {
               ) : null}
 
               <Link
-                href="/cv"
-                aria-current={pathname === "/cv" ? "page" : undefined}
+                href={lp("/cv")}
+                aria-current={onCv ? "page" : undefined}
                 className={`hidden h-9 items-center rounded-full px-3 text-[13px] font-medium transition hover:bg-surface hover:text-text md:inline-flex ${
-                  pathname === "/cv" ? "bg-surface text-text" : "text-muted"
+                  onCv ? "bg-surface text-text" : "text-muted"
                 }`}
               >
                 {copy.navCvLabel}
               </Link>
 
-              <Link href="/#contact" onClick={go("contact")} className="btn-solid hidden !min-h-[36px] !px-4 text-[13px] md:inline-flex">
+              <Link href={lp("/#contact")} onClick={go("contact")} className="btn-solid hidden !min-h-[36px] !px-4 text-[13px] md:inline-flex">
                 {copy.navContact}
               </Link>
 
@@ -302,7 +316,7 @@ export function Navbar() {
                     return (
                       <motion.li key={s.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
                         <Link
-                          href={`/#${s.id}`}
+                          href={lp(`/#${s.id}`)}
                           onClick={go(s.id)}
                           aria-current={isActive ? "location" : undefined}
                           className={`flex min-h-[44px] items-center rounded-2xl px-4 text-sm font-medium transition ${
@@ -319,9 +333,9 @@ export function Navbar() {
                 <div className={`mt-2 grid gap-1 border-t hairline pt-2 ${notesEnabled ? "grid-cols-4" : "grid-cols-3"}`}>
                   {notesEnabled ? (
                     <Link
-                      href="/notes"
+                      href={lp("/notes")}
                       onClick={() => setMenuOpen(false)}
-                      aria-current={pathname === "/notes" ? "page" : undefined}
+                      aria-current={pagePath === "/notes" ? "page" : undefined}
                       className={menuAction}
                     >
                       <BookOpen className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -329,9 +343,9 @@ export function Navbar() {
                     </Link>
                   ) : null}
                   <Link
-                    href="/cv"
+                    href={lp("/cv")}
                     onClick={() => setMenuOpen(false)}
-                    aria-current={pathname === "/cv" ? "page" : undefined}
+                    aria-current={onCv ? "page" : undefined}
                     className={menuAction}
                   >
                     <FileText className="h-4 w-4 shrink-0" aria-hidden="true" />
