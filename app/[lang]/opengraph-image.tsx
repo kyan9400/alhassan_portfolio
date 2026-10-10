@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { SITE_HOST } from "@/lib/ui-copy";
 
-export const alt = "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available immediately";
+export const alt = "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available for new roles";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -58,7 +58,7 @@ export default function OpengraphImage() {
             }}
           >
             <div style={{ width: 12, height: 12, borderRadius: 999, background: "#4ade80" }} />
-            Moscow · Available immediately
+            Moscow · Available for new roles
           </div>
         </div>
 

@@ -291,7 +291,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       retry: "Try again",
       home: "Back to home"
     },
-    availabilityLine: "Available immediately · Moscow on-site/hybrid or remote · full-time or contract",
+    availabilityLine: "Available for new roles · start date to be agreed · Moscow on-site/hybrid or remote · full-time or contract",
     diagram: {
       region: "Architecture diagram",
       swipe: "Swipe sideways to see the whole diagram",
@@ -300,14 +300,14 @@ export const uiCopy: Record<Locale, UiCopy> = {
     projectCta: {
       eyebrow: "What's next",
       title: "Hiring for a full-stack, Python or AI role — or need something like this built? Let's talk.",
-      body: "I'm available immediately — on-site or hybrid in Moscow, or remote; full-time or contract. I reply within 48 hours — faster on Telegram.",
+      body: "I'm available for new roles — on-site or hybrid in Moscow, or remote; full-time or contract; start date to be agreed. I reply within 48 hours — faster on Telegram.",
       contact: "Get in touch"
     },
     meta: {
       homeTitle: "Alhassan Alfarran — Full-Stack & Python Developer, Moscow",
       nameSuffix: "Alhassan Alfarran",
       homeDescription:
-        "Full-stack & Python developer in Moscow: React, TypeScript, Node.js, FastAPI, PostgreSQL and RAG document search. Built an operations platform from scratch as Chief Full-Stack Developer. Available now — on-site, hybrid or remote.",
+        "Full-stack & Python developer in Moscow: React, TypeScript, Node.js, FastAPI, PostgreSQL and RAG document search. Built an operations platform from scratch as Chief Full-Stack Developer. Available for new roles — on-site, hybrid or remote.",
       cvDescription:
         "One-page CV of Alhassan Alfarran, Full-Stack & Python Developer in Moscow: experience, projects, skills, education, certifications and languages. Printable, with a PDF download."
     },
@@ -497,7 +497,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       retry: "Попробовать снова",
       home: "На главную"
     },
-    availabilityLine: "Готов приступить сразу · Москва: офис или гибрид, либо удалённо · полная занятость или контракт",
+    availabilityLine: "Готов к новым предложениям · приступить — после согласования сроков · Москва: офис или гибрид, либо удалённо · полная занятость или контракт",
     diagram: {
       region: "Схема архитектуры",
       swipe: "Листайте в сторону, чтобы увидеть всю схему",
@@ -506,14 +506,14 @@ export const uiCopy: Record<Locale, UiCopy> = {
     projectCta: {
       eyebrow: "Что дальше",
       title: "Ищете full-stack, Python- или AI-разработчика — или нужно сделать что-то похожее? Давайте обсудим.",
-      body: "Готов приступить сразу: офис или гибрид в Москве, либо удалённо; полная занятость или контракт. Отвечаю в течение 48 часов, в Telegram — быстрее.",
+      body: "Готов к новым предложениям: офис или гибрид в Москве, либо удалённо; полная занятость или контракт; сроки выхода обсудим. Отвечаю в течение 48 часов, в Telegram — быстрее.",
       contact: "Связаться"
     },
     meta: {
       homeTitle: "Альхассан Альфарран — Full-stack / Python-разработчик, Москва",
       nameSuffix: "Альхассан Альфарран",
       homeDescription:
-        "Full-stack и Python-разработчик в Москве: React, TypeScript, Node.js, FastAPI, PostgreSQL и RAG-поиск по документам. Как Chief Full-Stack Developer построил с нуля платформу для операционного управления. Готов приступить сразу — офис, гибрид или удалённо.",
+        "Full-stack и Python-разработчик в Москве: React, TypeScript, Node.js, FastAPI, PostgreSQL и RAG-поиск по документам. Как Chief Full-Stack Developer построил с нуля платформу для операционного управления. Готов к новым предложениям — офис, гибрид или удалённо.",
       cvDescription:
         "Резюме Альхассана Альфаррана на одной странице, Full-stack / Python-разработчик в Москве: опыт, проекты, навыки, образование, сертификаты и языки. Можно распечатать или скачать PDF."
     },
@@ -703,7 +703,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       retry: "إعادة المحاولة",
       home: "العودة إلى الرئيسية"
     },
-    availabilityLine: "متاح فوراً · حضورياً أو بنظام هجين في موسكو أو عن بُعد · دوام كامل أو بعقد",
+    availabilityLine: "متاح لفرص جديدة · موعد البدء بالاتفاق · حضورياً أو بنظام هجين في موسكو أو عن بُعد · دوام كامل أو بعقد",
     diagram: {
       region: "مخطط البنية",
       swipe: "مرّر أفقياً لرؤية المخطط كاملاً",
@@ -712,14 +712,14 @@ export const uiCopy: Record<Locale, UiCopy> = {
     projectCta: {
       eyebrow: "الخطوة التالية",
       title: "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي — أو تحتاج إلى بناء شيء مشابه؟ لنتحدث.",
-      body: "متاح فوراً — حضورياً أو بنظام هجين في موسكو، أو عن بُعد؛ بدوام كامل أو بعقد. أردّ خلال 48 ساعة — وأسرع عبر Telegram.",
+      body: "متاح لفرص جديدة — حضورياً أو بنظام هجين في موسكو، أو عن بُعد؛ بدوام كامل أو بعقد؛ وموعد البدء بالاتفاق. أردّ خلال 48 ساعة — وأسرع عبر Telegram.",
       contact: "تواصل معي"
     },
     meta: {
       homeTitle: "الحسن الفران — مطوّر Full-Stack وPython، موسكو",
       nameSuffix: "الحسن الفران",
       homeDescription:
-        "مطوّر Full-Stack وPython في موسكو: React وTypeScript وNode.js وFastAPI وPostgreSQL والبحث في المستندات بتقنية RAG. بنيت منصة لإدارة العمليات من الصفر بصفتي Chief Full-Stack Developer. متاح فوراً — حضورياً أو بنظام هجين أو عن بُعد.",
+        "مطوّر Full-Stack وPython في موسكو: React وTypeScript وNode.js وFastAPI وPostgreSQL والبحث في المستندات بتقنية RAG. بنيت منصة لإدارة العمليات من الصفر بصفتي Chief Full-Stack Developer. متاح لفرص جديدة — حضورياً أو بنظام هجين أو عن بُعد.",
       cvDescription:
         "السيرة الذاتية للحسن الفران في صفحة واحدة، مطوّر Full-Stack وPython في موسكو: الخبرة والمشاريع والمهارات والتعليم والشهادات واللغات. قابلة للطباعة مع تنزيل بصيغة PDF."
     },
@@ -812,8 +812,8 @@ export const uiCopy: Record<Locale, UiCopy> = {
 export const CONTACT_EMAIL = "kyan775909@gmail.com";
 export const GITHUB_URL = "https://github.com/kyan9400";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/alhassan-alfarran-880b00246/";
-export const TELEGRAM_URL = "https://t.me/hassan775775";
-export const TELEGRAM_HANDLE = "@hassan775775";
+export const TELEGRAM_URL = "https://t.me/hassan_9400";
+export const TELEGRAM_HANDLE = "@hassan_9400";
 
 /** Used when NEXT_PUBLIC_SITE_URL is unset or not an absolute http(s) URL. cv-src/render.mjs reads this line. */
 export const DEFAULT_SITE_URL = "https://alhassan-portfolio-sigma.vercel.app";

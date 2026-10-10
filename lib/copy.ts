@@ -193,7 +193,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navContact: "Contact",
     brandMonogram: "AA",
     brandName: "Alhassan",
-    heroAvailability: "Available immediately",
+    heroAvailability: "Available for new roles",
     heroEyebrow: "Full-Stack & Python Developer — Web & AI Systems",
     heroTitle: "Alhassan Alfarran",
     heroHeadlineTop: "Web platforms",
@@ -468,7 +468,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navContact: "Контакты",
     brandMonogram: "АА",
     brandName: "Альхассан",
-    heroAvailability: "Готов приступить сразу",
+    heroAvailability: "Готов к новым предложениям",
     heroEyebrow: "Full-stack / Python-разработчик — веб- и AI-системы",
     heroEyebrowShort: "Full-stack / Python-разработчик",
     heroTitle: "Альхассан Альфарран",
@@ -744,7 +744,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     // The logo mark stays the Latin initials in every locale: "حا" did not read as initials.
     brandMonogram: "AA",
     brandName: "الحسن",
-    heroAvailability: "متاح للعمل فوراً",
+    heroAvailability: "متاح لفرص جديدة",
     heroEyebrow: "مطوّر Full-Stack وPython — أنظمة الويب والذكاء الاصطناعي",
     heroTitle: "الحسن الفران",
     // The middle line is nowrap: kept short so it fits a 390px phone.
