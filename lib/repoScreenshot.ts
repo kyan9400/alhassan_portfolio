@@ -36,3 +36,12 @@ export function publicPathForRepoScreenshot(repoName: string): string | undefine
   }
   return undefined;
 }
+
+/**
+ * `publicPath` (e.g. "/repo-screenshots/skybloom-3d.webp") when that file is committed under
+ * `public/repo-screenshots/`, otherwise `undefined`, so a path can be written down before its image exists.
+ */
+export function existingRepoScreenshot(publicPath: string): string | undefined {
+  const match = /^\/repo-screenshots\/([^/]+)$/.exec(publicPath);
+  return match && listScreenshots().has(match[1]) ? publicPath : undefined;
+}

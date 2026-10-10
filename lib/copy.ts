@@ -168,6 +168,23 @@ export type CopyDictionary = {
     linkedinLabel: string;
     items: Recommendation[];
   };
+  /** "3D web experiences" section. The site list and per-site copy live in lib/web3d.ts. */
+  web3d: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    /** How the scenes stay fast and accessible: four short points. */
+    principles: { title: string; body: string }[];
+    /** Accessible name of the principles list. */
+    principlesLabel: string;
+    stackLabel: string;
+    /** Opens a site's live deployment. */
+    openSite: string;
+    /** Badge on a site whose deployment is not live yet. */
+    soonBadge: string;
+    /** "Show all" button; the count follows it. */
+    showAll: string;
+  };
 };
 
 /** Course titles are proper names, so they stay in English in every locale. */
@@ -459,6 +476,23 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       title: "In their words.",
       linkedinLabel: "{name} on LinkedIn",
       items: []
+    },
+    web3d: {
+      eyebrow: "3D web",
+      title: "3D web experiences",
+      description:
+        "Real-time 3D sites for brands, built performance-first. Every model, shader and particle is made in code — there are no model files to download.",
+      principlesLabel: "How the scenes stay fast",
+      principles: [
+        { title: "Render on demand", body: "A frame is drawn only when something changes, so an idle page costs almost nothing." },
+        { title: "Adaptive quality", body: "Resolution and effects scale to the device to keep motion smooth, phones included." },
+        { title: "Reduced motion", body: "With reduced motion turned on, scenes settle into a still view that stays fully usable." },
+        { title: "Made in code", body: "Geometry, shaders and particles are procedural: nothing to load but the code itself." }
+      ],
+      stackLabel: "Stack",
+      openSite: "Open site",
+      soonBadge: "Launching soon",
+      showAll: "Show all"
     }
   },
   ru: {
@@ -734,6 +768,23 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       title: "Что говорят коллеги.",
       linkedinLabel: "{name} в LinkedIn",
       items: []
+    },
+    web3d: {
+      eyebrow: "3D для веба",
+      title: "Интерактивные 3D-сайты",
+      description:
+        "Сайты для брендов с 3D-графикой в реальном времени, где производительность на первом месте. Все модели, шейдеры и частицы созданы кодом — никаких файлов моделей для загрузки.",
+      principlesLabel: "Как сцены остаются быстрыми",
+      principles: [
+        { title: "Рендер по требованию", body: "Кадр отрисовывается, только когда что-то меняется, поэтому страница в покое почти не нагружает устройство." },
+        { title: "Адаптивное качество", body: "Разрешение и эффекты подстраиваются под устройство, чтобы анимация оставалась плавной и на телефонах." },
+        { title: "Уменьшение движения", body: "Если в системе включено уменьшение движения, сцена показывается статично и остаётся полностью рабочей." },
+        { title: "Всё в коде", body: "Геометрия, шейдеры и частицы процедурные: загружается только сам код." }
+      ],
+      stackLabel: "Стек",
+      openSite: "Открыть сайт",
+      soonBadge: "Скоро запуск",
+      showAll: "Показать все"
     }
   },
   ar: {
@@ -1010,6 +1061,23 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       title: "بكلمات من عملت معهم.",
       linkedinLabel: "{name} على LinkedIn",
       items: []
+    },
+    web3d: {
+      eyebrow: "ويب ثلاثي الأبعاد",
+      title: "تجارب ويب ثلاثية الأبعاد",
+      description:
+        "مواقع للعلامات التجارية برسوميات ثلاثية الأبعاد تعمل في الوقت الفعلي، والأداء فيها أولوية. كل النماذج والمظلّلات والجسيمات مبنية بالكود — فلا توجد ملفات نماذج يلزم تنزيلها.",
+      principlesLabel: "كيف تبقى المشاهد سريعة",
+      principles: [
+        { title: "الرسم عند الحاجة", body: "لا يُرسم إطار جديد إلا عند تغيّر شيء ما، فلا تكاد الصفحة الساكنة تستهلك شيئًا من موارد الجهاز." },
+        { title: "جودة متكيّفة", body: "تتكيّف الدقة والمؤثرات مع قدرات الجهاز لتبقى الحركة سلسة، حتى على الهواتف." },
+        { title: "تقليل الحركة", body: "عند تفعيل خيار تقليل الحركة في النظام، يظهر المشهد ثابتًا ويبقى قابلًا للاستخدام بالكامل." },
+        { title: "كل شيء بالكود", body: "الأشكال والمظلّلات والجسيمات مولّدة برمجيًا، فلا يُحمَّل سوى الكود نفسه." }
+      ],
+      stackLabel: "التقنيات",
+      openSite: "فتح الموقع",
+      soonBadge: "يُطلق قريبًا",
+      showAll: "عرض الكل"
     }
   }
 };

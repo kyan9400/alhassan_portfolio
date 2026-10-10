@@ -3,6 +3,7 @@
  *
  *   featured projects -> public/images/projects/<slug>.webp   (1440x900 viewport, 1600px wide, q80)
  *   repository grid   -> public/repo-screenshots/<repo>.webp   (1280x800 viewport, 1200px wide, q78)
+ *   3D web sites      -> public/repo-screenshots/<slug>.webp   (same settings; list read from lib/web3d.ts)
  *
  * Only the hand-curated list below is captured (it mirrors the curated order in lib/github.ts).
  *
@@ -11,6 +12,11 @@
  *   npm run capture:repos -- --featured       # featured projects only
  *   npm run capture:repos -- --repos          # repository grid only
  *   npm run capture:repos -- leasequeue gatehouse   # just these names
+ *   npm run capture:repos -- --web3d          # the 3D web sites only (not part of a default run)
+ *   npm run capture:repos -- skybloom-3d      # one 3D site
+ *
+ * The 3D sites are rendered with WebGL on SwiftShader (headless Chromium has no GPU) and get extra time
+ * for their scenes to build. lib/web3d.ts is TypeScript, hence `--experimental-strip-types` in the npm script.
  *
  * Requires: `npx playwright install chromium`. Set CHROMIUM_PATH to use a specific Chrome/Chromium binary.
  * sharp is already installed as a dependency of Next.js.
@@ -252,6 +258,22 @@ const REPOS = {
   ]
 };
 
+/*
+ * 3D web experiences: the list (slug + live URL) comes from lib/web3d.ts, the single source for the
+ * section. Only loaded when asked for (--web3d, or a 3D slug named), so default runs stay unchanged.
+ */
+const WEB3D_ARG = "--web3d";
+
+async function web3dGroup() {
+  const { WEB3D_SITES } = await import("../lib/web3d.ts");
+  return {
+    ...REPOS,
+    // Scenes build after load (shaders compile, GSAP intros settle): give them time before the shot.
+    settleMs: 4000,
+    items: WEB3D_SITES.map((site) => ({ name: site.slug, url: site.live }))
+  };
+}
+
 const HIDE_OVERLAYS_CSS = `
   [id*="cookie" i], [class*="cookie-banner" i], [class*="cookieBanner" i], [class*="cookie-consent" i],
   [id*="consent" i], [class*="consent-banner" i], #onetrust-banner-sdk, .cc-window, .cky-consent-container,
@@ -309,6 +331,7 @@ async function capture(browser, group, item) {
     if (seed?.css) await page.addStyleTag({ content: seed.css });
     if (seed?.after) await seed.after(page);
     if (seed) await sleep(1000);
+    if (group.settleMs) await sleep(group.settleMs);
     const png = await page.screenshot({ type: "png" });
     const file = path.join(group.outDir, `${safeFileName(item.name)}.webp`);
     await sharp(png)
@@ -329,11 +352,23 @@ async function capture(browser, group, item) {
 const args = process.argv.slice(2);
 const names = args.filter((a) => !a.startsWith("--"));
 const groups = [];
-if (!args.includes("--repos")) groups.push(FEATURED);
-if (!args.includes("--featured")) groups.push(REPOS);
+if (args.includes(WEB3D_ARG)) {
+  groups.push(await web3dGroup());
+} else {
+  if (!args.includes("--repos")) groups.push(FEATURED);
+  if (!args.includes("--featured")) groups.push(REPOS);
+  // A 3D slug named on the command line (`-- skybloom-3d`) is captured too.
+  if (names.length && !args.includes("--featured") && !args.includes("--repos")) {
+    const web3d = await web3dGroup();
+    if (web3d.items.some((item) => names.includes(item.name))) groups.push(web3d);
+  }
+}
+const needsWebGL = groups.some((group) => group.settleMs);
 
 const browser = await chromium.launch({
   headless: true,
+  // Software WebGL for the 3D sites.
+  ...(needsWebGL ? { args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] } : {}),
   ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {})
 });
 

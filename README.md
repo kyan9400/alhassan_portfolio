@@ -27,6 +27,7 @@ lib/copy.ts           long-form copy (en / ru / ar)
 lib/ui-copy.ts        UI strings and site-wide constants (URLs, email)
 lib/projects.ts       project catalogue + translations
 lib/github.ts         curated repository showcase (static data, enriched by the GitHub API)
+lib/web3d.ts          "3D web experiences" section: the site list (URLs, screenshot paths, en/ru/ar copy)
 public/               CVs, images, repository screenshots
 ```
 
@@ -73,6 +74,7 @@ and the first client render agree and Arabic never flips direction after loading
 | `npm run lint`          | ESLint (`eslint-config-next`, core web vitals)                  |
 | `npx tsc --noEmit`      | Type-check                                                      |
 | `npm run capture:repos` | Capture repository screenshots into `public/repo-screenshots/` (Playwright) |
+| `npm run capture:repos -- --web3d` | Capture the 3D sites listed in `lib/web3d.ts` into `public/repo-screenshots/` |
 
 Requires Node.js 20.9 or newer.
 

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "capture:repos": "node scripts/capture-repo-screenshots.mjs",
+    "capture:repos": "node --experimental-strip-types --no-warnings scripts/capture-repo-screenshots.mjs",
     "test:ask-cv": "node --experimental-strip-types --no-warnings scripts/test-ask-cv.mjs"
   },
   "dependencies": {

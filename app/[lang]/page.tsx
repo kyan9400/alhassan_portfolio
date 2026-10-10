@@ -11,12 +11,15 @@ import { SignatureCase } from "@/components/sections/SignatureCase";
 import { Skills } from "@/components/sections/Skills";
 import { Services } from "@/components/sections/Services";
 import { GithubRepos } from "@/components/sections/GithubRepos";
+import { Web3d } from "@/components/sections/Web3d";
 import { Recommendations } from "@/components/sections/Recommendations";
 import { Contact } from "@/components/sections/Contact";
 import { MobileContactBar } from "@/components/app/MobileContactBar";
 import { SectionRail } from "@/components/app/SectionRail";
 import { localeAlternates } from "@/lib/seo";
 import { routeLocale } from "@/lib/i18n";
+import { WEB3D_SITES } from "@/lib/web3d";
+import { existingRepoScreenshot } from "@/lib/repoScreenshot";
 
 type PageParams = { params: Promise<{ lang: string }> };
 
@@ -30,7 +33,7 @@ export const revalidate = 3600;
 
 /**
  * Story order: who I am → ask my CV anything → where I've worked → what I built there → proof in depth → toolkit →
- * how I can help → more code → what colleagues say (only once there is a recommendation) → get in touch.
+ * how I can help → real-time 3D sites → more code → what colleagues say (only once there is a recommendation) → get in touch.
  *
  * Every section below the fold is its own Suspense boundary. Nothing suspends (the HTML is complete),
  * but React then hydrates each boundary as a separate unit and yields to the browser in between,
@@ -39,6 +42,8 @@ export const revalidate = 3600;
  */
 export default async function HomePage() {
   const github = await getGithubRepos();
+  // 3D sites whose screenshot is committed (the others render a placeholder until it is added).
+  const web3dScreenshots = WEB3D_SITES.filter((site) => existingRepoScreenshot(site.screenshot)).map((site) => site.slug);
 
   return (
     <main>
@@ -64,6 +69,9 @@ export default async function HomePage() {
       </Suspense>
       <Suspense>
         <Services />
+      </Suspense>
+      <Suspense>
+        <Web3d screenshots={web3dScreenshots} />
       </Suspense>
       <Suspense>
         <GithubRepos repos={github.ok ? github.repos : []} />
