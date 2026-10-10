@@ -11,17 +11,26 @@ export function repoScreenshotBasename(repoName: string): string {
   return String(repoName).replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
-let cachedFiles: Set<string> | null = null;
+/** Phone-width captures (390 px wide) live one level down: public/repo-screenshots/mobile/<name>.webp. */
+const MOBILE_SUBDIR = "mobile";
 
-/** One directory read per production server process (fresh on every call in dev). */
-function listScreenshots(): Set<string> {
-  if (cachedFiles && process.env.NODE_ENV === "production") return cachedFiles;
+const cachedFiles = new Map<string, Set<string>>();
+
+/**
+ * Files in `public/repo-screenshots/` (or in one subfolder of it, e.g. "mobile"). One directory read per
+ * folder per production server process (fresh on every call in dev).
+ */
+function listScreenshots(subdir = ""): Set<string> {
+  const cached = cachedFiles.get(subdir);
+  if (cached && process.env.NODE_ENV === "production") return cached;
+  let files: Set<string>;
   try {
-    cachedFiles = new Set(fs.readdirSync(SCREENSHOT_DIR));
+    files = new Set(fs.readdirSync(path.join(SCREENSHOT_DIR, subdir)));
   } catch {
-    cachedFiles = new Set();
+    files = new Set();
   }
-  return cachedFiles;
+  cachedFiles.set(subdir, files);
+  return files;
 }
 
 /**
@@ -38,10 +47,14 @@ export function publicPathForRepoScreenshot(repoName: string): string | undefine
 }
 
 /**
- * `publicPath` (e.g. "/repo-screenshots/skybloom-3d.webp") when that file is committed under
- * `public/repo-screenshots/`, otherwise `undefined`, so a path can be written down before its image exists.
+ * `publicPath` (e.g. "/repo-screenshots/skybloom-3d.webp", or the phone capture
+ * "/repo-screenshots/mobile/skybloom-3d.webp") when that file is committed under `public/repo-screenshots/`,
+ * otherwise `undefined`, so a path can be written down before its image exists.
  */
 export function existingRepoScreenshot(publicPath: string): string | undefined {
-  const match = /^\/repo-screenshots\/([^/]+)$/.exec(publicPath);
-  return match && listScreenshots().has(match[1]) ? publicPath : undefined;
+  const match = /^\/repo-screenshots\/(?:([^/]+)\/)?([^/]+)$/.exec(publicPath);
+  if (!match) return undefined;
+  const [, subdir = "", file] = match;
+  if (subdir && subdir !== MOBILE_SUBDIR) return undefined;
+  return listScreenshots(subdir).has(file) ? publicPath : undefined;
 }

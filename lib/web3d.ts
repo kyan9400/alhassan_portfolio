@@ -10,6 +10,10 @@
  *   public/repo-screenshots/<slug>.webp (the same folder and naming as the repository grid). The section
  *   only uses it when the file exists (checked on the server, lib/repoScreenshot.ts); otherwise the card
  *   shows a gradient placeholder in the site's `palette`.
+ * - `mobileScreenshot` is the public path of the phone capture (390 px wide, WebP):
+ *   public/repo-screenshots/mobile/<slug>.webp. On phones the card shows it instead of the desktop
+ *   capture, and from `sm` it appears as a small phone frame over the desktop one. Optional in practice:
+ *   when the file is missing the card simply keeps the desktop capture (same server check).
  * - `kind` and `description` are written in all three languages (Russian and Arabic are not machine output:
  *   keep them in sync by hand when editing).
  * - `icon` names the placeholder glyph (mapped to a lucide icon in the section component).
@@ -32,6 +36,8 @@ export type Web3dSite = {
   repo: string;
   /** Public path of the screenshot (file: public/repo-screenshots/<slug>.webp). May not exist yet. */
   screenshot: string;
+  /** Public path of the phone capture (file: public/repo-screenshots/mobile/<slug>.webp). May not exist yet. */
+  mobileScreenshot: string;
   /** Placeholder gradient: two hex colours (scene glow, then rim light). */
   palette: [string, string];
   icon: Web3dIcon;
@@ -42,14 +48,15 @@ const GITHUB = "https://github.com/kyan9400";
 /** Shared stack of every site in the section. Names of tools: never translated. */
 export const WEB3D_STACK = ["Next.js", "React Three Fiber", "Three.js", "GLSL", "GSAP"] as const;
 
-/** Repo, expected Vercel URL and screenshot path follow from the slug. */
-function site(slug: string, data: Omit<Web3dSite, "slug" | "live" | "liveStatus" | "repo" | "screenshot"> & Partial<Pick<Web3dSite, "live" | "liveStatus">>): Web3dSite {
+/** Repo, expected Vercel URL and screenshot paths follow from the slug. */
+function site(slug: string, data: Omit<Web3dSite, "slug" | "live" | "liveStatus" | "repo" | "screenshot" | "mobileScreenshot"> & Partial<Pick<Web3dSite, "live" | "liveStatus">>): Web3dSite {
   return {
     slug,
     live: `https://${slug}.vercel.app`,
     liveStatus: "live",
     repo: `${GITHUB}/${slug}`,
     screenshot: `/repo-screenshots/${slug}.webp`,
+    mobileScreenshot: `/repo-screenshots/mobile/${slug}.webp`,
     ...data
   };
 }

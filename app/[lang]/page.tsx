@@ -44,6 +44,8 @@ export default async function HomePage() {
   const github = await getGithubRepos();
   // 3D sites whose screenshot is committed (the others render a placeholder until it is added).
   const web3dScreenshots = WEB3D_SITES.filter((site) => existingRepoScreenshot(site.screenshot)).map((site) => site.slug);
+  // Same for the phone captures (public/repo-screenshots/mobile/): cards without one keep the desktop capture on phones.
+  const web3dMobileScreenshots = WEB3D_SITES.filter((site) => existingRepoScreenshot(site.mobileScreenshot)).map((site) => site.slug);
 
   return (
     <main>
@@ -71,7 +73,7 @@ export default async function HomePage() {
         <Services />
       </Suspense>
       <Suspense>
-        <Web3d screenshots={web3dScreenshots} />
+        <Web3d screenshots={web3dScreenshots} mobileScreenshots={web3dMobileScreenshots} />
       </Suspense>
       <Suspense>
         <GithubRepos repos={github.ok ? github.repos : []} />

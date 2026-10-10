@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { ArrowUpRight, Atom, AudioLines, Building2, CarFront, Coffee, Dna, Globe, Rocket, Sparkles, Sprout, Watch, type LucideIcon } from "lucide-react";
 import { WEB3D_SITES, WEB3D_STACK, type Web3dIcon, type Web3dSite } from "@/lib/web3d";
 import { typographAr, typographRu } from "@/lib/typograph";
@@ -16,6 +16,14 @@ import type { Locale } from "@/lib/types";
 const INITIAL_DESKTOP = 6;
 const INITIAL_MOBILE = 3;
 const MOBILE_QUERY = "(max-width: 639px)";
+/** Same breakpoint as Tailwind's `sm`: below it the card shows the phone capture (art direction in <picture>). */
+const DESKTOP_MEDIA = "(min-width: 640px)";
+/** Card image sizes from `sm` up (the grid columns), and the phone layout where the card spans the screen. */
+const DESKTOP_SIZES = "(min-width: 1152px) 360px, (min-width: 1024px) 33vw, 50vw";
+/** The same for a single image used at every width: full width below `sm`. */
+const ALL_SIZES = "(min-width: 1152px) 360px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";
+const DESKTOP_IMAGE_CLASS =
+  "object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none";
 
 const ICONS: Record<Web3dIcon, LucideIcon> = {
   towers: Sprout,
@@ -75,11 +83,64 @@ function SceneArt({ site }: { site: Web3dSite }) {
 }
 
 /**
+ * The card header image. With both captures it is a <picture>: the phone capture below `sm` (where the card
+ * spans a phone screen, so a phone layout reads better than a shrunken desktop page) and the desktop capture
+ * from `sm` up. Both srcsets come from next/image (getImageProps), so they stay optimized and lazy.
+ * With only one capture it is a plain next/image of that file.
+ */
+function CardImage({ site, desktop, mobile, alt, onError }: { site: Web3dSite; desktop: boolean; mobile: boolean; alt: string; onError: () => void }) {
+  if (!(desktop && mobile)) {
+    return (
+      <Image
+        src={desktop ? site.screenshot : site.mobileScreenshot}
+        alt={alt}
+        fill
+        sizes={ALL_SIZES}
+        onError={onError}
+        className={DESKTOP_IMAGE_CLASS}
+      />
+    );
+  }
+  const {
+    props: { srcSet: desktopSrcSet }
+  } = getImageProps({ src: site.screenshot, alt, fill: true, sizes: DESKTOP_SIZES });
+  const {
+    props: { srcSet: mobileSrcSet, ...rest }
+  } = getImageProps({ src: site.mobileScreenshot, alt, fill: true, sizes: "100vw" });
+  return (
+    <picture>
+      <source media={DESKTOP_MEDIA} srcSet={desktopSrcSet} sizes={DESKTOP_SIZES} />
+      {/* next/image's own art-direction pattern: the optimized srcset is spread onto a plain <img>. */}
+      {/* eslint-disable-next-line jsx-a11y/alt-text -- alt comes from `rest` */}
+      <img {...rest} srcSet={mobileSrcSet} onError={onError} className={DESKTOP_IMAGE_CLASS} />
+    </picture>
+  );
+}
+
+/**
+ * From `sm` up, the phone capture as a small phone frame over the corner of the desktop capture: shows the
+ * responsive layout without a second card. Decorative (the card already has its image alt and title) and
+ * light: ~80 px wide, lazy, and simply not rendered if the file fails to load.
+ */
+function PhoneFrame({ site }: { site: Web3dSite }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <span
+      className="pointer-events-none absolute bottom-3 start-3 hidden aspect-[390/844] w-[18%] max-w-[84px] overflow-hidden rounded-[12px] border-[3px] border-[#101014] bg-[#07070c] shadow-[0_12px_30px_-8px_rgb(0_0_0/0.7)] ring-1 ring-white/15 transition-transform duration-700 ease-out group-hover:-translate-y-1 motion-reduce:transition-none sm:block"
+      aria-hidden="true"
+    >
+      <Image src={site.mobileScreenshot} alt="" fill sizes="84px" onError={() => setFailed(true)} className="object-cover object-top" />
+    </span>
+  );
+}
+
+/**
  * A site card. Like the repository cards, the title link is stretched over the whole card: it opens the
  * live site once it is deployed and the repository until then. The GitHub link sits above that overlay
  * as a sibling, so no interactive element is nested in another.
  */
-function SiteCard({ site, screenshot }: { site: Web3dSite; screenshot: boolean }) {
+function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSite; screenshot: boolean; mobileScreenshot: boolean }) {
   const copy = useCopy();
   const { ui } = copy;
   const locale = useLocale();
@@ -90,16 +151,21 @@ function SiteCard({ site, screenshot }: { site: Web3dSite; screenshot: boolean }
 
   return (
     <>
-      <div className="relative aspect-[2/1] overflow-hidden border-b hairline bg-[#07070c] sm:aspect-[16/10]">
-        {screenshot && !imageFailed ? (
-          <Image
-            src={site.screenshot}
-            alt={`${site.name} ${ui.previewAlt}`}
-            fill
-            sizes="(min-width: 1152px) 360px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            onError={() => setImageFailed(true)}
-            className="object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none"
-          />
+      {/* A taller header on phones when it shows the phone capture, so more than its top bar is visible. */}
+      <div
+        className={`relative overflow-hidden border-b hairline bg-[#07070c] sm:aspect-[16/10] ${mobileScreenshot && !imageFailed ? "aspect-[4/3]" : "aspect-[2/1]"}`}
+      >
+        {(screenshot || mobileScreenshot) && !imageFailed ? (
+          <>
+            <CardImage
+              site={site}
+              desktop={screenshot}
+              mobile={mobileScreenshot}
+              alt={`${site.name} ${ui.previewAlt}`}
+              onError={() => setImageFailed(true)}
+            />
+            {screenshot && mobileScreenshot ? <PhoneFrame site={site} /> : null}
+          </>
         ) : (
           <SceneArt site={site} />
         )}
@@ -176,8 +242,9 @@ function SiteCard({ site, screenshot }: { site: Web3dSite; screenshot: boolean }
 /**
  * "3D web experiences": real-time 3D sites (lib/web3d.ts). `screenshots` lists the slugs whose capture is
  * committed under public/repo-screenshots/ (checked on the server); the others get a placeholder.
+ * `mobileScreenshots` does the same for the phone captures under public/repo-screenshots/mobile/.
  */
-export function Web3d({ screenshots }: { screenshots: string[] }) {
+export function Web3d({ screenshots, mobileScreenshots }: { screenshots: string[]; mobileScreenshots: string[] }) {
   const copy = useCopy();
   const t = copy.web3d;
   const [expanded, setExpanded] = useState(false);
@@ -185,8 +252,11 @@ export function Web3d({ screenshots }: { screenshots: string[] }) {
   // Sites with a screenshot first (a stable sort keeps the data order within each group).
   const sites = useMemo(() => {
     const has = new Set(screenshots);
-    return [...WEB3D_SITES].sort((a, b) => Number(has.has(b.slug)) - Number(has.has(a.slug))).map((site) => ({ site, screenshot: has.has(site.slug) }));
-  }, [screenshots]);
+    const hasMobile = new Set(mobileScreenshots);
+    return [...WEB3D_SITES]
+      .sort((a, b) => Number(has.has(b.slug)) - Number(has.has(a.slug)))
+      .map((site) => ({ site, screenshot: has.has(site.slug), mobileScreenshot: hasMobile.has(site.slug) }));
+  }, [screenshots, mobileScreenshots]);
 
   const shown = expanded ? sites : sites.slice(0, INITIAL_DESKTOP);
   const remainingDesktop = sites.length - shown.length;
@@ -207,7 +277,7 @@ export function Web3d({ screenshots }: { screenshots: string[] }) {
   }, [expanded]);
 
   return (
-    <section id="web-3d" className="section cv-auto [--cv-h:2300px] sm:[--cv-h:2200px] lg:[--cv-h:1700px]">
+    <section id="web-3d" className="section cv-auto [--cv-h:2500px] sm:[--cv-h:2200px] lg:[--cv-h:1700px]">
       <div className="shell">
         <SectionHeader eyebrow={t.eyebrow} title={t.title} description={t.description} />
 
@@ -244,7 +314,7 @@ export function Web3d({ screenshots }: { screenshots: string[] }) {
         </Reveal>
 
         <ul ref={gridRef} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {shown.map(({ site, screenshot }, index) => (
+          {shown.map(({ site, screenshot, mobileScreenshot }, index) => (
             <Reveal
               as="li"
               key={site.slug}
@@ -252,7 +322,7 @@ export function Web3d({ screenshots }: { screenshots: string[] }) {
               y={16}
               className={`card card-hover group flex flex-col overflow-hidden ${!expanded && index >= INITIAL_MOBILE ? "max-sm:hidden" : ""}`}
             >
-              <SiteCard site={site} screenshot={screenshot} />
+              <SiteCard site={site} screenshot={screenshot} mobileScreenshot={mobileScreenshot} />
             </Reveal>
           ))}
         </ul>
