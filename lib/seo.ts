@@ -34,7 +34,7 @@ export function siteOgImage(locale: Locale) {
     width: 1200,
     height: 630,
     type: "image/png",
-    alt: "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available immediately"
+    alt: "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available for new roles"
   };
 }
 
