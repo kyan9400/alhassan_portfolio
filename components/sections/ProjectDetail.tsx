@@ -19,7 +19,7 @@ import {
 import { localizeProject, type Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
 import { useCopy, useCopyEmail, useCvDownload, useLocale, useLocalePath } from "@/lib/hooks";
-import { CONTACT_EMAIL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
+import { CONTACT_EMAIL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/site";
 import { Bidi, Reveal, GithubIcon, TelegramIcon } from "@/components/ui/primitives";
 import { Footer } from "@/components/app/Footer";
 import { ArchitectureFlow } from "./ArchitectureFlow";
@@ -257,7 +257,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
         <nav className="mt-24 grid gap-4 border-t hairline pt-10 sm:grid-cols-2" aria-label={ui.allProjects}>
           <Link
             href={lp(`/projects/${prev.slug}`)}
-            className="card card-hover group p-6"
+            className="card card-hover lift group p-6"
             data-cursor={ui.cursorView}
             onClick={() => trackEvent("project_open", { slug: prev.slug, source: "detail-nav" })}
           >
@@ -271,7 +271,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
           </Link>
           <Link
             href={lp(`/projects/${next.slug}`)}
-            className="card card-hover group p-6 text-end"
+            className="card card-hover lift group p-6 text-end"
             data-cursor={ui.cursorView}
             onClick={() => trackEvent("project_open", { slug: next.slug, source: "detail-nav" })}
           >

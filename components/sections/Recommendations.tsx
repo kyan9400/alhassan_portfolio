@@ -8,7 +8,7 @@ import { Bidi, Reveal, SectionHeader, LinkedinIcon } from "@/components/ui/primi
  * Renders nothing at all while the list is empty: no heading, no placeholder, no section id.
  * Quotes are hairline rows, like the skills table: the quote, then name · role, company.
  */
-export function Recommendations() {
+export function Recommendations({ index }: { index?: string }) {
   const copy = useCopy();
   const { eyebrow, title, linkedinLabel, items } = copy.recommendations;
   if (items.length === 0) return null;
@@ -16,7 +16,7 @@ export function Recommendations() {
   return (
     <section id="recommendations" className="section">
       <div className="shell">
-        <SectionHeader eyebrow={eyebrow} title={title} />
+        <SectionHeader index={index} eyebrow={eyebrow} title={title} />
         <ul className="border-b hairline">
           {items.map((item, i) => (
             <Reveal

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ArrowRight, Archive, BookOpen, Copy, Download, FileText, FolderGit2, Hash, Languages, MessageCircleQuestionMark, Moon, Search } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import {
@@ -19,7 +19,7 @@ import {
   useTheme
 } from "@/lib/hooks";
 import { LOCALES } from "@/lib/i18n";
-import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/ui-copy";
+import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/site";
 import { localizeProject, projects } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
 import { GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
@@ -315,7 +315,7 @@ export function CommandPalette() {
   return (
     <AnimatePresence>
       {open ? (
-        <motion.div
+        <m.div
           className="fixed inset-0 z-[85] flex items-start justify-center bg-black/40 px-4 pt-[12vh] backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -325,7 +325,7 @@ export function CommandPalette() {
             if (e.target === e.currentTarget) close();
           }}
         >
-          <motion.div
+          <m.div
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
@@ -413,8 +413,8 @@ export function CommandPalette() {
                 {c.empty}
               </p>
             )}
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       ) : null}
     </AnimatePresence>
   );

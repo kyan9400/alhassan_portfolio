@@ -134,7 +134,7 @@ export default async function RootLayout({ children, params }: Readonly<{ childr
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
       </head>
       <body>
-        <AppChrome locale={locale} notesEnabled={NOTES_ENABLED}>
+        <AppChrome copy={getCopy(locale)} locale={locale} notesEnabled={NOTES_ENABLED}>
           {children}
         </AppChrome>
         <Analytics />

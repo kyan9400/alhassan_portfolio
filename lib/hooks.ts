@@ -3,7 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { usePortfolioStore } from "@/store/portfolioStore";
-import { getCopy, CONTACT_EMAIL } from "@/lib/ui-copy";
+import type { Copy } from "@/lib/ui-copy";
+import { CONTACT_EMAIL } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_COOKIE_MAX_AGE, localePath, splitLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
@@ -18,10 +19,14 @@ export function useLocale(): Locale {
   return useContext(LocaleContext);
 }
 
-/** Copy for the current locale. Memoized so it is a stable reference between renders. */
-export function useCopy() {
-  const locale = useLocale();
-  return useMemo(() => getCopy(locale), [locale]);
+/**
+ * Copy for the current locale only. The server layout builds it (getCopy) and AppChrome provides it,
+ * so the browser never downloads the other languages. A stable reference between renders.
+ */
+export const CopyContext = createContext<Copy | null>(null);
+
+export function useCopy(): Copy {
+  return useContext(CopyContext)!;
 }
 
 /** Builds a link in the current language from a language-neutral path: "/cv" → "/ru/cv", "/#contact" → "/ru#contact". */

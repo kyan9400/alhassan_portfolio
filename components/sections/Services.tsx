@@ -65,7 +65,7 @@ function ProofLink({ index, label }: { index: number; label: string }) {
   );
 }
 
-export function Services() {
+export function Services({ index }: { index?: string }) {
   const copy = useCopy();
   const setContactReason = usePortfolioStore((s) => s.setContactReason);
 
@@ -77,9 +77,9 @@ export function Services() {
   };
 
   return (
-    <section id="services" className="section cv-auto [--cv-h:1700px] md:[--cv-h:1250px] lg:[--cv-h:1100px]">
+    <section id="services" className="section cv-auto [--cv-h:1870px] md:[--cv-h:1380px] lg:[--cv-h:1210px]">
       <div className="shell">
-        <SectionHeader eyebrow={copy.servicesEyebrow} title={copy.servicesTitle} description={copy.availableBody} />
+        <SectionHeader index={index} eyebrow={copy.servicesEyebrow} title={copy.servicesTitle} description={copy.availableBody} />
 
         {/* Full-width rows with hairlines: number, service, one line, and the proof on the end side (under the text below lg). */}
         <ol className="border-b hairline">

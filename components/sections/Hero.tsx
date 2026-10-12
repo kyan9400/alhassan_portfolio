@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion, useTransform } from "framer-motion";
 import { ArrowDown, ArrowRight, Download, MapPin } from "lucide-react";
 import { useCopy, useCvDownload } from "@/lib/hooks";
-import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/ui-copy";
+import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
 import { Bidi, Magnetic, GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
 import { scrollToId } from "@/components/app/SmoothScroll";
 import { celebrate } from "@/lib/confetti";
-import { usePageScroll } from "@/lib/scroll";
+import { subscribe } from "@/lib/scroll";
 
 const PORTRAIT = "/images/alhassan.webp";
 
@@ -36,13 +35,33 @@ export function Hero() {
   const copy = useCopy();
   const { ui } = copy;
   const cv = useCvDownload();
-  const reduceMotion = useReducedMotion();
   const [portraitClicks, setPortraitClicks] = useState(0);
+  const portraitRef = useRef<HTMLDivElement>(null);
+  const cueRef = useRef<HTMLButtonElement>(null);
 
-  const { scrollY } = usePageScroll();
-  // Always bound (a conditional style prop would differ between server and client); reduced motion flattens it.
-  const parallax = useTransform(scrollY, [0, 600], [0, reduceMotion ? 0 : 80]);
-  const cueOpacity = useTransform(scrollY, [0, 240], [1, 0]);
+  // Portrait parallax and scroll-cue fade: one shared, rAF-batched scroll listener writing styles
+  // straight to the elements (no React state per frame). Reduced motion keeps the portrait still.
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Last written values: past the hero nothing changes, so the rest of the page scrolls with no style writes.
+    let lastShift = -1;
+    let lastCue = -1;
+    return subscribe(() => {
+      const y = Math.max(window.scrollY, 0);
+      const portrait = portraitRef.current;
+      const cue = cueRef.current;
+      const shift = reduce.matches ? 0 : (Math.min(y, 600) / 600) * 80;
+      if (portrait && shift !== lastShift) {
+        portrait.style.transform = shift ? `translate3d(0,${shift}px,0)` : "";
+        lastShift = shift;
+      }
+      const cueOpacity = 1 - Math.min(y, 240) / 240;
+      if (cue && cueOpacity !== lastCue) {
+        cue.style.opacity = String(cueOpacity);
+        lastCue = cueOpacity;
+      }
+    });
+  }, []);
 
   const onPortrait = () => {
     const n = portraitClicks + 1;
@@ -63,7 +82,7 @@ export function Hero() {
         {HERO_MOTION_CSS}
       </style>
 
-      <div className="shell grid flex-1 items-center gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-10 xl:gap-14">
+      <div className="shell grid flex-1 items-center gap-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.5fr)] lg:gap-10 xl:gap-14">
         <div className="min-w-0">
           {/*
             Identity first: who (avatar on phones, name, role), then status and location — on the end
@@ -80,7 +99,7 @@ export function Hero() {
                   alt=""
                   width={82}
                   height={82}
-                  quality={80}
+                  quality={75}
                   className="h-full w-full rounded-full bg-surface object-cover"
                 />
               </span>
@@ -122,26 +141,26 @@ export function Hero() {
 
           <h1
             id="hero-title"
-            className="text-[clamp(2.5rem,4.8vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.035em] [html[lang=ru]_&]:tracking-[-0.015em] rtl:leading-[1.25] rtl:tracking-normal"
+            className="text-display font-semibold max-[359px]:text-[2.25rem] [html[lang=ru]_&]:tracking-[-0.015em] rtl:leading-[1.25] rtl:tracking-normal"
           >
             <span className="hero-settle block text-balance" style={delay(0)}>
               {copy.heroHeadlineTop}
             </span>{" "}
             <span className="hero-settle block text-balance" style={delay(70)}>
-              {/* One unit: "AI-поиск" must never break at its hyphen. The only gradient text on the page. */}
-              <span className="gradient-text whitespace-nowrap">{copy.heroHeadlineFocus}</span>
+              {/* One unit: "AI-поиск" must never break at its hyphen. The page's one accent phrase. */}
+              <span className="accent-mark whitespace-nowrap">{copy.heroHeadlineFocus}</span>
             </span>{" "}
             <span className="hero-settle block text-balance" style={delay(140)}>
               {copy.heroHeadlineBottom}
             </span>
           </h1>
 
-          <p className="hero-settle mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted md:text-lg" style={delay(120)}>
+          <p className="hero-settle mt-6 max-w-xl text-pretty text-lead text-muted" style={delay(120)}>
             <Bidi text={ui.heroIntro} />
           </p>
 
           <p className="fade-in mt-4 flex max-w-xl items-start gap-2 text-sm lg:hidden" style={delay(200)}>
-            <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent-2" aria-hidden="true" />
+            <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
             <span>
               <span className="text-muted">{ui.currentlyLabel}:</span> <span className="font-medium">
                 <Bidi text={ui.currentlyValue} />
@@ -198,12 +217,15 @@ export function Hero() {
             {copy.heroStats.map((s, i) => (
               // Label first in the DOM (read as "label: value"), value first on screen.
               // justify-end packs a reversed column at the top, so values line up even when a label wraps.
-              <div key={s.label} className="flex flex-col-reverse justify-end">
+              <div
+                key={s.label}
+                className={`flex flex-col-reverse justify-end ${i === 0 ? "ps-0" : "border-s hairline ps-4"} ${i === 2 ? "max-sm:border-s-0 max-sm:ps-0" : ""}`}
+              >
                 <dt className="mt-1 text-xs leading-snug text-muted">
                   <Bidi text={s.label} />
                 </dt>
                 <dd
-                  className={`font-display text-2xl font-semibold tabular-nums tracking-tight sm:text-3xl ${i === 0 ? "text-accent-ink" : ""}`}
+                  className={`font-display text-2xl font-semibold tabular-nums tracking-tight sm:text-4xl ${i === 0 ? "text-accent-ink" : ""}`}
                 >
                   <bdi>{s.value}</bdi>
                 </dd>
@@ -213,18 +235,17 @@ export function Hero() {
         </div>
 
         {/* Desktop portrait (display: none below lg, where the compact avatar is shown instead). */}
-        <motion.div style={{ y: parallax }} className="relative hidden min-w-0 lg:block">
+        <div ref={portraitRef} className="relative hidden min-w-0 will-change-transform lg:block">
           <div className="hero-pop relative mx-auto aspect-square w-full max-w-[360px]">
-            <div
-              className="absolute -inset-6 rounded-full bg-[radial-gradient(circle,rgb(var(--glow)/0.18),transparent_68%)]"
-              aria-hidden="true"
-            />
-            {/* A still 1px hairline ring, a few pixels off the photo. */}
-            <div className="absolute inset-0 rounded-full ring-1 ring-line/20" aria-hidden="true" />
-            <div
+            {/* A still 1px hairline frame, a few pixels off the photo. */}
+            <div className="absolute inset-0 rounded-[2rem] ring-1 ring-line/20" aria-hidden="true" />
+            {/* Easter egg (confetti every third click): a real button, so keyboards can find it too. */}
+            <button
+              type="button"
               onClick={onPortrait}
+              aria-label={copy.heroTitle}
               data-cursor={ui.cursorHi}
-              className="absolute inset-[6px] cursor-pointer overflow-hidden rounded-full bg-surface transition-transform duration-500 hover:scale-[1.015] active:scale-95"
+              className="absolute inset-[6px] cursor-pointer overflow-hidden rounded-[1.75rem] bg-surface transition-transform duration-500 hover:scale-[1.015] active:scale-95"
             >
               {/*
                 The desktop LCP element: eager + high priority so the preload scanner fetches it at once.
@@ -234,7 +255,7 @@ export function Hero() {
               */}
               <Image
                 src={PORTRAIT}
-                alt={copy.heroTitle}
+                alt=""
                 width={348}
                 height={348}
                 sizes="(min-width: 1024px) 348px, 1px"
@@ -244,13 +265,13 @@ export function Hero() {
                 fetchPriority="high"
                 className="h-full w-full object-cover"
               />
-            </div>
+            </button>
           </div>
 
           <div className="mx-auto mt-7 flex w-fit max-w-full items-start gap-2.5 rounded-full border hairline px-4 py-2.5 text-xs">
             <span className="relative mt-1 flex h-2 w-2 shrink-0" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-2 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
             <span className="leading-relaxed">
               <span className="text-muted">{ui.currentlyLabel}:</span> <span className="font-medium">
@@ -258,19 +279,19 @@ export function Hero() {
               </span>
             </span>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* In normal flow under the content, so it can never overlap the stats. */}
-      <motion.button
+      <button
+        ref={cueRef}
         type="button"
-        style={{ opacity: cueOpacity }}
         onClick={() => scrollToId("about")}
         className="mx-auto mt-10 hidden flex-col items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-text md:flex rtl:tracking-normal"
       >
         {ui.heroScroll}
         <ArrowDown className="h-4 w-4 animate-bounce" aria-hidden="true" />
-      </motion.button>
+      </button>
     </section>
   );
 }

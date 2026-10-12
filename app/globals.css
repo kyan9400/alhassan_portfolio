@@ -120,11 +120,11 @@ html.lenis body {
 
 @layer components {
   .shell {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+    @apply mx-auto w-full max-w-[76rem] px-4 sm:px-6;
   }
 
   .section {
-    @apply relative scroll-mt-24 py-10 sm:py-12 md:py-20;
+    @apply relative scroll-mt-24 py-16 sm:py-20 md:py-28 lg:py-32;
   }
 
   .hairline {
@@ -145,20 +145,13 @@ html.lenis body {
     content-visibility: visible;
   }
 
+  /* Opaque-ish surface, no backdrop blur: blur behind every card was the most expensive thing to scroll. */
   .card {
-    @apply relative rounded-3xl border bg-card/80 backdrop-blur-md;
+    @apply relative rounded-3xl border bg-card/90;
     border-color: rgb(var(--line) / var(--line-alpha));
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.04) inset,
       0 20px 50px -30px rgb(0 0 0 / 0.35);
-  }
-  /* backdrop-filter on every card is the most expensive thing to scroll on phones. */
-  @media (max-width: 767px) {
-    .card {
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-      background-color: rgb(var(--card) / 0.92);
-    }
   }
 
   /* No transform transition: Framer Motion writes transforms on some of these (tilt, layout). */
@@ -193,6 +186,26 @@ html.lenis body {
     opacity: 1;
   }
 
+  /* A 2px lift on hover, only for plain cards (never on elements Framer Motion or Reveal transform). */
+  .lift {
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s ease,
+      box-shadow 0.5s ease;
+  }
+  .lift:hover {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  /* Touch screens: every small control gets at least a 44 × 44 px target. Desktop sizes are unchanged. */
+  /* Doubled class + !important so it also beats `!min-h-[40px]` overrides on buttons. */
+  @media (pointer: coarse) {
+    .tap.tap {
+      min-height: 44px !important;
+      min-width: 44px !important;
+    }
+  }
+
   .eyebrow {
     @apply inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-ink;
   }
@@ -204,45 +217,90 @@ html.lenis body {
     letter-spacing: 0.05em;
   }
 
-  .gradient-text {
-    background: linear-gradient(100deg, rgb(var(--accent)) 0%, rgb(var(--accent-2)) 55%, rgb(var(--accent)) 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
   /*
-   * The shine animates background-position, which repaints the text on the main thread every frame:
-   * desktops (fine pointer) only. Phones keep the same gradient, still.
+   * The hero's one accent phrase: accent ink plus an underline that draws in from the start side.
+   * The text itself is at full opacity from the first paint (it is part of the LCP); only the
+   * underline animates, with transform.
    */
-  @media (hover: hover) and (pointer: fine) {
-    .gradient-text {
-      animation: shine 8s linear infinite;
+  .accent-mark {
+    position: relative;
+    display: inline-block;
+    color: rgb(var(--accent-ink));
+  }
+  .accent-mark::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0.06em;
+    height: 0.08em;
+    border-radius: 999px;
+    background: rgb(var(--accent) / 0.35);
+    transform-origin: left;
+    animation: accent-draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+  }
+  [dir="rtl"] .accent-mark::after {
+    transform-origin: right;
+  }
+  @keyframes accent-draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .accent-mark::after {
+      animation: none;
     }
   }
 
   .btn {
     @apply relative inline-flex min-h-[44px] select-none items-center justify-center gap-2 overflow-hidden rounded-full px-5 text-sm font-semibold transition-[transform,box-shadow,background-color,border-color,color] duration-300 active:scale-[0.97];
   }
+  /* One solid accent: #6d28d9 (violet-700) keeps white text at 7.1:1 in both themes. */
   .btn-primary {
     @apply btn text-white;
-    background: linear-gradient(120deg, rgb(124 58 237), rgb(37 99 235) 60%, rgb(8 145 178));
+    background-color: #6d28d9;
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.25) inset,
-      0 10px 30px -10px rgb(124 58 237 / 0.7);
+      0 1px 0 rgb(255 255 255 / 0.18) inset,
+      0 10px 30px -12px rgb(109 40 217 / 0.6);
   }
   .btn-primary:hover {
+    background-color: #5b21b6;
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.25) inset,
-      0 16px 40px -10px rgb(124 58 237 / 0.9);
+      0 1px 0 rgb(255 255 255 / 0.18) inset,
+      0 16px 40px -12px rgb(109 40 217 / 0.8);
   }
   /* Solid secondary action: text colour on the page colour. No glow, no gradient. */
   .btn-solid {
     @apply btn bg-text text-bg hover:bg-text/85;
   }
-  /* Inline text link with an arrow: accent ink, underline on hover. */
+  /* Inline text link with an arrow: accent ink. */
+  .text-link-base {
+    @apply inline-flex items-center gap-1.5 font-semibold text-accent-ink;
+  }
+  /* The underline draws in from the start side on hover (transform only). */
   .text-link {
-    @apply inline-flex items-center gap-1.5 font-semibold text-accent-ink underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-current;
+    @apply text-link-base relative;
+  }
+  .text-link::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: calc(50% + 0.75em);
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  [dir="rtl"] .text-link::before {
+    transform-origin: right;
+  }
+  .text-link:hover::before,
+  .text-link:focus-visible::before {
+    transform: scaleX(1);
   }
   .btn-ghost {
     @apply btn border bg-card/50 text-text backdrop-blur hover:bg-card;
@@ -289,12 +347,6 @@ html.lenis body {
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
-  }
-}
-
-@keyframes shine {
-  to {
-    background-position: 200% center;
   }
 }
 
@@ -395,15 +447,44 @@ html.lenis body {
   opacity: 1;
   transform: none;
 }
+
+/*
+ * Split-word reveal for section headings (SplitWords in primitives.tsx): each word rises out of its
+ * own clipped line when the heading's Reveal is shown. Transform only.
+ */
+/* Padding gives the glyphs room inside the clip (negative tracking lets the last letter overhang its
+   box, plus descenders); the matching negative margin keeps the layout unchanged. */
+.sw {
+  display: inline-block;
+  overflow: clip;
+  padding: 0.1em 0.08em 0.14em;
+  margin: -0.1em -0.08em -0.14em;
+  vertical-align: top;
+}
+.js [data-reveal] .sw-i {
+  display: inline-block;
+  transform: translate3d(0, 120%, 0);
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 45ms);
+}
+.js [data-reveal="shown"] .sw-i {
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js [data-reveal] {
     opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal] .sw-i {
     transform: none;
   }
 }
 @media print {
   .js [data-reveal] {
     opacity: 1 !important;
+    transform: none !important;
+  }
+  .js [data-reveal] .sw-i {
     transform: none !important;
   }
 }

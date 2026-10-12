@@ -53,7 +53,7 @@ export function Footer({ className = "" }: { className?: string }) {
       {/* Decorative sign-off: the name, very large and faint. */}
       <p
         aria-hidden="true"
-        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] max-sm:text-[8vw] font-semibold leading-[0.95] tracking-[-0.04em] text-text/[0.07] rtl:tracking-normal"
+        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] max-sm:text-[8vw] font-semibold leading-[0.95] tracking-[-0.05em] text-text/[0.09] rtl:tracking-normal"
       >
         {copy.heroTitle}
       </p>
@@ -77,14 +77,14 @@ export function Footer({ className = "" }: { className?: string }) {
       </p>
       <div className="flex shrink-0 items-center gap-2">
         {notesEnabled ? (
-          <Link href={lp("/notes")} className="btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]">
+          <Link href={lp("/notes")} className="tap btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]">
             {copy.ui.notes.navLabel}
           </Link>
         ) : null}
         <button
           type="button"
           onClick={() => (window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" }))}
-          className="btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]"
+          className="tap btn-ghost !min-h-[40px] whitespace-nowrap text-[13px]"
         >
           {copy.ui.footerBackToTop}
           <ArrowUpRight className="h-4 w-4 -rotate-45" aria-hidden="true" />

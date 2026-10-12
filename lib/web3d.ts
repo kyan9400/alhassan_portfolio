@@ -43,6 +43,9 @@ export type Web3dSite = {
   icon: Web3dIcon;
 };
 
+/** A site with `kind` and `description` already resolved to one language (done on the server). */
+export type Web3dSiteView = Omit<Web3dSite, "kind" | "description"> & { kind: string; description: string };
+
 const GITHUB = "https://github.com/kyan9400";
 
 /** Shared stack of every site in the section. Names of tools: never translated. */

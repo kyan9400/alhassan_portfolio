@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionValue, useSpring } from "framer-motion";
 import { useLocale } from "@/lib/hooks";
 import type { OrgMark as OrgMarkData } from "@/lib/copy";
 
@@ -101,22 +101,67 @@ export function Reveal({
   );
 }
 
+/**
+ * A heading split into words that rise in one after another when the surrounding Reveal is shown
+ * (CSS in globals.css, "Split-word reveal"). The word spans are hidden from screen readers; the
+ * caller puts the full title in aria-label. Arabic stays one string: splitting connected script
+ * (and its Latin runs) into boxes would break shaping and bidi order.
+ */
+export function SplitWords({ text }: { text: string }) {
+  const locale = useLocale();
+  if (locale === "ar") return <Bidi text={text} />;
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((word, i) => (
+        <span key={i} aria-hidden="true">
+          <span className="sw">
+            <span className="sw-i" style={{ "--i": i } as React.CSSProperties}>
+              {word}
+            </span>
+          </span>
+          {i < words.length - 1 ? " " : null}
+        </span>
+      ))}
+    </>
+  );
+}
+
+/** The section number ("01", decorative) and the eyebrow, on one line. */
+export function SectionIndex({ index, eyebrow, center = false }: { index?: string; eyebrow: string; center?: boolean }) {
+  return (
+    <p className={`mb-4 flex items-center gap-3 ${center ? "justify-center" : ""}`}>
+      {index ? (
+        <span aria-hidden="true" className="font-mono text-[11px] tabular-nums text-muted">
+          {index}
+        </span>
+      ) : null}
+      <span className="eyebrow">{eyebrow}</span>
+    </p>
+  );
+}
+
 export function SectionHeader({
   eyebrow,
   title,
   description,
+  index,
   align = "start"
 }: {
   eyebrow: string;
   title: string;
   description?: string;
+  /** Visual section number ("01"), shown before the eyebrow. */
+  index?: string;
   align?: "start" | "center";
 }) {
   return (
-    <Reveal className={`mb-8 max-w-3xl sm:mb-10 md:mb-12 ${align === "center" ? "mx-auto text-center" : ""}`}>
-      <p className="eyebrow mb-4">{eyebrow}</p>
-      <h2 className="text-balance text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] rtl:leading-[1.25]">{title}</h2>
-      {description ? <p className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted md:text-lg">{description}</p> : null}
+    <Reveal className={`mb-10 max-w-3xl md:mb-16 ${align === "center" ? "mx-auto text-center" : ""}`}>
+      <SectionIndex index={index} eyebrow={eyebrow} center={align === "center"} />
+      <h2 aria-label={title} className="text-balance text-h2 font-semibold rtl:leading-[1.25]">
+        <SplitWords text={title} />
+      </h2>
+      {description ? <p className="mt-5 max-w-2xl text-pretty text-lead text-muted">{description}</p> : null}
     </Reveal>
   );
 }
@@ -141,9 +186,9 @@ export function Magnetic({ children, strength = 0.35 }: { children: React.ReactN
   };
 
   return (
-    <motion.span ref={ref} className="inline-flex" style={{ x: sx, y: sy }} onPointerMove={onMove} onPointerLeave={reset}>
+    <m.span ref={ref} className="inline-flex" style={{ x: sx, y: sy }} onPointerMove={onMove} onPointerLeave={reset}>
       {children}
-    </motion.span>
+    </m.span>
   );
 }
 

@@ -34,7 +34,7 @@ export default async function GlobalNotFound() {
         <script dangerouslySetInnerHTML={{ __html: PRE_PAINT_SCRIPT }} />
       </head>
       <body>
-        <AppChrome locale={locale} notesEnabled={NOTES_ENABLED}>
+        <AppChrome copy={getCopy(locale)} locale={locale} notesEnabled={NOTES_ENABLED}>
           <NotFoundContent />
         </AppChrome>
       </body>

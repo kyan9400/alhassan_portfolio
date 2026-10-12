@@ -3,11 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image, { getImageProps } from "next/image";
 import { ArrowUpRight, Atom, AudioLines, Building2, CarFront, Coffee, Dna, Globe, Rocket, Sparkles, Sprout, Watch, type LucideIcon } from "lucide-react";
-import { WEB3D_SITES, WEB3D_STACK, type Web3dIcon, type Web3dSite } from "@/lib/web3d";
-import { typographAr, typographRu } from "@/lib/typograph";
-import { useCopy, useLocale } from "@/lib/hooks";
+import type { Web3dIcon, Web3dSiteView } from "@/lib/web3d";
+import { useCopy } from "@/lib/hooks";
 import { Bidi, GithubIcon, Reveal, SectionHeader } from "@/components/ui/primitives";
-import type { Locale } from "@/lib/types";
 
 /**
  * Cards shown before "Show all": fewer on phones. As in the GitHub section, the phone limit is CSS
@@ -50,14 +48,12 @@ const FLOOR_STYLE: React.CSSProperties = {
   WebkitMaskImage: "linear-gradient(to top, black 10%, transparent 85%)"
 };
 
-const typograph: Record<Locale, (text: string) => string> = { en: (t) => t, ru: typographRu, ar: typographAr };
-
 /**
  * Header art while a site has no screenshot (or it fails to load): a dark "scene" lit in the site's own
  * two colours, with its glyph on a grid floor. Always dark, like the 3D scenes themselves, so the white
  * label keeps its contrast in both themes. Decorative: the name is in the card title.
  */
-function SceneArt({ site }: { site: Web3dSite }) {
+function SceneArt({ site }: { site: Web3dSiteView }) {
   const Icon = ICONS[site.icon];
   const [glow, rim] = site.palette;
   return (
@@ -88,7 +84,7 @@ function SceneArt({ site }: { site: Web3dSite }) {
  * from `sm` up. Both srcsets come from next/image (getImageProps), so they stay optimized and lazy.
  * With only one capture it is a plain next/image of that file.
  */
-function CardImage({ site, desktop, mobile, alt, onError }: { site: Web3dSite; desktop: boolean; mobile: boolean; alt: string; onError: () => void }) {
+function CardImage({ site, desktop, mobile, alt, onError }: { site: Web3dSiteView; desktop: boolean; mobile: boolean; alt: string; onError: () => void }) {
   if (!(desktop && mobile)) {
     return (
       <Image
@@ -122,7 +118,7 @@ function CardImage({ site, desktop, mobile, alt, onError }: { site: Web3dSite; d
  * responsive layout without a second card. Decorative (the card already has its image alt and title) and
  * light: ~80 px wide, lazy, and simply not rendered if the file fails to load.
  */
-function PhoneFrame({ site }: { site: Web3dSite }) {
+function PhoneFrame({ site }: { site: Web3dSiteView }) {
   const [failed, setFailed] = useState(false);
   if (failed) return null;
   return (
@@ -140,14 +136,12 @@ function PhoneFrame({ site }: { site: Web3dSite }) {
  * live site once it is deployed and the repository until then. The GitHub link sits above that overlay
  * as a sibling, so no interactive element is nested in another.
  */
-function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSite; screenshot: boolean; mobileScreenshot: boolean }) {
+function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSiteView; screenshot: boolean; mobileScreenshot: boolean }) {
   const copy = useCopy();
   const { ui } = copy;
-  const locale = useLocale();
   const [imageFailed, setImageFailed] = useState(false);
   const live = site.liveStatus === "live";
   const primaryHref = live ? site.live : site.repo;
-  const fix = typograph[locale];
 
   return (
     <>
@@ -184,7 +178,7 @@ function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSite; scr
 
       <div className="flex flex-1 flex-col p-5">
         <p className="text-[12px] font-semibold uppercase tracking-wider text-accent-ink rtl:tracking-normal">
-          <Bidi text={fix(site.kind[locale])} />
+          <Bidi text={site.kind} />
         </p>
         <h3 className="mt-1.5 font-display text-lg font-semibold leading-snug transition-colors group-hover:text-accent-ink">
           <a
@@ -199,7 +193,7 @@ function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSite; scr
           </a>
         </h3>
         <p className="mt-2 text-pretty text-sm leading-relaxed text-muted">
-          <Bidi text={fix(site.description[locale])} />
+          <Bidi text={site.description} />
         </p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs text-muted">
@@ -244,7 +238,21 @@ function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSite; scr
  * committed under public/repo-screenshots/ (checked on the server); the others get a placeholder.
  * `mobileScreenshots` does the same for the phone captures under public/repo-screenshots/mobile/.
  */
-export function Web3d({ screenshots, mobileScreenshots }: { screenshots: string[]; mobileScreenshots: string[] }) {
+export function Web3d({
+  sites: siteList,
+  stack,
+  index,
+  screenshots,
+  mobileScreenshots
+}: {
+  /** The catalogue in the page language (kind/description resolved on the server). */
+  sites: Web3dSiteView[];
+  stack: readonly string[];
+  /** Visual section number ("06"). */
+  index?: string;
+  screenshots: string[];
+  mobileScreenshots: string[];
+}) {
   const copy = useCopy();
   const t = copy.web3d;
   const [expanded, setExpanded] = useState(false);
@@ -253,10 +261,10 @@ export function Web3d({ screenshots, mobileScreenshots }: { screenshots: string[
   const sites = useMemo(() => {
     const has = new Set(screenshots);
     const hasMobile = new Set(mobileScreenshots);
-    return [...WEB3D_SITES]
+    return [...siteList]
       .sort((a, b) => Number(has.has(b.slug)) - Number(has.has(a.slug)))
       .map((site) => ({ site, screenshot: has.has(site.slug), mobileScreenshot: hasMobile.has(site.slug) }));
-  }, [screenshots, mobileScreenshots]);
+  }, [siteList, screenshots, mobileScreenshots]);
 
   const shown = expanded ? sites : sites.slice(0, INITIAL_DESKTOP);
   const remainingDesktop = sites.length - shown.length;
@@ -277,9 +285,9 @@ export function Web3d({ screenshots, mobileScreenshots }: { screenshots: string[
   }, [expanded]);
 
   return (
-    <section id="web-3d" className="section cv-auto [--cv-h:2500px] sm:[--cv-h:2200px] lg:[--cv-h:1700px]">
+    <section id="web-3d" className="section cv-auto [--cv-h:2750px] sm:[--cv-h:2420px] lg:[--cv-h:1870px]">
       <div className="shell">
-        <SectionHeader eyebrow={t.eyebrow} title={t.title} description={t.description} />
+        <SectionHeader index={index} eyebrow={t.eyebrow} title={t.title} description={t.description} />
 
         {/* Four performance points as one hairline strip: 2 × 2 from sm, a single row from lg. */}
         <Reveal>
@@ -305,7 +313,7 @@ export function Web3d({ screenshots, mobileScreenshots }: { screenshots: string[
         <Reveal className="mb-8 mt-6 flex flex-wrap items-center gap-2 md:mb-10">
           <span className="me-1 text-[12px] font-semibold uppercase tracking-wider text-muted rtl:tracking-normal">{t.stackLabel}</span>
           <ul className="flex flex-wrap gap-1.5" dir="ltr">
-            {WEB3D_STACK.map((tech) => (
+            {stack.map((tech) => (
               <li key={tech} className="tag">
                 {tech}
               </li>

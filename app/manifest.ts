@@ -6,6 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Alhassan",
     description:
       "Full-Stack & Python Developer — Web & AI Systems. React, TypeScript, Node.js, Python/FastAPI and RAG search. Based in Moscow.",
+    id: "/",
+    lang: "en",
     start_url: "/",
     scope: "/",
     display: "standalone",

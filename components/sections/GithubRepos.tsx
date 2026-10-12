@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ArrowUpRight, BrainCircuit, LayoutTemplate, Search, Server, Star, Workflow, type LucideIcon } from "lucide-react";
 import type { GithubRepo, RepoCategory } from "@/lib/github";
-import { GITHUB_URL } from "@/lib/ui-copy";
+import { GITHUB_URL } from "@/lib/site";
 import { useCopy, useLocale } from "@/lib/hooks";
 import { Bidi, SectionHeader, GithubIcon } from "@/components/ui/primitives";
 import { ArchiveLink } from "./Projects";
@@ -187,7 +187,7 @@ function RepoCard({ repo }: { repo: GithubRepo }) {
   );
 }
 
-export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
+export function GithubRepos({ repos, index }: { repos: GithubRepo[]; index?: string }) {
   const copy = useCopy();
   const { ui } = copy;
   const [filter, setFilter] = useState<Filter>("all");
@@ -232,10 +232,10 @@ export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
   }, [expanded]);
 
   return (
-    <section id="github-repos" className="section cv-auto [--cv-h:1980px] md:[--cv-h:1940px] lg:[--cv-h:1430px]">
+    <section id="github-repos" className="section cv-auto [--cv-h:2180px] md:[--cv-h:2130px] lg:[--cv-h:1570px]">
       <div className="shell">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <SectionHeader eyebrow={copy.githubReposEyebrow} title={copy.githubReposTitle} description={copy.githubReposDescription} />
+          <SectionHeader index={index} eyebrow={copy.githubReposEyebrow} title={copy.githubReposTitle} description={copy.githubReposDescription} />
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn-ghost mb-12 shrink-0 self-start md:mb-16 md:self-auto">
             <GithubIcon />
             <bdi>@kyan9400</bdi>
@@ -275,7 +275,7 @@ export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
                   }`}
                 >
                   {active ? (
-                    <motion.span
+                    <m.span
                       layoutId="repo-filter"
                       className="absolute inset-0 rounded-full bg-surface ring-1 ring-line/15"
                       transition={{ type: "spring", stiffness: 400, damping: 32 }}
@@ -294,10 +294,10 @@ export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
             {copy.githubReposEmpty}
           </p>
         ) : (
-          <motion.ul ref={gridRef} layout className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <m.ul ref={gridRef} layout className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout" initial={false}>
               {shown.map((repo, index) => (
-                <motion.li
+                <m.li
                   layout
                   key={repo.name}
                   initial={{ opacity: 0, scale: 0.96 }}
@@ -307,10 +307,10 @@ export function GithubRepos({ repos }: { repos: GithubRepo[] }) {
                   className={`card card-hover group flex flex-col overflow-hidden ${!expanded && index >= INITIAL_MOBILE ? "max-sm:hidden" : ""}`}
                 >
                   <RepoCard repo={repo} />
-                </motion.li>
+                </m.li>
               ))}
             </AnimatePresence>
-          </motion.ul>
+          </m.ul>
         )}
 
         {remainingMobile > 0 ? (

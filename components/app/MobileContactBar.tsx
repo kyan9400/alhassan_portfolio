@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Download, Mail } from "lucide-react";
 import { useCopy, useCvDownload } from "@/lib/hooks";
-import { CONTACT_EMAIL, TELEGRAM_URL } from "@/lib/ui-copy";
+import { CONTACT_EMAIL, TELEGRAM_URL } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
 import { TelegramIcon } from "@/components/ui/primitives";
 

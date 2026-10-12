@@ -3,11 +3,11 @@
 import { useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Building2, ChevronDown, Lock } from "lucide-react";
-import { localizeProject, projects, type Project } from "@/lib/projects";
+import type { Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
-import { trackPointer, useCopy, useLocale, useLocalePath } from "@/lib/hooks";
+import { trackPointer, useCopy, useLocalePath } from "@/lib/hooks";
 import { Bidi, Reveal, SectionHeader, GithubIcon } from "@/components/ui/primitives";
 import { ArchitectureFlow } from "./ArchitectureFlow";
 
@@ -72,7 +72,7 @@ function ProjectCard({ project, index, featured, collapsible = false }: { projec
 
   return (
     <Reveal delay={(index % 2) * 0.08} className={featured ? "md:col-span-2" : ""}>
-      <motion.article
+      <m.article
         aria-labelledby={titleId}
         onPointerMove={onMove}
         onPointerLeave={reset}
@@ -85,7 +85,7 @@ function ProjectCard({ project, index, featured, collapsible = false }: { projec
           {flow ? (
             <>
               <div
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_80%_at_0%_0%,rgb(var(--glow)/0.16),transparent_60%),radial-gradient(80%_70%_at_100%_100%,rgb(var(--accent-2)/0.12),transparent_65%)]"
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_80%_at_0%_0%,rgb(var(--glow)/0.16),transparent_60%),radial-gradient(80%_70%_at_100%_100%,rgb(var(--accent)/0.08),transparent_65%)]"
                 aria-hidden="true"
               />
               <div className="pointer-events-none absolute inset-0" style={GRID_STYLE} aria-hidden="true" />
@@ -178,7 +178,7 @@ function ProjectCard({ project, index, featured, collapsible = false }: { projec
               href={lp(`/projects/${project.slug}`)}
               data-cursor={ui.cursorView}
               onClick={() => trackEvent("project_open", { slug: project.slug, source: "card" })}
-              className={`text-link me-2 min-h-[40px] text-sm ${compact ? "max-sm:me-1" : ""} after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:decoration-current`}
+              className={`text-link-base underline decoration-transparent decoration-1 underline-offset-4 transition-colors me-2 min-h-[40px] text-sm ${compact ? "max-sm:me-1" : ""} after:absolute after:inset-0 after:rounded-3xl after:content-[''] group-hover:decoration-current`}
             >
               {ui.caseStudyCta}
               <span className="sr-only">
@@ -215,7 +215,7 @@ function ProjectCard({ project, index, featured, collapsible = false }: { projec
 
           </div>
         </div>
-      </motion.article>
+      </m.article>
     </Reveal>
   );
 }
@@ -246,18 +246,16 @@ export function ArchiveLink({ className = "mt-8 sm:mt-12 md:mt-14" }: { classNam
   );
 }
 
-/** Reads the catalog directly: it is already in the client bundle, so it isn't passed (and serialized) as a prop. */
-export function Projects() {
+/** `projects`: the catalogue already localized on the server, so the browser only gets the page language. */
+export function Projects({ projects: localized, index }: { projects: Project[]; index?: string }) {
   const copy = useCopy();
-  const locale = useLocale();
-  const localized = projects.map((p) => localizeProject(p, locale));
   const work = localized.filter((p) => p.kind === "work");
   const openSource = localized.filter((p) => p.kind === "open-source");
 
   return (
-    <section id="projects" className="section cv-auto [--cv-h:3000px] sm:[--cv-h:6400px] md:[--cv-h:4000px] lg:[--cv-h:3600px]">
+    <section id="projects" className="section cv-auto [--cv-h:3300px] sm:[--cv-h:7040px] md:[--cv-h:4400px] lg:[--cv-h:3960px]">
       <div className="shell">
-        <SectionHeader eyebrow={copy.projectsEyebrow} title={copy.projectsTitle} description={copy.projectsSubtitle} />
+        <SectionHeader index={index} eyebrow={copy.projectsEyebrow} title={copy.projectsTitle} description={copy.projectsSubtitle} />
 
         {localized.length === 0 ? (
           <p className="card p-10 text-center text-muted">{copy.projectsEmpty}</p>

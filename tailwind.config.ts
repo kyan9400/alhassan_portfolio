@@ -26,6 +26,13 @@ const config: Config = {
         danger: "rgb(var(--danger) / <alpha-value>)",
         success: "rgb(var(--success) / <alpha-value>)"
       },
+      // One type scale for display headings and lead paragraphs (fluid, clamped).
+      fontSize: {
+        display: ["clamp(2.5rem, 1rem + 6vw, 6rem)", { lineHeight: "0.98", letterSpacing: "-0.04em" }],
+        h2: ["clamp(2rem, 1.1rem + 3.6vw, 4rem)", { lineHeight: "1.02", letterSpacing: "-0.035em" }],
+        h3: ["clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem)", { lineHeight: "1.2" }],
+        lead: ["clamp(1.0625rem, 1rem + 0.35vw, 1.25rem)", { lineHeight: "1.6" }]
+      },
       borderRadius: {
         "4xl": "2rem"
       },

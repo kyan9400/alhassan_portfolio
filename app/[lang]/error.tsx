@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Home, RotateCcw } from "lucide-react";
 import { useCopy, useLocalePath } from "@/lib/hooks";
 
@@ -24,21 +24,21 @@ export default function ErrorPage({ error, retry }: ErrorPageProps) {
   return (
     <main className="flex min-h-[100svh] items-center justify-center px-4">
       <div className="max-w-lg text-center" role="alert">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.8, rotate: -6 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 200, damping: 14 }}
           className="mx-auto flex h-24 w-24 items-center justify-center rounded-4xl border hairline bg-card/70 shadow-[0_30px_70px_-30px_rgb(var(--glow)/0.6)]"
           aria-hidden="true"
         >
-          <motion.span
-            className="gradient-text select-none font-display text-5xl font-bold leading-none"
+          <m.span
+            className="text-accent-ink select-none font-display text-5xl font-bold leading-none"
             animate={{ rotate: [0, -8, 8, 0] }}
             transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
           >
             !
-          </motion.span>
-        </motion.div>
+          </m.span>
+        </m.div>
 
         <h1 className="mt-8 text-balance text-3xl font-semibold md:text-4xl">{t.title}</h1>
         <p className="mt-4 text-pretty text-muted">{t.body}</p>

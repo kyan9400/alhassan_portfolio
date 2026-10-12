@@ -9,9 +9,9 @@
 // Keep the three sources in sync: same facts, same links (LinkedIn: .../alhassan-alfarran-880b00246/).
 //
 // The sources use placeholders filled in here, so the email and the site address live in one place:
-//   {{CONTACT_EMAIL}}  CONTACT_EMAIL from lib/ui-copy.ts
+//   {{CONTACT_EMAIL}}  CONTACT_EMAIL from lib/site.ts
 //   {{SITE_URL}}       NEXT_PUBLIC_SITE_URL if set (e.g. `node --env-file=.env.local cv-src/render.mjs all`),
-//                      otherwise DEFAULT_SITE_URL from lib/ui-copy.ts
+//                      otherwise DEFAULT_SITE_URL from lib/site.ts
 //   {{SITE_HOST}}      SITE_URL without the scheme
 //
 // Uses the Playwright dev dependency. Falls back to installed Chrome or Edge when
@@ -26,14 +26,14 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 
 // Constants are read from the TypeScript source (a plain string match), so there is no second copy to keep in sync.
-const uiCopySource = readFileSync(path.join(root, "lib", "ui-copy.ts"), "utf8");
+const uiCopySource = readFileSync(path.join(root, "lib", "site.ts"), "utf8");
 function readConstant(name) {
   const match = uiCopySource.match(new RegExp(`export const ${name} = "([^"]+)"`));
-  if (!match) throw new Error(`${name} not found in lib/ui-copy.ts`);
+  if (!match) throw new Error(`${name} not found in lib/site.ts`);
   return match[1];
 }
 
-// Same rule as resolveSiteUrl() in lib/ui-copy.ts: an absolute http(s) URL, reduced to its origin.
+// Same rule as resolveSiteUrl() in lib/site.ts: an absolute http(s) URL, reduced to its origin.
 function resolveSiteUrl(value, fallback) {
   if (!value?.trim()) return fallback;
   try {

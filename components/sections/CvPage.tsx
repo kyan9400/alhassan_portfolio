@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, Download, Printer } from "lucide-react";
 import { localizeProject, projects } from "@/lib/projects";
-import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
+import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/site";
 import { useCopy, useCvDownload, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi } from "@/components/ui/primitives";
 
@@ -46,15 +46,15 @@ export function CvPage() {
     <main className="cv-main pb-16 pt-28 md:pt-36 print:p-0">
       <div className="shell max-w-4xl print:max-w-none print:px-0">
         <div role="toolbar" aria-label={t.toolbarLabel} className="fade-in flex flex-wrap items-center gap-2.5 print:hidden">
-          <Link href={lp("/")} className="btn-ghost group me-auto !min-h-[40px] text-[13px]">
+          <Link href={lp("/")} className="tap btn-ghost group me-auto !min-h-[40px] text-[13px]">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1" aria-hidden="true" />
             {copy.notFoundCta}
           </Link>
-          <a href={cv.href} download type="application/pdf" onClick={cv.onClick} className="btn-solid !min-h-[40px] !px-4 text-[13px]">
+          <a href={cv.href} download type="application/pdf" onClick={cv.onClick} className="tap btn-solid !min-h-[40px] !px-4 text-[13px]">
             <Download className="h-4 w-4" aria-hidden="true" />
             {t.downloadPdf}
           </a>
-          <button type="button" onClick={() => window.print()} className="btn-ghost !min-h-[40px] !px-4 text-[13px]">
+          <button type="button" onClick={() => window.print()} className="tap btn-ghost !min-h-[40px] !px-4 text-[13px]">
             <Printer className="h-4 w-4" aria-hidden="true" />
             {t.print}
           </button>

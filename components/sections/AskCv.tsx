@@ -111,7 +111,7 @@ export function AskCv() {
           <button
             type="button"
             onClick={() => ask(example)}
-            className="min-h-[36px] rounded-full border px-3 py-1.5 text-start text-[13px] text-muted transition-colors [border-color:rgb(var(--line)/var(--line-alpha))] hover:text-text hover:[border-color:rgb(var(--accent)/0.45)] motion-reduce:transition-none"
+            className="tap min-h-[36px] rounded-full border px-3 py-1.5 text-start text-[13px] text-muted transition-colors [border-color:rgb(var(--line)/var(--line-alpha))] hover:text-text hover:[border-color:rgb(var(--accent)/0.45)] motion-reduce:transition-none"
           >
             <Bidi text={example} />
           </button>
@@ -185,14 +185,14 @@ export function AskCv() {
                     type="button"
                     onClick={clear}
                     aria-label={t.clear}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-text motion-reduce:transition-none"
+                    className="tap flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-text motion-reduce:transition-none"
                   >
                     <X className="h-4 w-4" aria-hidden="true" />
                   </button>
                 ) : null}
                 <button
                   type="submit"
-                  className="flex h-9 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-sm font-semibold text-accent-ink transition-colors hover:text-text motion-reduce:transition-none"
+                  className="tap flex h-9 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-sm font-semibold text-accent-ink transition-colors hover:text-text motion-reduce:transition-none"
                 >
                   <span className="max-sm:sr-only">{t.submit}</span>
                   <CornerDownLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />

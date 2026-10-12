@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 
@@ -18,7 +18,7 @@ export function Toast() {
     <div className="pointer-events-none fixed inset-x-0 print:hidden bottom-[calc(5rem+env(safe-area-inset-bottom))] z-[80] md:bottom-6 flex justify-center px-4" role="status" aria-live="polite">
       <AnimatePresence>
         {toast ? (
-          <motion.div
+          <m.div
             key={toast.id}
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -28,7 +28,7 @@ export function Toast() {
           >
             <Sparkles className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
             {toast.message}
-          </motion.div>
+          </m.div>
         ) : null}
       </AnimatePresence>
     </div>

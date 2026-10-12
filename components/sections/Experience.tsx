@@ -12,13 +12,13 @@ const BULLETS_SHOWN_PHONE = 1;
 /** Certificates listed on phones before "More". */
 const CERTS_SHOWN_PHONE = 3;
 
-export function Experience() {
+export function Experience({ index }: { index?: string }) {
   const copy = useCopy();
 
   return (
-    <section id="experience" className="section cv-auto [--cv-h:2600px] sm:[--cv-h:2900px] md:[--cv-h:2200px] lg:[--cv-h:1800px]">
+    <section id="experience" className="section cv-auto [--cv-h:2860px] sm:[--cv-h:3190px] md:[--cv-h:2420px] lg:[--cv-h:1980px]">
       <div className="shell">
-        <SectionHeader eyebrow={copy.experienceEyebrow} title={copy.experienceTitle} description={copy.experienceDescription} />
+        <SectionHeader index={index} eyebrow={copy.experienceEyebrow} title={copy.experienceTitle} description={copy.experienceDescription} />
 
         <ol className="border-b hairline">
           {copy.experienceItems.map((item, i) => (
@@ -57,7 +57,7 @@ function Role({ item, current }: { item: ExperienceItem; current: boolean }) {
         <p className="font-mono text-[13px] tabular-nums text-muted">{item.period}</p>
         {current ? (
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-accent-ink rtl:tracking-normal">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-2" aria-hidden="true" />
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
             {ui.currentlyLabel}
           </span>
         ) : null}

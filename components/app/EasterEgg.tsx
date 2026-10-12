@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { useCopy } from "@/lib/hooks";
 import { celebrate } from "@/lib/confetti";
-import { CONTACT_EMAIL } from "@/lib/ui-copy";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 

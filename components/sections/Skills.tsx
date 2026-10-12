@@ -7,13 +7,13 @@ import { Bidi, Reveal, SectionHeader } from "@/components/ui/primitives";
 const HIGHLIGHT_GROUP = 2;
 
 /** The stack as one index table: layer label in mono, tools as plain text, hairlines between rows. */
-export function Skills() {
+export function Skills({ index }: { index?: string }) {
   const copy = useCopy();
 
   return (
-    <section id="skills" className="section cv-auto [--cv-h:1150px] md:[--cv-h:850px] lg:[--cv-h:760px]">
+    <section id="skills" className="section cv-auto [--cv-h:1260px] md:[--cv-h:940px] lg:[--cv-h:840px]">
       <div className="shell">
-        <SectionHeader eyebrow={copy.skillsEyebrow} title={copy.skillsTitle} description={copy.skillsDescription} />
+        <SectionHeader index={index} eyebrow={copy.skillsEyebrow} title={copy.skillsTitle} description={copy.skillsDescription} />
         <Reveal>
           <dl className="border-b hairline">
             {copy.skillsGroups.map((group, i) => (

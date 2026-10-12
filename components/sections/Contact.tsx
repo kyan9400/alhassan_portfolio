@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { AlertCircle, Check, ChevronDown, Copy, Download, Loader2, Mail, MapPin, Send } from "lucide-react";
 import { useCopy, useCopyEmail } from "@/lib/hooks";
-import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/ui-copy";
-import { Bidi, Magnetic, Reveal, GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
+import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/site";
+import { Bidi, Magnetic, Reveal, SectionIndex, GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import { Footer } from "@/components/app/Footer";
 import { celebrate } from "@/lib/confetti";
@@ -44,7 +44,7 @@ function EmailAddress({ email = CONTACT_EMAIL }: { email?: string }) {
   );
 }
 
-export function Contact() {
+export function Contact({ index }: { index?: string }) {
   const copy = useCopy();
   const ui = copy.ui;
   const copyEmail = useCopyEmail();
@@ -213,13 +213,13 @@ export function Contact() {
   const sending = status === "sending";
 
   return (
-    <section id="contact" className="section cv-auto pb-10 [--cv-h:1700px] md:[--cv-h:1540px] lg:[--cv-h:1170px]">
+    <section id="contact" className="section cv-auto pb-10 [--cv-h:1870px] md:[--cv-h:1690px] lg:[--cv-h:1290px]">
       <div className="shell">
         <Reveal className="card relative overflow-hidden p-5 sm:p-10 md:p-14">
           <div className="relative grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="min-w-0">
-              <p className="eyebrow mb-4">{copy.contactEyebrow}</p>
-              <h2 className="text-balance text-[clamp(2.2rem,5.5vw,4rem)] font-semibold leading-[1.02] rtl:leading-[1.25]">
+              <SectionIndex index={index} eyebrow={copy.contactEyebrow} />
+              <h2 className="text-balance text-h2 font-semibold rtl:leading-[1.25]">
                 {copy.contactTitle.split(" ").slice(0, -1).join(" ")}{" "}
                 <span className="text-accent-ink">{copy.contactTitle.split(" ").slice(-1)}</span>
               </h2>
@@ -319,10 +319,10 @@ export function Contact() {
               <p className="mt-3 text-sm text-muted">{copy.heroResponseTime}</p>
 
               <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[40px] items-center gap-2 text-muted transition-colors hover:text-text">
+                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="tap inline-flex min-h-[40px] items-center gap-2 text-muted transition-colors hover:text-text">
                   <LinkedinIcon className="h-4 w-4 shrink-0" /> {copy.linkedinLabel}
                 </a>
-                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[40px] items-center gap-2 text-muted transition-colors hover:text-text">
+                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="tap inline-flex min-h-[40px] items-center gap-2 text-muted transition-colors hover:text-text">
                   <GithubIcon className="h-4 w-4 shrink-0" /> {copy.githubLabel}
                 </a>
               </p>
@@ -331,7 +331,7 @@ export function Contact() {
             <div className="relative flex min-w-0 flex-col">
               <AnimatePresence mode="wait" initial={false}>
                 {status === "sent" ? (
-                  <motion.div
+                  <m.div
                     key="sent"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -339,14 +339,14 @@ export function Contact() {
                     className="flex min-h-[420px] flex-1 flex-col items-center justify-center rounded-3xl border border-line/10 bg-surface/40 p-8 text-center"
                     role="status"
                   >
-                    <motion.span
+                    <m.span
                       initial={{ scale: 0, rotate: -45 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.1 }}
                       className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-white shadow-[0_20px_50px_-10px_rgba(16,185,129,0.6)]"
                     >
                       <Check className="h-10 w-10" strokeWidth={3} aria-hidden="true" />
-                    </motion.span>
+                    </m.span>
                     <h3 ref={focusOnMount} tabIndex={-1} className="mt-6 text-2xl font-semibold outline-none">
                       {ui.form.successTitle}
                     </h3>
@@ -354,9 +354,9 @@ export function Contact() {
                     <button type="button" onClick={sendAnother} className="btn-ghost mt-8">
                       {ui.form.sendAnother}
                     </button>
-                  </motion.div>
+                  </m.div>
                 ) : (
-                  <motion.form
+                  <m.form
                     key="form"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -476,14 +476,14 @@ export function Contact() {
                           <button
                             type="button"
                             onClick={onCopyEmail}
-                            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
+                            className="tap inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
                           >
                             {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
                             {ui.copyEmail}
                           </button>
                           <a
                             href={mailtoHref}
-                            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
+                            className="tap inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
                           >
                             <Mail className="h-3.5 w-3.5" aria-hidden="true" />
                             {ui.form.openMailApp}
@@ -514,7 +514,7 @@ export function Contact() {
                         </button>
                       </Magnetic>
                     </div>
-                  </motion.form>
+                  </m.form>
                 )}
               </AnimatePresence>
             </div>

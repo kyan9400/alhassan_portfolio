@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useMotionValueEvent, useSpring } from "framer-motion";
+import { AnimatePresence, m, useMotionValueEvent, useSpring } from "framer-motion";
 import { BookOpen, Command, Download, FileText, Menu, Moon, Sun, X } from "lucide-react";
 import { usePortfolioStore } from "@/store/portfolioStore";
 import {
@@ -21,7 +21,7 @@ import {
   useTheme
 } from "@/lib/hooks";
 import { LOCALES } from "@/lib/i18n";
-import { TELEGRAM_URL } from "@/lib/ui-copy";
+import { TELEGRAM_URL } from "@/lib/site";
 import { usePageScroll } from "@/lib/scroll";
 import { trackEvent } from "@/lib/analytics";
 import { TelegramIcon } from "@/components/ui/primitives";
@@ -127,16 +127,16 @@ export function Navbar() {
   const navLinks = sections.filter((s) => s.id !== "hero" && s.id !== "contact");
   const menuAction =
     "flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-center text-[12px] font-medium leading-tight text-muted transition hover:bg-surface hover:text-text";
-  const iconButton = "flex h-9 w-9 items-center justify-center rounded-full text-muted transition hover:bg-surface hover:text-text";
+  const iconButton = "tap flex h-9 w-9 items-center justify-center rounded-full text-muted transition hover:bg-surface hover:text-text";
 
   return (
     <>
-      <motion.div
+      <m.div
         className="fixed inset-x-0 top-0 z-[70] h-[2px] origin-left bg-accent rtl:origin-right print:hidden"
         style={{ scaleX: progress }}
         aria-hidden="true"
       />
-      <motion.header
+      <m.header
         id="site-header"
         ref={headerRef}
         initial={false}
@@ -157,7 +157,7 @@ export function Navbar() {
             <Link
               href={lp("/")}
               onClick={go("hero")}
-              className="group flex shrink-0 items-center gap-2.5 rounded-full py-1 pe-3 ps-px sm:ps-[3px]"
+              className="tap group flex shrink-0 items-center gap-2.5 rounded-full py-1 pe-3 ps-px sm:ps-[3px]"
               aria-label={copy.heroTitle}
             >
               {/* Flat monogram in the text colour. */}
@@ -185,7 +185,7 @@ export function Navbar() {
                         }`}
                       >
                         {isActive ? (
-                          <motion.span
+                          <m.span
                             layoutId="nav-pill"
                             className="absolute inset-0 -z-10 rounded-full bg-surface"
                             transition={{ type: "spring", stiffness: 380, damping: 32 }}
@@ -205,7 +205,7 @@ export function Navbar() {
                 onClick={() => setPaletteOpen(true)}
                 onPointerEnter={preloadPalette}
                 onFocus={preloadPalette}
-                className="hidden h-9 items-center gap-1 rounded-full px-3 text-xs text-muted transition hover:bg-surface hover:text-text md:flex"
+                className="tap hidden h-9 items-center gap-1 rounded-full px-3 text-xs text-muted transition hover:bg-surface hover:text-text md:flex"
                 aria-label={ui.command.open}
                 aria-haspopup="dialog"
                 aria-keyshortcuts={isApple ? "Meta+K" : "Control+K"}
@@ -233,7 +233,7 @@ export function Navbar() {
                     // The visible code stays in the name (WCAG 2.5.3) next to the language's own name.
                     aria-label={`${ui.languageNames[l]} (${l.toUpperCase()})`}
                     title={ui.languageNames[l]}
-                    className={`relative flex h-8 min-w-[2.1rem] items-center justify-center rounded-full px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
+                    className={`tap relative flex h-8 min-w-[2.1rem] items-center justify-center rounded-full px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
                       locale === l ? "text-text" : "text-muted hover:text-text"
                     }`}
                   >
@@ -247,7 +247,7 @@ export function Navbar() {
 
               <button type="button" onClick={toggle} className={iconButton} aria-label={ui.command.toggleTheme}>
                 <AnimatePresence mode="wait" initial={false}>
-                  <motion.span
+                  <m.span
                     key={isDark ? "moon" : "sun"}
                     initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
                     animate={{ rotate: 0, scale: 1, opacity: 1 }}
@@ -255,7 +255,7 @@ export function Navbar() {
                     transition={{ duration: 0.25 }}
                   >
                     {isDark ? <Moon className="h-4 w-4" aria-hidden="true" /> : <Sun className="h-4 w-4" aria-hidden="true" />}
-                  </motion.span>
+                  </m.span>
                 </AnimatePresence>
               </button>
 
@@ -289,7 +289,7 @@ export function Navbar() {
                 ref={menuButtonRef}
                 type="button"
                 onClick={() => setMenuOpen((o) => !o)}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-text transition hover:bg-surface lg:hidden"
+                className="tap flex h-9 w-9 items-center justify-center rounded-full text-text transition hover:bg-surface lg:hidden"
                 aria-label={menuOpen ? ui.menuClose : ui.menuOpen}
                 aria-expanded={menuOpen}
                 aria-controls={MENU_ID}
@@ -301,7 +301,7 @@ export function Navbar() {
 
           <AnimatePresence>
             {menuOpen ? (
-              <motion.nav
+              <m.nav
                 id={MENU_ID}
                 aria-label={ui.primaryNav}
                 initial={{ opacity: 0, y: -10, scale: 0.97 }}
@@ -314,7 +314,7 @@ export function Navbar() {
                   {sections.map((s, i) => {
                     const isActive = isHome && active === s.id;
                     return (
-                      <motion.li key={s.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                      <m.li key={s.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
                         <Link
                           href={lp(`/#${s.id}`)}
                           onClick={go(s.id)}
@@ -325,7 +325,7 @@ export function Navbar() {
                         >
                           {s.label}
                         </Link>
-                      </motion.li>
+                      </m.li>
                     );
                   })}
                 </ul>
@@ -377,11 +377,11 @@ export function Navbar() {
                     {ui.telegramLabel}
                   </a>
                 </div>
-              </motion.nav>
+              </m.nav>
             ) : null}
           </AnimatePresence>
         </div>
-      </motion.header>
+      </m.header>
     </>
   );
 }

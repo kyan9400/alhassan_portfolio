@@ -3,8 +3,8 @@
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useCopy, useLocale } from "@/lib/hooks";
-import { copyByLocale } from "@/lib/copy";
-import { Bidi, Reveal } from "@/components/ui/primitives";
+import { BRAND_NAMES } from "@/lib/site";
+import { Bidi, Reveal, SectionIndex, SplitWords } from "@/components/ui/primitives";
 import type { Locale } from "@/lib/types";
 
 const SCRIPTS: Locale[] = ["en", "ru", "ar"];
@@ -26,7 +26,7 @@ function NameInThreeScripts() {
               dir={l === "ar" ? "rtl" : "ltr"}
               className={`${current ? "text-text" : "text-muted/45"} ${l === "ar" ? "font-arabic tracking-normal" : ""} ${l === "ru" ? "tracking-[-0.015em]" : ""}`}
             >
-              {copyByLocale[l].brandName}
+              {BRAND_NAMES[l]}
             </span>
             {/* Trailing separator, so a wrapped line never starts with it. */}
             {i < SCRIPTS.length - 1 ? (
@@ -41,7 +41,7 @@ function NameInThreeScripts() {
   );
 }
 
-export function About() {
+export function About({ index }: { index?: string }) {
   const copy = useCopy();
   const how = copy.howIWork;
   const howId = useId();
@@ -49,7 +49,7 @@ export function About() {
   const [howOpen, setHowOpen] = useState(false);
 
   return (
-    <section id="about" className="section cv-auto [--cv-h:1600px] sm:[--cv-h:2100px] md:[--cv-h:1650px] lg:[--cv-h:1350px]">
+    <section id="about" className="section cv-auto [--cv-h:1760px] sm:[--cv-h:2310px] md:[--cv-h:1820px] lg:[--cv-h:1490px]">
       <div className="shell">
         <Reveal className="mb-12 md:mb-16">
           <NameInThreeScripts />
@@ -58,9 +58,11 @@ export function About() {
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <div className="lg:sticky lg:top-32 lg:self-start">
             <Reveal>
-              <p className="eyebrow mb-4">{copy.aboutEyebrow}</p>
-              <h2 className="text-balance text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] rtl:leading-[1.25]">{copy.aboutTitle}</h2>
-              <p className="mt-6 text-pretty text-base leading-relaxed text-muted md:text-lg">
+              <SectionIndex index={index} eyebrow={copy.aboutEyebrow} />
+              <h2 aria-label={copy.aboutTitle} className="text-balance text-h2 font-semibold rtl:leading-[1.25]">
+                <SplitWords text={copy.aboutTitle} />
+              </h2>
+              <p className="mt-6 text-pretty text-lead text-muted">
                 <Bidi text={copy.aboutBody} />
               </p>
             </Reveal>
@@ -114,7 +116,7 @@ export function About() {
             onClick={() => setHowOpen((o) => !o)}
             aria-expanded={howOpen}
             aria-controls={howId}
-            className="mt-4 inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text sm:hidden"
+            className="tap mt-4 inline-flex min-h-[40px] items-center gap-1 text-sm font-semibold text-accent-ink transition-colors hover:text-text sm:hidden"
           >
             {howOpen ? copy.ui.hideDetails : copy.ui.showDetails}
             <ChevronDown className={`h-4 w-4 transition-transform ${howOpen ? "rotate-180" : ""}`} aria-hidden="true" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useId, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowRight, Building2, ChevronDown, CornerDownLeft } from "lucide-react";
 import { useCopy } from "@/lib/hooks";
 import { Bidi, Reveal } from "@/components/ui/primitives";
@@ -30,7 +30,7 @@ function BeforeAfterBars() {
         <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3">
           <span className="text-xs font-medium text-muted">{chart.after}</span>
           <span className="block h-3 rounded-full bg-text/[0.06]">
-            <motion.span
+            <m.span
               className="block h-full rounded-full bg-accent"
               style={{ originX: rtl ? 1 : 0 }}
               initial={{ scaleX: 1 }}
@@ -139,7 +139,7 @@ export function SignatureCase() {
   return (
     <section
       id="case-study"
-      className="section cv-auto scroll-mt-24 [--cv-h:1900px] md:[--cv-h:1500px] lg:[--cv-h:1150px]"
+      className="section cv-auto scroll-mt-24 [--cv-h:2090px] md:[--cv-h:1650px] lg:[--cv-h:1260px]"
       aria-labelledby="signature-title"
     >
       <div className="shell">
@@ -166,9 +166,9 @@ export function SignatureCase() {
             {metric ? (
               <Reveal delay={0.1} className="mt-10">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted rtl:tracking-normal">{s.metricsTitle}</p>
-                {/* The number is the hero of the section: one of the three gradient accents on the page. */}
+                {/* The number is the hero of the section, in the accent ink. */}
                 <p className="mt-1 font-display text-[clamp(5rem,12vw,10rem)] font-semibold leading-[0.95] tracking-[-0.04em] tabular-nums">
-                  <bdi className="gradient-text">{metric.value}</bdi>
+                  <bdi className="text-accent-ink">{metric.value}</bdi>
                 </p>
                 <p className="mt-3 max-w-sm text-pretty text-sm leading-relaxed text-muted">
                   <Bidi text={metric.label} />

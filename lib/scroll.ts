@@ -25,7 +25,7 @@ function onScroll() {
 }
 
 /** Calls `listener` once per frame while the page scrolls or resizes. Returns the unsubscribe function. */
-function subscribe(listener: Listener): () => void {
+export function subscribe(listener: Listener): () => void {
   if (listeners.size === 0) {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });

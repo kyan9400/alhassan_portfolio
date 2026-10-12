@@ -809,31 +809,18 @@ export const uiCopy: Record<Locale, UiCopy> = {
   }
 };
 
-export const CONTACT_EMAIL = "kyan775909@gmail.com";
-export const GITHUB_URL = "https://github.com/kyan9400";
-export const LINKEDIN_URL = "https://www.linkedin.com/in/alhassan-alfarran-880b00246/";
-export const TELEGRAM_URL = "https://t.me/hassan775775";
-export const TELEGRAM_HANDLE = "@hassan775775";
-
-/** Used when NEXT_PUBLIC_SITE_URL is unset or not an absolute http(s) URL. cv-src/render.mjs reads this line. */
-export const DEFAULT_SITE_URL = "https://alhassan-portfolio-sigma.vercel.app";
-
-/** Absolute origin without a trailing slash, from NEXT_PUBLIC_SITE_URL (e.g. "https://example.com"); inlined at build time. */
-function resolveSiteUrl(value: string | undefined): string {
-  if (!value?.trim()) return DEFAULT_SITE_URL;
-  try {
-    const url = new URL(value.trim());
-    if (url.protocol !== "https:" && url.protocol !== "http:") return DEFAULT_SITE_URL;
-    return `${url.protocol}//${url.host}`;
-  } catch {
-    return DEFAULT_SITE_URL;
-  }
-}
-
-/** The canonical origin: metadata, sitemap, robots, OG images, JSON-LD, RSS and the CV page all use it. */
-export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
-/** SITE_URL without the scheme, for display ("example.com"). */
-export const SITE_HOST = SITE_URL.replace(/^https?:\/\//, "");
+// Constants live in lib/site.ts (no imports, safe for client bundles); re-exported for server code.
+export {
+  CONTACT_EMAIL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  TELEGRAM_URL,
+  TELEGRAM_HANDLE,
+  DEFAULT_SITE_URL,
+  resolveSiteUrl,
+  SITE_URL,
+  SITE_HOST
+} from "@/lib/site";
 
 function buildCopy(locale: Locale) {
   const copy = { ...copyByLocale[locale], ui: uiCopy[locale] };

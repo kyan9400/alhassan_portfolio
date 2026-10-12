@@ -17,8 +17,14 @@ import { Contact } from "@/components/sections/Contact";
 import { MobileContactBar } from "@/components/app/MobileContactBar";
 import { SectionRail } from "@/components/app/SectionRail";
 import { localeAlternates } from "@/lib/seo";
-import { routeLocale } from "@/lib/i18n";
-import { WEB3D_SITES } from "@/lib/web3d";
+import { localePath, routeLocale } from "@/lib/i18n";
+import { WEB3D_SITES, WEB3D_STACK, type Web3dSiteView } from "@/lib/web3d";
+import { localizeProject, projects } from "@/lib/projects";
+import { typographAr, typographRu } from "@/lib/typograph";
+import { PERSON_ID, WEBSITE_ID, jsonLdHtml } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
+import { getCopy } from "@/lib/ui-copy";
+import type { Locale } from "@/lib/types";
 import { existingRepoScreenshot } from "@/lib/repoScreenshot";
 
 type PageParams = { params: Promise<{ lang: string }> };
@@ -31,6 +37,8 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
 export const revalidate = 3600;
 
+const typograph: Record<Locale, (text: string) => string> = { en: (t) => t, ru: typographRu, ar: typographAr };
+
 /**
  * Story order: who I am → ask my CV anything → where I've worked → what I built there → proof in depth → toolkit →
  * how I can help → real-time 3D sites → more code → what colleagues say (only once there is a recommendation) → get in touch.
@@ -40,8 +48,30 @@ export const revalidate = 3600;
  * instead of hydrating the whole page in one long task. A section someone interacts with first is
  * hydrated first.
  */
-export default async function HomePage() {
+export default async function HomePage({ params }: PageParams) {
+  const locale = routeLocale((await params).lang);
   const github = await getGithubRepos();
+  // Localized here so the client bundle carries only the page language (not all three).
+  const localizedProjects = projects.map((p) => localizeProject(p, locale));
+  const fix = typograph[locale];
+  const web3dSites: Web3dSiteView[] = WEB3D_SITES.map((site) => ({
+    ...site,
+    kind: fix(site.kind[locale]),
+    description: fix(site.description[locale])
+  }));
+  // Visual section numbers ("01", "02", …) in page order; Recommendations only counts when it renders.
+  const numbered = ["about", "experience", "projects", "skills", "services", "web3d", "github"];
+  if (getCopy(locale).recommendations.items.length > 0) numbered.push("recommendations");
+  numbered.push("contact");
+  const idx = (key: string) => String(numbered.indexOf(key) + 1).padStart(2, "0");
+  const profileJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url: `${SITE_URL}${localePath(locale, "/")}`,
+    inLanguage: locale,
+    mainEntity: { "@id": PERSON_ID },
+    isPartOf: { "@id": WEBSITE_ID }
+  };
   // 3D sites whose screenshot is committed (the others render a placeholder until it is added).
   const web3dScreenshots = WEB3D_SITES.filter((site) => existingRepoScreenshot(site.screenshot)).map((site) => site.slug);
   // Same for the phone captures (public/repo-screenshots/mobile/): cards without one keep the desktop capture on phones.
@@ -49,40 +79,41 @@ export default async function HomePage() {
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(profileJsonLd)} />
       <Hero />
       <Marquee />
       <Suspense>
-        <About />
+        <About index={idx("about")} />
       </Suspense>
       <Suspense>
         <AskCv />
       </Suspense>
       <Suspense>
-        <Experience />
+        <Experience index={idx("experience")} />
       </Suspense>
       <Suspense>
-        <Projects />
+        <Projects projects={localizedProjects} index={idx("projects")} />
       </Suspense>
       <Suspense>
         <SignatureCase />
       </Suspense>
       <Suspense>
-        <Skills />
+        <Skills index={idx("skills")} />
       </Suspense>
       <Suspense>
-        <Services />
+        <Services index={idx("services")} />
       </Suspense>
       <Suspense>
-        <Web3d screenshots={web3dScreenshots} mobileScreenshots={web3dMobileScreenshots} />
+        <Web3d index={idx("web3d")} sites={web3dSites} stack={WEB3D_STACK} screenshots={web3dScreenshots} mobileScreenshots={web3dMobileScreenshots} />
       </Suspense>
       <Suspense>
-        <GithubRepos repos={github.ok ? github.repos : []} />
+        <GithubRepos index={idx("github")} repos={github.ok ? github.repos : []} />
       </Suspense>
       <Suspense>
-        <Recommendations />
+        <Recommendations index={idx("recommendations")} />
       </Suspense>
       <Suspense>
-        <Contact />
+        <Contact index={idx("contact")} />
       </Suspense>
       <MobileContactBar />
       <SectionRail />
