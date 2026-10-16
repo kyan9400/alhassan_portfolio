@@ -138,7 +138,7 @@ function PhoneFrame({ site }: { site: Web3dSiteView }) {
  */
 /**
  * Hover preview: a short muted clip of the live site (public/web3d-video/<slug>.mp4) fades in over the screenshot.
- * Only for a mouse/trackpad and full motion; with preload="none" nothing is downloaded until the first hover,
+ * Only for a mouse/trackpad (hovering is a deliberate request to see it move); with preload="none" nothing is downloaded until the first hover,
  * so the section costs no extra bytes on load. A missing clip simply never shows.
  */
 function HoverVideo({ slug }: { slug: string }) {
@@ -151,7 +151,6 @@ function HoverVideo({ slug }: { slug: string }) {
     const card = video?.closest<HTMLElement>(".group");
     if (!video || !card) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const enter = () => {
       video.play().then(() => setPlaying(true)).catch(() => {});
     };
