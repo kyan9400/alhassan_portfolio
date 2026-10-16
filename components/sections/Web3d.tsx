@@ -136,6 +136,54 @@ function PhoneFrame({ site }: { site: Web3dSiteView }) {
  * live site once it is deployed and the repository until then. The GitHub link sits above that overlay
  * as a sibling, so no interactive element is nested in another.
  */
+/**
+ * Hover preview: a short muted clip of the live site (public/web3d-video/<slug>.mp4) fades in over the screenshot.
+ * Only for a mouse/trackpad and full motion; with preload="none" nothing is downloaded until the first hover,
+ * so the section costs no extra bytes on load. A missing clip simply never shows.
+ */
+function HoverVideo({ slug }: { slug: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const video = ref.current;
+    const card = video?.closest<HTMLElement>(".group");
+    if (!video || !card) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const enter = () => {
+      video.play().then(() => setPlaying(true)).catch(() => {});
+    };
+    const leave = () => {
+      video.pause();
+      setPlaying(false);
+    };
+    card.addEventListener("pointerenter", enter);
+    card.addEventListener("pointerleave", leave);
+    return () => {
+      card.removeEventListener("pointerenter", enter);
+      card.removeEventListener("pointerleave", leave);
+    };
+  }, []);
+
+  if (failed) return null;
+  return (
+    <video
+      ref={ref}
+      src={`/web3d-video/${slug}.mp4`}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden="true"
+      tabIndex={-1}
+      onError={() => setFailed(true)}
+      className={`pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-top transition-opacity duration-500 sm:block ${playing ? "opacity-100" : "opacity-0"}`}
+    />
+  );
+}
+
 function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSiteView; screenshot: boolean; mobileScreenshot: boolean }) {
   const copy = useCopy();
   const { ui } = copy;
@@ -158,6 +206,7 @@ function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSiteView;
               alt={`${site.name} ${ui.previewAlt}`}
               onError={() => setImageFailed(true)}
             />
+            {screenshot ? <HoverVideo slug={site.slug} /> : null}
             {screenshot && mobileScreenshot ? <PhoneFrame site={site} /> : null}
           </>
         ) : (
