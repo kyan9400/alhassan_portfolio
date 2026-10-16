@@ -24,7 +24,7 @@ function NameInThreeScripts() {
             <span
               lang={l}
               dir={l === "ar" ? "rtl" : "ltr"}
-              className={`${current ? "text-text" : "text-muted/45"} ${l === "ar" ? "font-arabic tracking-normal" : ""} ${l === "ru" ? "tracking-[-0.015em]" : ""}`}
+              className={`${current ? "text-text" : "text-muted/80"} ${l === "ar" ? "font-arabic tracking-normal" : ""} ${l === "ru" ? "tracking-[-0.015em]" : ""}`}
             >
               {BRAND_NAMES[l]}
             </span>

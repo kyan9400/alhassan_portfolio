@@ -161,12 +161,12 @@ export function Navbar() {
               aria-label={copy.heroTitle}
             >
               {/* Flat monogram in the text colour. */}
-              <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-line/25 font-display text-[13px] font-bold tracking-tight text-text transition-colors duration-300 group-hover:border-accent/60">
+              <span aria-hidden="true" className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-line/25 font-display text-[13px] font-bold tracking-tight text-text transition-colors duration-300 group-hover:border-accent/60">
                 {copy.brandMonogram}
               </span>
               <span className="hidden font-display text-sm font-semibold tracking-tight sm:inline lg:hidden xl:inline">
                 {copy.brandName}
-                <span className="text-accent">.</span>
+                <span className="text-accent" aria-hidden="true">.</span>
               </span>
             </Link>
 
@@ -230,8 +230,6 @@ export function Navbar() {
                     lang={l}
                     onClick={() => rememberLocale(l)}
                     aria-current={locale === l ? "true" : undefined}
-                    // The visible code stays in the name (WCAG 2.5.3) next to the language's own name.
-                    aria-label={`${ui.languageNames[l]} (${l.toUpperCase()})`}
                     title={ui.languageNames[l]}
                     className={`tap relative flex h-8 min-w-[2.1rem] items-center justify-center rounded-full px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
                       locale === l ? "text-text" : "text-muted hover:text-text"
@@ -240,6 +238,8 @@ export function Navbar() {
                     {locale === l ? (
                       <span className="absolute inset-0 -z-0 rounded-full bg-card shadow-sm ring-1 ring-line/15" aria-hidden="true" />
                     ) : null}
+                    {/* The name is "<language> <code>", so it contains the visible code (WCAG 2.5.3). */}
+                    <span className="sr-only">{ui.languageNames[l]} </span>
                     <span className="relative">{l}</span>
                   </a>
                 ))}

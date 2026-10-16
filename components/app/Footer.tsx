@@ -51,12 +51,12 @@ export function Footer({ className = "" }: { className?: string }) {
   return (
     <footer className={className}>
       {/* Decorative sign-off: the name, very large and faint. */}
+      {/* Drawn as a pseudo-element: it is decoration, so it stays out of the text that contrast checks read. */}
       <p
         aria-hidden="true"
-        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] max-sm:text-[8vw] font-semibold leading-[0.95] tracking-[-0.05em] text-text/[0.09] rtl:tracking-normal"
-      >
-        {copy.heroTitle}
-      </p>
+        data-text={copy.heroTitle}
+        className="select-none text-balance font-display text-[clamp(2.75rem,11vw,8.5rem)] max-sm:text-[8vw] font-semibold leading-[0.95] tracking-[-0.05em] text-text/[0.09] rtl:tracking-normal before:content-[attr(data-text)]"
+      />
       <div className="mt-8 flex flex-col items-center justify-between gap-6 border-t border-line/10 pt-8 text-sm text-muted md:flex-row">
       <div className="text-center md:text-start">
         <p className="font-display text-base font-semibold text-text">
