@@ -1,0 +1,2 @@
+:HL["/alhassan_portfolio/_next/static/chunks/31n0rtjrqcqex.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"(pages-root)","param":null,"prefetchHints":4208,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"E15LgKO4s0Wt-CK4Tyjmr"}

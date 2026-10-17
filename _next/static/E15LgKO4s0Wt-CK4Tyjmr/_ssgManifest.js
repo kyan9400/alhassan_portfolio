@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002F[lang]","\u002F[lang]\u002Fcv","\u002F[lang]\u002Fnotes","\u002F[lang]\u002Fnotes\u002F[slug]","\u002F[lang]\u002Fopengraph-image","\u002F[lang]\u002Fprojects\u002F[slug]","\u002F[lang]\u002Fprojects\u002F[slug]\u002Fopengraph-image","\u002F[lang]\u002Fprojects\u002Farchive"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
