@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { withBasePath } from "@/lib/base-path";
 
 /** Preferred first: WebP is several times smaller than a PNG capture of the same page. */
 const EXTENSIONS = [".webp", ".png"] as const;
@@ -34,14 +35,14 @@ function listScreenshots(subdir = ""): Set<string> {
 }
 
 /**
- * Public URL of a committed capture under `public/repo-screenshots/` (`<name>.webp` or `<name>.png`),
+ * Public URL (under the base path, lib/base-path.ts) of a committed capture under `public/repo-screenshots/` (`<name>.webp` or `<name>.png`),
  * or `undefined` so the UI renders a text-only card.
  */
 export function publicPathForRepoScreenshot(repoName: string): string | undefined {
   const safe = repoScreenshotBasename(repoName);
   const files = listScreenshots();
   for (const ext of EXTENSIONS) {
-    if (files.has(`${safe}${ext}`)) return `/repo-screenshots/${safe}${ext}`;
+    if (files.has(`${safe}${ext}`)) return withBasePath(`/repo-screenshots/${safe}${ext}`);
   }
   return undefined;
 }

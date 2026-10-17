@@ -47,6 +47,31 @@ const nextConfig = {
 };
 
 /*
+ * GitHub Pages copy (`npm run build:pages`, scripts/build-pages.mjs sets GH_PAGES=1): a static export
+ * served from https://kyan9400.github.io/alhassan_portfolio/ for networks that block vercel.app.
+ * Nothing here applies to the default (Vercel) build. Pages has no server: no proxy, API routes,
+ * image optimizer or response headers, so lib/base-path.ts tells the code it is in this build
+ * (NEXT_PUBLIC_STATIC_EXPORT) and which prefix public/ files need (NEXT_PUBLIC_BASE_PATH).
+ */
+const BASE_PATH = "/alhassan_portfolio";
+
+/** No server on Pages: response headers and output file tracing do not apply to a static export. */
+const { headers: _headers, outputFileTracingIncludes: _tracing, ...staticConfig } = nextConfig;
+
+/** @type {import('next').NextConfig} */
+const pagesConfig = {
+  ...staticConfig,
+  output: "export",
+  // "/" exists only here, as app/(pages-root)/page.pages.tsx: on Vercel proxy.ts redirects it.
+  pageExtensions: ["pages.tsx", "tsx", "ts", "jsx", "js"],
+  basePath: BASE_PATH,
+  assetPrefix: BASE_PATH,
+  images: { unoptimized: true },
+  trailingSlash: true,
+  env: { NEXT_PUBLIC_BASE_PATH: BASE_PATH, NEXT_PUBLIC_STATIC_EXPORT: "1" }
+};
+
+/*
  * MDX for /notes (official @next/mdx setup; see mdx-components.tsx). The posts are imported from
  * content/notes, not used as routes, so pageExtensions stays default. remark-frontmatter parses the
  * YAML block at the top of each post so it is not rendered; lib/notes.ts reads the same block.
@@ -56,4 +81,4 @@ const withMDX = createMDX({
   options: { remarkPlugins: ["remark-frontmatter"] }
 });
 
-export default withMDX(nextConfig);
+export default withMDX(process.env.GH_PAGES === "1" ? pagesConfig : nextConfig);

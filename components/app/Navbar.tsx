@@ -21,6 +21,7 @@ import {
   useTheme
 } from "@/lib/hooks";
 import { LOCALES } from "@/lib/i18n";
+import { withBasePath } from "@/lib/base-path";
 import { TELEGRAM_URL } from "@/lib/site";
 import { usePageScroll } from "@/lib/scroll";
 import { trackEvent } from "@/lib/analytics";
@@ -225,7 +226,7 @@ export function Navbar() {
                   // root layout render). The click also saves the choice for unprefixed URLs (proxy.ts).
                   <a
                     key={l}
-                    href={languageHref(l)}
+                    href={withBasePath(languageHref(l))}
                     hrefLang={l}
                     lang={l}
                     onClick={() => rememberLocale(l)}

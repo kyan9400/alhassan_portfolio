@@ -11,6 +11,7 @@ import { usePortfolioStore } from "@/store/portfolioStore";
 import { Footer } from "@/components/app/Footer";
 import { celebrate } from "@/lib/confetti";
 import { trackEvent } from "@/lib/analytics";
+import { STATIC_EXPORT } from "@/lib/base-path";
 
 type Reason = "hiring" | "freelance" | "other";
 type Status = "idle" | "sending" | "sent" | "error";
@@ -216,7 +217,7 @@ export function Contact({ index }: { index?: string }) {
     <section id="contact" className="section cv-auto pb-10 [--cv-h:1870px] md:[--cv-h:1690px] lg:[--cv-h:1290px]">
       <div className="shell">
         <Reveal className="card relative overflow-hidden p-5 sm:p-10 md:p-14">
-          <div className="relative grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className={`relative grid gap-12 ${STATIC_EXPORT ? "" : "lg:grid-cols-2 "}lg:gap-16`}>
             <div className="min-w-0">
               <SectionIndex index={index} eyebrow={copy.contactEyebrow} />
               <h2 className="text-balance text-h2 font-semibold rtl:leading-[1.25]">
@@ -328,196 +329,199 @@ export function Contact({ index }: { index?: string }) {
               </p>
             </div>
 
-            <div className="relative flex min-w-0 flex-col">
-              <AnimatePresence mode="wait" initial={false}>
-                {status === "sent" ? (
-                  <m.div
-                    key="sent"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex min-h-[420px] flex-1 flex-col items-center justify-center rounded-3xl border border-line/10 bg-surface/40 p-8 text-center"
-                    role="status"
-                  >
-                    <m.span
-                      initial={{ scale: 0, rotate: -45 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.1 }}
-                      className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-white shadow-[0_20px_50px_-10px_rgba(16,185,129,0.6)]"
+            {/* The static Pages copy (lib/base-path.ts) has no /api/contact: Telegram, email and the CVs above stay. */}
+            {STATIC_EXPORT ? null : (
+              <div className="relative flex min-w-0 flex-col">
+                <AnimatePresence mode="wait" initial={false}>
+                  {status === "sent" ? (
+                    <m.div
+                      key="sent"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex min-h-[420px] flex-1 flex-col items-center justify-center rounded-3xl border border-line/10 bg-surface/40 p-8 text-center"
+                      role="status"
                     >
-                      <Check className="h-10 w-10" strokeWidth={3} aria-hidden="true" />
-                    </m.span>
-                    <h3 ref={focusOnMount} tabIndex={-1} className="mt-6 text-2xl font-semibold outline-none">
-                      {ui.form.successTitle}
-                    </h3>
-                    <p className="mt-2 max-w-xs text-muted">{ui.form.successBody}</p>
-                    <button type="button" onClick={sendAnother} className="btn-ghost mt-8">
-                      {ui.form.sendAnother}
-                    </button>
-                  </m.div>
-                ) : (
-                  <m.form
-                    key="form"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onAnimationComplete={() => {
-                      if (!refocusForm.current) return;
-                      refocusForm.current = false;
-                      nameRef.current?.focus({ preventScroll: true });
-                    }}
-                    onSubmit={onSubmit}
-                    noValidate
-                    aria-busy={sending}
-                    className="relative flex flex-1 flex-col gap-4"
-                  >
-                    <h3 className="font-display text-xl font-semibold">{copy.contactFormTitle}</h3>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label htmlFor="contact-name" className="mb-1.5 block text-xs font-medium text-muted">
-                          {copy.contactFormName}
-                        </label>
-                        <input
-                          ref={nameRef}
-                          id="contact-name"
-                          name="name"
-                          dir={fields.name ? "auto" : undefined}
-                          autoComplete="name"
-                          maxLength={LIMITS.name}
-                          value={fields.name}
-                          onChange={update("name")}
-                          className={fieldClass("name")}
-                          aria-invalid={Boolean(errors.name)}
-                          aria-describedby={describedBy("name")}
-                        />
-                        {errorText("name")}
-                      </div>
-                      <div>
-                        <label htmlFor="contact-email" className="mb-1.5 block text-xs font-medium text-muted">
-                          {copy.contactFormEmail}
-                        </label>
-                        <input
-                          ref={emailRef}
-                          id="contact-email"
-                          name="email"
-                          type="email"
-                          inputMode="email"
-                          autoComplete="email"
-                          dir="ltr"
-                          maxLength={LIMITS.email}
-                          value={fields.email}
-                          onChange={update("email")}
-                          className={`${fieldClass("email")} rtl:text-right`}
-                          aria-invalid={Boolean(errors.email)}
-                          aria-describedby={describedBy("email")}
-                        />
-                        {errorText("email")}
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="contact-reason" className="mb-1.5 block text-xs font-medium text-muted">
-                        {ui.form.reasonLabel}
-                      </label>
-                      <div className="relative">
-                        <select
-                          id="contact-reason"
-                          name="reason"
-                          value={fields.reason}
-                          onChange={update("reason")}
-                          className="field cursor-pointer appearance-none pe-11"
-                        >
-                          {REASONS.map((r) => (
-                            <option key={r} value={r}>
-                              {ui.form.reasons[r]}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className="pointer-events-none absolute end-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
-                      </div>
-                    </div>
-                    <div className="flex flex-1 flex-col">
-                      <label htmlFor="contact-message" className="mb-1.5 block text-xs font-medium text-muted">
-                        {copy.contactFormMessage}
-                      </label>
-                      <textarea
-                        ref={messageRef}
-                        id="contact-message"
-                        name="message"
-                        // Typed text follows its own script (English in the Arabic UI); empty keeps the page direction for the placeholder.
-                        dir={fields.message ? "auto" : undefined}
-                        rows={6}
-                        maxLength={LIMITS.message}
-                        placeholder={ui.form.messagePlaceholder}
-                        value={fields.message}
-                        onChange={update("message")}
-                        className={`${fieldClass("message")} min-h-[9rem] flex-1 resize-none`}
-                        aria-invalid={Boolean(errors.message)}
-                        aria-describedby={describedBy("message")}
-                      />
-                      {errorText("message")}
-                    </div>
-
-                    {/* Honeypot: display:none, so people (and browser autofill) never fill it; naive bots do. */}
-                    <div hidden aria-hidden="true">
-                      <label htmlFor="contact-company">Company</label>
-                      <input id="contact-company" name="company" type="text" tabIndex={-1} autoComplete="off" value={fields.company} onChange={update("company")} />
-                    </div>
-
-                    {status === "error" && sendError ? (
-                      <div key={attempt} role="alert" className="alert-error space-y-3">
-                        <p className="flex gap-2 font-medium">
-                          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-                          <span>{sendError === "too_fast" ? ui.form.tooFast : ui.form.error}</span>
-                        </p>
-                        <div className="flex flex-wrap items-center gap-2 ps-6">
-                          <span className="me-1 font-semibold text-text">
-                            <EmailAddress />
-                          </span>
-                          <button
-                            type="button"
-                            onClick={onCopyEmail}
-                            className="tap inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
-                          >
-                            {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
-                            {ui.copyEmail}
-                          </button>
-                          <a
-                            href={mailtoHref}
-                            className="tap inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
-                          >
-                            <Mail className="h-3.5 w-3.5" aria-hidden="true" />
-                            {ui.form.openMailApp}
-                          </a>
+                      <m.span
+                        initial={{ scale: 0, rotate: -45 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.1 }}
+                        className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-white shadow-[0_20px_50px_-10px_rgba(16,185,129,0.6)]"
+                      >
+                        <Check className="h-10 w-10" strokeWidth={3} aria-hidden="true" />
+                      </m.span>
+                      <h3 ref={focusOnMount} tabIndex={-1} className="mt-6 text-2xl font-semibold outline-none">
+                        {ui.form.successTitle}
+                      </h3>
+                      <p className="mt-2 max-w-xs text-muted">{ui.form.successBody}</p>
+                      <button type="button" onClick={sendAnother} className="btn-ghost mt-8">
+                        {ui.form.sendAnother}
+                      </button>
+                    </m.div>
+                  ) : (
+                    <m.form
+                      key="form"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onAnimationComplete={() => {
+                        if (!refocusForm.current) return;
+                        refocusForm.current = false;
+                        nameRef.current?.focus({ preventScroll: true });
+                      }}
+                      onSubmit={onSubmit}
+                      noValidate
+                      aria-busy={sending}
+                      className="relative flex flex-1 flex-col gap-4"
+                    >
+                      <h3 className="font-display text-xl font-semibold">{copy.contactFormTitle}</h3>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="contact-name" className="mb-1.5 block text-xs font-medium text-muted">
+                            {copy.contactFormName}
+                          </label>
+                          <input
+                            ref={nameRef}
+                            id="contact-name"
+                            name="name"
+                            dir={fields.name ? "auto" : undefined}
+                            autoComplete="name"
+                            maxLength={LIMITS.name}
+                            value={fields.name}
+                            onChange={update("name")}
+                            className={fieldClass("name")}
+                            aria-invalid={Boolean(errors.name)}
+                            aria-describedby={describedBy("name")}
+                          />
+                          {errorText("name")}
+                        </div>
+                        <div>
+                          <label htmlFor="contact-email" className="mb-1.5 block text-xs font-medium text-muted">
+                            {copy.contactFormEmail}
+                          </label>
+                          <input
+                            ref={emailRef}
+                            id="contact-email"
+                            name="email"
+                            type="email"
+                            inputMode="email"
+                            autoComplete="email"
+                            dir="ltr"
+                            maxLength={LIMITS.email}
+                            value={fields.email}
+                            onChange={update("email")}
+                            className={`${fieldClass("email")} rtl:text-right`}
+                            aria-invalid={Boolean(errors.email)}
+                            aria-describedby={describedBy("email")}
+                          />
+                          {errorText("email")}
                         </div>
                       </div>
-                    ) : null}
+                      <div>
+                        <label htmlFor="contact-reason" className="mb-1.5 block text-xs font-medium text-muted">
+                          {ui.form.reasonLabel}
+                        </label>
+                        <div className="relative">
+                          <select
+                            id="contact-reason"
+                            name="reason"
+                            value={fields.reason}
+                            onChange={update("reason")}
+                            className="field cursor-pointer appearance-none pe-11"
+                          >
+                            {REASONS.map((r) => (
+                              <option key={r} value={r}>
+                                {ui.form.reasons[r]}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute end-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col">
+                        <label htmlFor="contact-message" className="mb-1.5 block text-xs font-medium text-muted">
+                          {copy.contactFormMessage}
+                        </label>
+                        <textarea
+                          ref={messageRef}
+                          id="contact-message"
+                          name="message"
+                          // Typed text follows its own script (English in the Arabic UI); empty keeps the page direction for the placeholder.
+                          dir={fields.message ? "auto" : undefined}
+                          rows={6}
+                          maxLength={LIMITS.message}
+                          placeholder={ui.form.messagePlaceholder}
+                          value={fields.message}
+                          onChange={update("message")}
+                          className={`${fieldClass("message")} min-h-[9rem] flex-1 resize-none`}
+                          aria-invalid={Boolean(errors.message)}
+                          aria-describedby={describedBy("message")}
+                        />
+                        {errorText("message")}
+                      </div>
 
-                    {/* Magnetic wraps in an inline-flex span: stretch it so the button is full-width on phones. */}
-                    <div className="[&>span]:w-full sm:[&>span]:w-auto">
-                      <Magnetic strength={0.15}>
-                        <button
-                          type="submit"
-                          disabled={sending}
-                          className="btn-primary group w-full !min-h-[52px] text-[15px] disabled:cursor-wait disabled:opacity-70 sm:w-auto sm:!px-8"
-                        >
-                          {sending ? (
-                            <>
-                              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                              {ui.form.sending}
-                            </>
-                          ) : (
-                            <>
-                              {copy.contactFormSend}
-                              <Send className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" aria-hidden="true" />
-                            </>
-                          )}
-                        </button>
-                      </Magnetic>
-                    </div>
-                  </m.form>
-                )}
-              </AnimatePresence>
-            </div>
+                      {/* Honeypot: display:none, so people (and browser autofill) never fill it; naive bots do. */}
+                      <div hidden aria-hidden="true">
+                        <label htmlFor="contact-company">Company</label>
+                        <input id="contact-company" name="company" type="text" tabIndex={-1} autoComplete="off" value={fields.company} onChange={update("company")} />
+                      </div>
+
+                      {status === "error" && sendError ? (
+                        <div key={attempt} role="alert" className="alert-error space-y-3">
+                          <p className="flex gap-2 font-medium">
+                            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                            <span>{sendError === "too_fast" ? ui.form.tooFast : ui.form.error}</span>
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 ps-6">
+                            <span className="me-1 font-semibold text-text">
+                              <EmailAddress />
+                            </span>
+                            <button
+                              type="button"
+                              onClick={onCopyEmail}
+                              className="tap inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
+                            >
+                              {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+                              {ui.copyEmail}
+                            </button>
+                            <a
+                              href={mailtoHref}
+                              className="tap inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-danger/30 px-3 text-xs font-semibold transition hover:bg-danger/10"
+                            >
+                              <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                              {ui.form.openMailApp}
+                            </a>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {/* Magnetic wraps in an inline-flex span: stretch it so the button is full-width on phones. */}
+                      <div className="[&>span]:w-full sm:[&>span]:w-auto">
+                        <Magnetic strength={0.15}>
+                          <button
+                            type="submit"
+                            disabled={sending}
+                            className="btn-primary group w-full !min-h-[52px] text-[15px] disabled:cursor-wait disabled:opacity-70 sm:w-auto sm:!px-8"
+                          >
+                            {sending ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                {ui.form.sending}
+                              </>
+                            ) : (
+                              <>
+                                {copy.contactFormSend}
+                                <Send className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" aria-hidden="true" />
+                              </>
+                            )}
+                          </button>
+                        </Magnetic>
+                      </div>
+                    </m.form>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </Reveal>
 

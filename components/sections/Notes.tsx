@@ -6,6 +6,7 @@ import { useCopy, useLocale, useLocalePath } from "@/lib/hooks";
 import { Bidi } from "@/components/ui/primitives";
 import { Footer } from "@/components/app/Footer";
 import { localePath } from "@/lib/i18n";
+import { withBasePath } from "@/lib/base-path";
 import type { Locale } from "@/lib/types";
 
 /** What the client needs about a note (NoteMeta from lib/notes.ts, minus nothing it can't serialize). */
@@ -83,7 +84,7 @@ export function NotesIndex({ notes }: { notes: NoteSummary[] }) {
           <p className="fade-in mt-5 text-pretty text-base leading-relaxed text-muted md:text-lg" style={delay(160)}>
             <Bidi text={n.description} />
           </p>
-          <a href="/notes/rss.xml" className="text-link fade-in mt-6 min-h-[44px] text-[13px]" style={delay(200)}>
+          <a href={withBasePath("/notes/rss.xml")} className="text-link fade-in mt-6 min-h-[44px] text-[13px]" style={delay(200)}>
             <Rss className="h-3.5 w-3.5" aria-hidden="true" />
             {n.rss}
           </a>

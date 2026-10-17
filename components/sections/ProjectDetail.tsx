@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { localizeProject, type Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
+import { withBasePath } from "@/lib/base-path";
 import { useCopy, useCopyEmail, useCvDownload, useLocale, useLocalePath } from "@/lib/hooks";
 import { CONTACT_EMAIL, TELEGRAM_HANDLE, TELEGRAM_URL } from "@/lib/site";
 import { Bidi, Reveal, GithubIcon, TelegramIcon } from "@/components/ui/primitives";
@@ -130,7 +131,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
               >
                 <div className={`relative aspect-video md:min-w-0 ${p.flow ? "" : "min-w-[880px]"}`}>
                   <Image
-                    src={p.image}
+                    src={withBasePath(p.image)}
                     alt={`${p.title} ${ui.previewAlt}`}
                     fill
                     preload
@@ -154,7 +155,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
                   </span>
                 )}
                 <a
-                  href={p.image}
+                  href={withBasePath(p.image)}
                   target="_blank"
                   rel="noopener"
                   className="inline-flex min-h-[40px] items-center gap-1.5 font-medium text-text underline decoration-line/20 underline-offset-4 transition-colors hover:text-accent-ink hover:decoration-accent/50"
@@ -169,7 +170,7 @@ export function ProjectDetail({ project, prev, next }: { project: Project; prev:
           <figure className="fade-in mt-14" style={delay(300)}>
             <div className="card relative aspect-[16/10] overflow-hidden bg-surface">
               <Image
-                src={p.image}
+                src={withBasePath(p.image)}
                 alt={`${p.title} ${ui.previewAlt}`}
                 fill
                 preload

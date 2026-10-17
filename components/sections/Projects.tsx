@@ -7,6 +7,7 @@ import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "fr
 import { ArrowRight, ArrowUpRight, Building2, ChevronDown, Lock } from "lucide-react";
 import type { Project } from "@/lib/projects";
 import { trackEvent } from "@/lib/analytics";
+import { withBasePath } from "@/lib/base-path";
 import { trackPointer, useCopy, useLocalePath } from "@/lib/hooks";
 import { Bidi, Reveal, SectionHeader, GithubIcon } from "@/components/ui/primitives";
 import { ArchitectureFlow } from "./ArchitectureFlow";
@@ -111,7 +112,7 @@ function ProjectCard({ project, index, featured, collapsible = false }: { projec
           ) : (
             <>
               <Image
-                src={project.image}
+                src={withBasePath(project.image)}
                 alt=""
                 fill
                 unoptimized={project.image.endsWith(".svg")}

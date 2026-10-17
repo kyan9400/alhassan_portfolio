@@ -26,6 +26,7 @@ import { SITE_URL } from "@/lib/site";
 import { getCopy } from "@/lib/ui-copy";
 import type { Locale } from "@/lib/types";
 import { existingRepoScreenshot } from "@/lib/repoScreenshot";
+import { withBasePath } from "@/lib/base-path";
 
 type PageParams = { params: Promise<{ lang: string }> };
 
@@ -56,6 +57,8 @@ export default async function HomePage({ params }: PageParams) {
   const fix = typograph[locale];
   const web3dSites: Web3dSiteView[] = WEB3D_SITES.map((site) => ({
     ...site,
+    screenshot: withBasePath(site.screenshot),
+    mobileScreenshot: withBasePath(site.mobileScreenshot),
     kind: fix(site.kind[locale]),
     description: fix(site.description[locale])
   }));

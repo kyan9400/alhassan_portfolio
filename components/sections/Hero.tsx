@@ -6,12 +6,13 @@ import { ArrowDown, ArrowRight, Download, MapPin } from "lucide-react";
 import { useCopy, useCvDownload } from "@/lib/hooks";
 import { GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
+import { withBasePath } from "@/lib/base-path";
 import { Bidi, Magnetic, GithubIcon, LinkedinIcon, TelegramIcon } from "@/components/ui/primitives";
 import { scrollToId } from "@/components/app/SmoothScroll";
 import { celebrate } from "@/lib/confetti";
 import { subscribe } from "@/lib/scroll";
 
-const PORTRAIT = "/images/alhassan.webp";
+const PORTRAIT = withBasePath("/images/alhassan.webp");
 
 /*
  * Entrance motion for the first-paint content (headline, identity row, intro, portrait).

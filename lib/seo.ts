@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL, getCopy } from "@/lib/ui-copy";
 import { LOCALES, DEFAULT_LOCALE, OG_LOCALES, localePath } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
+import { STATIC_EXPORT } from "@/lib/base-path";
 
 /** JSON-LD node ids shared by the root layout (where they are defined) and every page that points at them. */
 export const PERSON_ID = `${SITE_URL}/#person`;
@@ -18,8 +19,15 @@ export function languageAlternates(path: string): Record<string, string> {
   return languages;
 }
 
-/** `alternates` for a translated page in `locale`: canonical is the page's own language URL. */
+/**
+ * `alternates` for a translated page in `locale`: canonical is the page's own language URL. On the static
+ * Pages copy (lib/base-path.ts) both point to the main site, so search engines treat the copy as a mirror.
+ */
 export function localeAlternates(locale: Locale, path: string) {
+  if (STATIC_EXPORT) {
+    const languages = Object.fromEntries(Object.entries(languageAlternates(path)).map(([lang, href]) => [lang, `${SITE_URL}${href}`]));
+    return { canonical: `${SITE_URL}${localePath(locale, path)}`, languages };
+  }
   return { canonical: localePath(locale, path), languages: languageAlternates(path) };
 }
 

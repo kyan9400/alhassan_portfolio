@@ -1,12 +1,18 @@
 import { ImageResponse } from "next/og";
 import { projects, getProject } from "@/lib/projects";
+import { LOCALES } from "@/lib/i18n";
+import { STATIC_EXPORT } from "@/lib/base-path";
 
 export const alt = "Project case study — Alhassan Alfarran, Full-Stack & Python Developer (Web & AI Systems)";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** One image per project, generated at build time. */
+/**
+ * One image per project, generated at build time. The static Pages export (lib/base-path.ts) needs the
+ * language here too: a metadata image route does not inherit it from the [lang] layout there.
+ */
 export function generateStaticParams() {
+  if (STATIC_EXPORT) return LOCALES.flatMap((lang) => projects.map((item) => ({ lang, slug: item.slug })));
   return projects.map((item) => ({ slug: item.slug }));
 }
 

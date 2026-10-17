@@ -6,6 +6,8 @@ import { FONT_VARIABLES, PRE_PAINT_SCRIPT } from "@/lib/document";
 import { NOTES_ENABLED } from "@/lib/notes-config";
 import { getCopy } from "@/lib/ui-copy";
 import { DEFAULT_LOCALE, LOCALE_HEADER, isLocale, localeDir } from "@/lib/i18n";
+import { STATIC_EXPORT } from "@/lib/base-path";
+import { PAGES_REDIRECT_SCRIPT } from "@/lib/pages-redirect";
 import type { Locale } from "@/lib/types";
 import "./globals.css";
 
@@ -14,9 +16,13 @@ import "./globals.css";
  * the [lang] routes set dynamicParams = false) or any other path. It replaces the root layout, so it
  * builds the same document itself (fonts, theme script, chrome). The language is the URL's prefix,
  * passed by proxy.ts in a request header; without one (/de, /foo) the page is English.
+ *
+ * The static Pages copy (lib/base-path.ts) has no proxy and no request headers: there this is one
+ * English 404.html, which also does the proxy's language redirects in the browser (lib/pages-redirect.ts).
  */
 
 async function requestLocale(): Promise<Locale> {
+  if (STATIC_EXPORT) return DEFAULT_LOCALE;
   const value = (await headers()).get(LOCALE_HEADER);
   return isLocale(value) ? value : DEFAULT_LOCALE;
 }
@@ -31,6 +37,7 @@ export default async function GlobalNotFound() {
   return (
     <html lang={locale} dir={localeDir(locale)} suppressHydrationWarning className={FONT_VARIABLES}>
       <head>
+        {STATIC_EXPORT ? <script dangerouslySetInnerHTML={{ __html: PAGES_REDIRECT_SCRIPT }} /> : null}
         <script dangerouslySetInnerHTML={{ __html: PRE_PAINT_SCRIPT }} />
       </head>
       <body>

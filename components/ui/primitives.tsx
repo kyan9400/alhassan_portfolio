@@ -5,6 +5,7 @@ import Image from "next/image";
 import { m, useMotionValue, useSpring } from "framer-motion";
 import { useLocale } from "@/lib/hooks";
 import type { OrgMark as OrgMarkData } from "@/lib/copy";
+import { withBasePath } from "@/lib/base-path";
 
 /**
  * A run of Latin letters/digits (tech names, versions, paths such as `/inbox/{channel}`) inside
@@ -231,7 +232,7 @@ export function OrgMark({ mark, className = "h-10 w-10 text-[13px]" }: { mark: O
     >
       {mark.logo ? (
         <Image
-          src={mark.logo}
+          src={withBasePath(mark.logo)}
           alt=""
           fill
           sizes="40px"

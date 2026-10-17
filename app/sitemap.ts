@@ -6,6 +6,9 @@ import { SITE_URL } from "@/lib/ui-copy";
 import { languageAlternates } from "@/lib/seo";
 import { LOCALES, localePath } from "@/lib/i18n";
 
+/** Built once at build time (also required by the static GitHub Pages export). */
+export const dynamic = "force-static";
+
 type Entry = MetadataRoute.Sitemap[number];
 
 /**

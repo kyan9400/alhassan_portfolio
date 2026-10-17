@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/types";
+import { withBasePath } from "@/lib/base-path";
 
 /*
  * Site copy in English, Russian and Arabic.
@@ -197,9 +198,9 @@ const CERTIFICATIONS: Certification[] = [
 ];
 
 const CV_FILES = {
-  en: "/cv/Alhassan_Alfarran_CV_EN1.pdf",
-  ru: "/cv/Alhassan_Alfarran_CV_RU1.pdf",
-  ar: "/cv/Alhassan_Alfarran_CV_AR1.pdf"
+  en: withBasePath("/cv/Alhassan_Alfarran_CV_EN1.pdf"),
+  ru: withBasePath("/cv/Alhassan_Alfarran_CV_RU1.pdf"),
+  ar: withBasePath("/cv/Alhassan_Alfarran_CV_AR1.pdf")
 };
 
 export const copyByLocale: Record<Locale, CopyDictionary> = {

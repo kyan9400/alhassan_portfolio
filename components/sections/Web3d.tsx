@@ -5,6 +5,7 @@ import Image, { getImageProps } from "next/image";
 import { ArrowUpRight, Atom, AudioLines, Building2, CarFront, Coffee, Dna, Globe, Rocket, Sparkles, Sprout, Watch, type LucideIcon } from "lucide-react";
 import type { Web3dIcon, Web3dSiteView } from "@/lib/web3d";
 import { useCopy } from "@/lib/hooks";
+import { withBasePath } from "@/lib/base-path";
 import { Bidi, GithubIcon, Reveal, SectionHeader } from "@/components/ui/primitives";
 
 /**
@@ -170,7 +171,7 @@ function HoverVideo({ slug }: { slug: string }) {
   return (
     <video
       ref={ref}
-      src={`/web3d-video/${slug}.mp4`}
+      src={withBasePath(`/web3d-video/${slug}.mp4`)}
       muted
       loop
       playsInline

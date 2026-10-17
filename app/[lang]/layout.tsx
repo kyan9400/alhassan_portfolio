@@ -7,6 +7,8 @@ import { SITE_URL, GITHUB_URL, LINKEDIN_URL, TELEGRAM_URL, getCopy } from "@/lib
 import { PERSON_ID, WEBSITE_ID, jsonLdHtml } from "@/lib/seo";
 import { NOTES_ENABLED } from "@/lib/notes-config";
 import { LOCALES, OG_LOCALES, localeDir, localePath, routeLocale } from "@/lib/i18n";
+import { PAGES_URL, STATIC_EXPORT } from "@/lib/base-path";
+import { PAGES_REDIRECT_SCRIPT } from "@/lib/pages-redirect";
 import "../globals.css";
 
 type LayoutParams = { params: Promise<{ lang: string }> };
@@ -29,7 +31,7 @@ export async function generateMetadata({ params }: LayoutParams): Promise<Metada
   const locale = routeLocale((await params).lang);
   const { homeTitle: title, homeDescription: description, nameSuffix } = getCopy(locale).ui.meta;
   return {
-    metadataBase: new URL(SITE_URL),
+    metadataBase: new URL(STATIC_EXPORT ? PAGES_URL : SITE_URL),
     title: { default: title, template: `%s — ${nameSuffix}` },
     description,
     applicationName: "Alhassan Alfarran",
@@ -130,6 +132,8 @@ export default async function RootLayout({ children, params }: Readonly<{ childr
       className={FONT_VARIABLES}
     >
       <head>
+        {/* Static Pages copy only: proxy.ts's `?lang=xx` redirect, in the browser (lib/pages-redirect.ts). */}
+        {STATIC_EXPORT ? <script dangerouslySetInnerHTML={{ __html: PAGES_REDIRECT_SCRIPT }} /> : null}
         <script dangerouslySetInnerHTML={{ __html: PRE_PAINT_SCRIPT }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
       </head>
@@ -137,8 +141,13 @@ export default async function RootLayout({ children, params }: Readonly<{ childr
         <AppChrome copy={getCopy(locale)} locale={locale} notesEnabled={NOTES_ENABLED}>
           {children}
         </AppChrome>
-        <Analytics />
-        <SpeedInsights />
+        {/* Vercel-only scripts (served from /_vercel/ on the deployment): not on the static Pages copy. */}
+        {STATIC_EXPORT ? null : (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

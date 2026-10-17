@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_HEADER, isLocale, localePath, splitLocale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_HEADER, PAGE_ROOTS, isLocale, localePath, splitLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
 
 /*
@@ -15,9 +15,6 @@ import type { Locale } from "@/lib/types";
  *   (app/global-not-found.tsx). Under a language prefix, the request carries that language in the
  *   x-site-locale header so the 404 can be shown in it.
  */
-
-/** First path segments of the localized pages. Only these are redirected, so /de stays a 404. */
-const PAGE_ROOTS = new Set(["", "cv", "projects", "notes"]);
 
 /** The best supported language in an Accept-Language header ("ru-RU,ru;q=0.9,en;q=0.8" → "ru"). */
 function fromAcceptLanguage(header: string | null): Locale | null {
@@ -59,7 +56,7 @@ export function proxy(request: NextRequest) {
     headers.set(LOCALE_HEADER, pathLocale);
     return NextResponse.next({ request: { headers } });
   }
-  if (!PAGE_ROOTS.has(pathname.split("/")[1] ?? "")) return NextResponse.next();
+  if (!PAGE_ROOTS.includes(pathname.split("/")[1] ?? "")) return NextResponse.next();
 
   const url = request.nextUrl.clone();
   url.pathname = localePath(preferredLocale(request), pathname);

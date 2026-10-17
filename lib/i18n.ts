@@ -17,6 +17,12 @@ export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 /** Request header proxy.ts sets to the URL's language, for the global 404 (it gets no route params). */
 export const LOCALE_HEADER = "x-site-locale";
 
+/**
+ * First path segments of the localized pages. Only these are sent to a language (proxy.ts; on the
+ * static Pages copy, lib/pages-redirect.ts), so /de stays a 404.
+ */
+export const PAGE_ROOTS: readonly string[] = ["", "cv", "projects", "notes"];
+
 /** Open Graph locale per language. */
 export const OG_LOCALES: Record<Locale, string> = { en: "en_US", ru: "ru_RU", ar: "ar_AR" };
 

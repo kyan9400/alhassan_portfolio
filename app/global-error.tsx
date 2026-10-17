@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { localeDir, localePath, splitLocale } from "@/lib/i18n";
+import { withBasePath } from "@/lib/base-path";
 
 /** Kept here (not lib/ui-copy.ts) so this last-resort page loads as little code as possible. */
 const TEXT = {
@@ -84,7 +85,7 @@ export default function GlobalError({ error, retry }: { error: Error & { digest?
             </button>
             {/* A full page load on purpose: the client router may be what failed. */}
             <a
-              href={localePath(locale, "/")}
+              href={withBasePath(localePath(locale, "/"))}
               style={{
                 minHeight: 44,
                 padding: "0 20px",
