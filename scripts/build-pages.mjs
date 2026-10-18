@@ -1,6 +1,6 @@
 // Static GitHub Pages build: sets GH_PAGES=1, runs `next build`, adds .nojekyll and vercel.json to out/.
 import { spawnSync } from "node:child_process";
-import { readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 
@@ -32,6 +32,21 @@ function flattenSegments(dir) {
   }
 }
 flattenSegments("out");
+
+// The generated images (OG, Twitter, apple-touch icon) are exported without an extension, which Pages
+// serves as application/octet-stream, so link previews may show no image. Give each a .png copy and
+// point the <meta>/<link> tags and the manifest at it. The RSC payload (length-prefixed rows) stays as built.
+const IMAGES = new Set(["opengraph-image", "twitter-image", "apple-icon"]);
+const allFiles = readdirSync("out", { recursive: true, withFileTypes: true })
+  .filter((f) => f.isFile())
+  .map((f) => path.join(f.parentPath, f.name));
+for (const f of allFiles) if (IMAGES.has(path.basename(f))) copyFileSync(f, `${f}.png`);
+const toPng = (s) => s.replace(/\/(opengraph-image|twitter-image|apple-icon)(?=[?"'])/g, "/$1.png");
+for (const f of allFiles.filter((f) => /\.(html|webmanifest)$/.test(f))) {
+  const src = readFileSync(f, "utf8");
+  const next = f.endsWith(".html") ? src.replace(/<(?:meta|link)\b[^>]*>/g, toPng) : toPng(src);
+  if (next !== src) writeFileSync(f, next);
+}
 
 // without this, Pages (Jekyll) hides the _next/ folder
 writeFileSync("out/.nojekyll", "");

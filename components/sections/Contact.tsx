@@ -142,6 +142,12 @@ export function Contact({ index }: { index?: string }) {
       return;
     }
 
+    // GitHub Pages copy: no /api/contact, so hand the finished message to the visitor's own email app.
+    if (STATIC_EXPORT) {
+      window.location.href = mailtoHref;
+      return;
+    }
+
     setStatus("sending");
     setSendError(null);
     let error: SendError | null = null;
@@ -196,9 +202,30 @@ export function Contact({ index }: { index?: string }) {
     const subject = `[Portfolio] ${ui.form.reasons[fields.reason]}${name ? ` — ${name}` : ""}`;
     let body = fields.message.trim();
     if (body.length > MAILTO_BODY_MAX) body = `${body.slice(0, MAILTO_BODY_MAX)}…`;
-    if (name) body += `\n\n— ${name}`;
+    const email = fields.email.trim();
+    const signature = [name, email && `<${email}>`].filter(Boolean).join(" ");
+    if (signature) body += `\n\n— ${signature}`;
     return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   })();
+
+  // GitHub Pages copy: copy the message (so it can be pasted) and open the Telegram chat.
+  const onSendTelegram = async () => {
+    const nextErrors = validate(fields);
+    flushSync(() => setErrors(nextErrors));
+    const firstInvalid = FIELD_ORDER.find((k) => nextErrors[k]);
+    if (firstInvalid) {
+      ({ name: nameRef, email: emailRef, message: messageRef })[firstInvalid].current?.focus();
+      return;
+    }
+    const text = `${fields.message.trim()}\n\n— ${fields.name.trim()} <${fields.email.trim()}>`;
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(ui.form.messageCopied);
+    } catch {
+      /* clipboard blocked: the chat still opens */
+    }
+    window.open(TELEGRAM_URL, "_blank", "noopener,noreferrer");
+  };
 
   const describedBy = (key: ValidatedField) => (errors[key] ? `contact-${key}-error` : undefined);
   const fieldClass = (key: ValidatedField) =>
@@ -217,7 +244,7 @@ export function Contact({ index }: { index?: string }) {
     <section id="contact" className="section cv-auto pb-10 [--cv-h:1870px] md:[--cv-h:1690px] lg:[--cv-h:1290px]">
       <div className="shell">
         <Reveal className="card relative overflow-hidden p-5 sm:p-10 md:p-14">
-          <div className={`relative grid gap-12 ${STATIC_EXPORT ? "" : "lg:grid-cols-2 "}lg:gap-16`}>
+          <div className="relative grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="min-w-0">
               <SectionIndex index={index} eyebrow={copy.contactEyebrow} />
               <h2 className="text-balance text-h2 font-semibold rtl:leading-[1.25]">
@@ -329,8 +356,8 @@ export function Contact({ index }: { index?: string }) {
               </p>
             </div>
 
-            {/* The static Pages copy (lib/base-path.ts) has no /api/contact: Telegram, email and the CVs above stay. */}
-            {STATIC_EXPORT ? null : (
+            {/* On the static Pages copy (lib/base-path.ts) the form sends through the visitor's email app or Telegram. */}
+            {(
               <div className="relative flex min-w-0 flex-col">
                 <AnimatePresence mode="wait" initial={false}>
                   {status === "sent" ? (
@@ -495,8 +522,9 @@ export function Contact({ index }: { index?: string }) {
                         </div>
                       ) : null}
 
+                      {STATIC_EXPORT ? <p className="text-sm text-muted">{ui.form.staticNote}</p> : null}
                       {/* Magnetic wraps in an inline-flex span: stretch it so the button is full-width on phones. */}
-                      <div className="[&>span]:w-full sm:[&>span]:w-auto">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap [&>span]:w-full sm:[&>span]:w-auto">
                         <Magnetic strength={0.15}>
                           <button
                             type="submit"
@@ -508,6 +536,11 @@ export function Contact({ index }: { index?: string }) {
                                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                                 {ui.form.sending}
                               </>
+                            ) : STATIC_EXPORT ? (
+                              <>
+                                <Mail className="h-4 w-4" aria-hidden="true" />
+                                {ui.form.openMailApp}
+                              </>
                             ) : (
                               <>
                                 {copy.contactFormSend}
@@ -516,6 +549,12 @@ export function Contact({ index }: { index?: string }) {
                             )}
                           </button>
                         </Magnetic>
+                        {STATIC_EXPORT ? (
+                          <button type="button" onClick={onSendTelegram} className="btn-ghost w-full !min-h-[52px] gap-2 text-[15px] sm:w-auto sm:!px-6">
+                            <TelegramIcon className="h-4 w-4" />
+                            {ui.form.sendViaTelegram}
+                          </button>
+                        ) : null}
                       </div>
                     </m.form>
                   )}

@@ -44,6 +44,10 @@ type UiCopy = {
     reasons: { hiring: string; freelance: string; other: string };
     messagePlaceholder: string;
     openMailApp: string;
+    /** GitHub Pages copy only (no server): how the form sends, shown above the buttons. */
+    staticNote: string;
+    sendViaTelegram: string;
+    messageCopied: string;
     tooFast: string;
   };
   footerLocalTime: string;
@@ -240,6 +244,9 @@ export const uiCopy: Record<Locale, UiCopy> = {
       reasons: { hiring: "Hiring for a role", freelance: "Freelance project", other: "Something else" },
       messagePlaceholder: "Tell me about the role or project…",
       openMailApp: "Open email app",
+      staticNote: "Your message opens in your own email app, ready to send. Prefer Telegram? The button copies your message and opens the chat.",
+      sendViaTelegram: "Send via Telegram",
+      messageCopied: "Message copied — paste it in the chat",
       tooFast: "Too many messages in a short time. Please email me directly instead:"
     },
     footerLocalTime: "My local time",
@@ -447,6 +454,9 @@ export const uiCopy: Record<Locale, UiCopy> = {
       reasons: { hiring: "Вакансия", freelance: "Проект на фрилансе", other: "Другое" },
       messagePlaceholder: "Расскажите о вакансии или проекте…",
       openMailApp: "Открыть почтовое приложение",
+      staticNote: "Сообщение откроется в вашем почтовом приложении, готовое к отправке. Удобнее Telegram? Кнопка скопирует текст и откроет чат.",
+      sendViaTelegram: "Отправить в Telegram",
+      messageCopied: "Текст скопирован — вставьте его в чат",
       tooFast: "Слишком много сообщений за короткое время. Напишите мне напрямую на почту:"
     },
     footerLocalTime: "Моё местное время",
@@ -653,6 +663,9 @@ export const uiCopy: Record<Locale, UiCopy> = {
       reasons: { hiring: "عرض وظيفة", freelance: "مشروع عمل حر", other: "موضوع آخر" },
       messagePlaceholder: "أخبرني عن الوظيفة أو المشروع…",
       openMailApp: "فتح تطبيق البريد",
+      staticNote: "ستُفتح رسالتك في تطبيق البريد لديك جاهزةً للإرسال. تفضّل تيليغرام؟ يَنسخ الزر نصّ رسالتك ويفتح المحادثة.",
+      sendViaTelegram: "إرسال عبر تيليغرام",
+      messageCopied: "نُسخت الرسالة — الصقها في المحادثة",
       tooFast: "رسائل كثيرة خلال وقت قصير. راسلني مباشرة عبر البريد بدلاً من ذلك:"
     },
     footerLocalTime: "توقيتي المحلي",
