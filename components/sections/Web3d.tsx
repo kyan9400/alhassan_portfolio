@@ -5,7 +5,7 @@ import Image, { getImageProps } from "next/image";
 import { ArrowUpRight, Atom, AudioLines, Building2, CarFront, Coffee, Dna, Globe, Rocket, Sparkles, Sprout, Watch, type LucideIcon } from "lucide-react";
 import type { Web3dIcon, Web3dSiteView } from "@/lib/web3d";
 import { useCopy } from "@/lib/hooks";
-import { withBasePath } from "@/lib/base-path";
+import { STATIC_EXPORT, withBasePath } from "@/lib/base-path";
 import { Bidi, GithubIcon, Reveal, SectionHeader } from "@/components/ui/primitives";
 
 /**
@@ -189,7 +189,8 @@ function SiteCard({ site, screenshot, mobileScreenshot }: { site: Web3dSiteView;
   const { ui } = copy;
   const [imageFailed, setImageFailed] = useState(false);
   const live = site.liveStatus === "live";
-  const primaryHref = live ? site.live : site.repo;
+  // On the GitHub Pages copy every live site opens its own Pages copy (vercel.app is blocked in some regions).
+  const primaryHref = live ? (STATIC_EXPORT ? `https://kyan9400.github.io/${site.slug}/` : site.live) : site.repo;
 
   return (
     <>
