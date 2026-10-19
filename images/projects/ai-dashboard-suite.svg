@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-labelledby="dash-t dash-d" font-family="Inter, Segoe UI, system-ui, sans-serif">
+  <title id="dash-t">Client KPI Dashboards — architecture</title>
+  <desc id="dash-d">Several data sources are brought together by a Node.js API and served to React KPI dashboards with filters and trend charts.</desc>
+  <defs>
+    <pattern id="dash-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
+    <pattern id="dash-grid-major" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M200 0H0V200" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="dash-fade" cx="50%" cy="48%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.7" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.1"/>
+    </radialGradient>
+    <mask id="dash-fade-mask"><rect width="1600" height="900" fill="url(#dash-fade)"/></mask>
+    <radialGradient id="dash-glow-v" cx="260" cy="110" r="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="dash-glow-c" cx="1440" cy="880" r="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06b6d4" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="dash-flow" x1="96" y1="0" x2="1504" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="dash-node" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1b2b"/>
+      <stop offset="1" stop-color="#131320"/>
+    </linearGradient>
+    <linearGradient id="dash-title" x1="96" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e4e4f0"/>
+    </linearGradient>
+    <filter id="dash-blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+  </defs>
+  <style>
+    .dash-flow { opacity: 0; }
+    @keyframes dash-dash { to { stroke-dashoffset: -32; } }
+    @keyframes dash-dash-async { to { stroke-dashoffset: -36; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .dash-flow { opacity: 1; animation: dash-dash 1.8s linear infinite; }
+      .dash-async { animation: dash-dash-async 2.4s linear infinite; }
+    }
+  </style>
+  <rect width="1600" height="900" fill="#0f0f17"/>
+  <g mask="url(#dash-fade-mask)">
+    <rect width="1600" height="900" fill="url(#dash-grid)"/>
+    <rect width="1600" height="900" fill="url(#dash-grid-major)"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#dash-glow-v)"/>
+  <rect width="1600" height="900" fill="url(#dash-glow-c)"/>
+  <g>
+    <rect x="96" y="96" width="44" height="4" rx="2" fill="url(#dash-flow)"/>
+    <text x="96" y="152" font-size="40" font-weight="700" fill="url(#dash-title)" letter-spacing="-0.5">Client KPI Dashboards — architecture</text>
+    <text x="96" y="192" font-size="22" fill="#a1a1aa">Simplified system view · request flow left → right</text>
+  </g>
+  <g font-size="22" fill="#a1a1aa">
+    <line x1="1196" y1="139" x2="1238" y2="139" stroke="#39b9f0" stroke-width="2.5"/>
+    <path d="M1248 139l-12 -6.5v13z" fill="#35bdef"/>
+    <text x="1264" y="147">request / data flow</text>
+  </g><g><path d="M376 376L449 376" fill="none" stroke="url(#dash-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M376 376L449 376" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="dash-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#707bf4" transform="translate(460 376) rotate(0.00)"/><circle cx="376" cy="376" r="5" fill="#0f0f17" stroke="#7674f4" stroke-width="2.5"/><text x="418" y="362" font-size="22" fill="#c4c4cf" text-anchor="middle">ingest</text></g><g><path d="M880 376L953 376" fill="none" stroke="url(#dash-flow)" stroke-width="2.5" stroke-linecap="round"/><path d="M0 0l-14 -7.5v15z" fill="#4aa5f1" transform="translate(964 376) rotate(0.00)"/><circle cx="880" cy="376" r="5" fill="#0f0f17" stroke="#519ef2" stroke-width="2.5"/><text x="922" y="362" font-size="22" fill="#c4c4cf" text-anchor="middle">data</text></g><g><path d="M1060 496L1060.0 532.0Q1060 548 1044.0 548.0L476.0 548.0Q460 548 460.0 564.0L460 611" fill="none" stroke="url(#dash-flow)" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/><path d="M1060 496L1060.0 532.0Q1060 548 1044.0 548.0L476.0 548.0Q460 548 460.0 564.0L460 611" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.7" class="dash-flow" stroke-dasharray="3 29"/><path d="M0 0l-14 -7.5v15z" fill="#707bf4" transform="translate(460 622) rotate(90.00)"/><circle cx="1060" cy="496" r="5" fill="#0f0f17" stroke="#43adf1" stroke-width="2.5"/><rect x="694.72" y="526" width="130.56" height="38" rx="19" fill="#141421" stroke="#ffffff" stroke-opacity="0.12"/>
+    <text x="760" y="553" font-size="22" fill="#d4d4dc" text-anchor="middle">KPI data</text></g><g>
+    <rect x="96" y="256" width="280" height="240" rx="24" fill="#ffffff" fill-opacity="0.015" stroke="#7674f4" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="6 7"/>
+    <rect x="118" y="240" width="215.68" height="32" rx="10" fill="#0f0f17"/>
+    <text x="132" y="264" font-size="22" font-weight="600" letter-spacing="2" fill="#7674f4">DATA SOURCES</text>
+  </g><rect x="116" y="294" width="240" height="56" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><g transform="translate(130 309) scale(0.7222222222222222)" fill="none" stroke="#8365f5" stroke-width="2.77" stroke-linecap="round" stroke-linejoin="round" color="#8365f5" opacity="0.95"><ellipse cx="18" cy="8" rx="14" ry="5"/><path d="M4 8v20c0 2.8 6.3 5 14 5s14-2.2 14-5V8"/><path d="M4 18c0 2.8 6.3 5 14 5s14-2.2 14-5"/></g><text x="168" y="330" font-size="22" fill="#e4e4e7">SQL databases</text><rect x="116" y="362" width="240" height="56" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><g transform="translate(130 377) scale(0.7222222222222222)" fill="none" stroke="#8365f5" stroke-width="2.77" stroke-linecap="round" stroke-linejoin="round" color="#8365f5" opacity="0.95"><rect x="2" y="4" width="32" height="28" rx="4"/><path d="M2 13h32M2 22h32M13 13v19"/></g><text x="168" y="398" font-size="22" fill="#e4e4e7">CSV / Excel</text><rect x="116" y="430" width="240" height="56" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><g transform="translate(130 445) scale(0.7222222222222222)" fill="none" stroke="#8365f5" stroke-width="2.77" stroke-linecap="round" stroke-linejoin="round" color="#8365f5" opacity="0.95"><path d="M12 2v8M24 2v8M7 10h22v6a11 11 0 0 1-22 0z"/><path d="M18 27v7"/></g><text x="168" y="466" font-size="22" fill="#e4e4e7">External APIs</text><g><rect x="480" y="276" width="380" height="200" rx="24" fill="#a78bfa" opacity="0.14" filter="url(#dash-blur)"/><rect x="460" y="256" width="420" height="240" rx="20" fill="url(#dash-node)" stroke="#a78bfa" stroke-opacity="0.6" stroke-width="2"/><rect x="462" y="258" width="416" height="236" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="486" y="300" font-size="22" font-weight="600" letter-spacing="2" fill="#a78bfa">BACKEND · NODE.JS</text><text x="486" y="340" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">Aggregation API</text><text x="486" y="376" font-size="22" fill="#a1a1aa">brings the sources together</text><g transform="translate(818 276) scale(1)" fill="none" stroke="#a78bfa" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#a78bfa" opacity="0.95"><rect x="2" y="3" width="32" height="12" rx="3"/><rect x="2" y="21" width="32" height="12" rx="3"/><circle cx="8" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="8" cy="27" r="1.4" fill="currentColor" stroke="none"/><path d="M15 9h13M15 27h13"/></g><rect x="486" y="418" width="178" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="506" cy="442" r="4" fill="#a78bfa"/><text x="522" y="450" font-size="22" fill="#e4e4e7">Connectors</text><rect x="676" y="418" width="178" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="696" cy="442" r="4" fill="#a78bfa"/><text x="712" y="450" font-size="22" fill="#e4e4e7">REST API</text></g><g><rect x="964" y="256" width="540" height="240" rx="20" fill="url(#dash-node)" stroke="#36bcf0" stroke-opacity="0.6" stroke-width="2"/><rect x="966" y="258" width="536" height="236" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="990" y="300" font-size="22" font-weight="600" letter-spacing="2" fill="#36bcf0">PROCESSING</text><text x="990" y="340" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">KPI calculations</text><text x="990" y="376" font-size="22" fill="#a1a1aa">the numbers behind each view</text><g transform="translate(1442 276) scale(1)" fill="none" stroke="#36bcf0" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#36bcf0" opacity="0.95"><path d="M28 6H8l11 12L8 30h20"/></g><rect x="990" y="418" width="238" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="1010" cy="442" r="4" fill="#36bcf0"/><text x="1026" y="450" font-size="22" fill="#e4e4e7">Joins</text><rect x="1240" y="418" width="238" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="1260" cy="442" r="4" fill="#36bcf0"/><text x="1276" y="450" font-size="22" fill="#e4e4e7">Trends by period</text></g><g>
+    <rect x="96" y="598" width="1408" height="210" rx="24" fill="#ffffff" fill-opacity="0.015" stroke="#4fa0f1" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="6 7"/>
+    <rect x="118" y="582" width="246.96" height="32" rx="10" fill="#0f0f17"/>
+    <text x="132" y="606" font-size="22" font-weight="600" letter-spacing="2" fill="#4fa0f1">REACT FRONTEND</text>
+  </g><g><rect x="120" y="622" width="1360" height="164" rx="20" fill="url(#dash-node)" stroke="#707bf4" stroke-opacity="0.6" stroke-width="2"/><rect x="122" y="624" width="1356" height="160" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.05"/><text x="146" y="666" font-size="22" font-weight="600" letter-spacing="2" fill="#707bf4">DASHBOARDS</text><text x="146" y="706" font-size="28" font-weight="650" fill="#fafafa" letter-spacing="-0.3">KPI dashboards</text><g transform="translate(1418 642) scale(1)" fill="none" stroke="#707bf4" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round" color="#707bf4" opacity="0.95"><path d="M3 33h30"/><rect x="6" y="18" width="6" height="12" rx="1.5"/><rect x="15" y="10" width="6" height="20" rx="1.5"/><rect x="24" y="4" width="6" height="26" rx="1.5"/></g><rect x="146" y="722" width="196" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="166" cy="746" r="4" fill="#707bf4"/><text x="182" y="754" font-size="22" fill="#e4e4e7">KPI modules</text><rect x="354" y="722" width="196" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="374" cy="746" r="4" fill="#707bf4"/><text x="390" y="754" font-size="22" fill="#e4e4e7">Filters</text><rect x="562" y="722" width="212" height="48" rx="12" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.11"/><circle cx="582" cy="746" r="4" fill="#707bf4"/><text x="598" y="754" font-size="22" fill="#e4e4e7">Trend charts</text></g>
+</svg>

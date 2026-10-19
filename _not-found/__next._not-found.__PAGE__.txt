@@ -1,0 +1,20 @@
+1:"$Sreact.fragment"
+2:I[97367,["/alhassan_portfolio/_next/static/chunks/2ir1vibe7pekp.js","/alhassan_portfolio/_next/static/chunks/3gchmmhglxw11.js","/alhassan_portfolio/_next/static/chunks/17grvwv3-dje6.js","/alhassan_portfolio/_next/static/chunks/28f-ec098t9s_.js","/alhassan_portfolio/_next/static/chunks/1_cclm_rautjs.js","/alhassan_portfolio/_next/static/chunks/3ax_rsb16j94l.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+7:I[97367,["/alhassan_portfolio/_next/static/chunks/2ir1vibe7pekp.js","/alhassan_portfolio/_next/static/chunks/3gchmmhglxw11.js","/alhassan_portfolio/_next/static/chunks/17grvwv3-dje6.js","/alhassan_portfolio/_next/static/chunks/28f-ec098t9s_.js","/alhassan_portfolio/_next/static/chunks/1_cclm_rautjs.js","/alhassan_portfolio/_next/static/chunks/3ax_rsb16j94l.js"],"ViewportBoundary"]
+8:I[97367,["/alhassan_portfolio/_next/static/chunks/2ir1vibe7pekp.js","/alhassan_portfolio/_next/static/chunks/3gchmmhglxw11.js","/alhassan_portfolio/_next/static/chunks/17grvwv3-dje6.js","/alhassan_portfolio/_next/static/chunks/28f-ec098t9s_.js","/alhassan_portfolio/_next/static/chunks/1_cclm_rautjs.js","/alhassan_portfolio/_next/static/chunks/3ax_rsb16j94l.js"],"MetadataBoundary"]
+9:I[27201,["/alhassan_portfolio/_next/static/chunks/2ir1vibe7pekp.js","/alhassan_portfolio/_next/static/chunks/3gchmmhglxw11.js","/alhassan_portfolio/_next/static/chunks/17grvwv3-dje6.js","/alhassan_portfolio/_next/static/chunks/28f-ec098t9s_.js","/alhassan_portfolio/_next/static/chunks/1_cclm_rautjs.js","/alhassan_portfolio/_next/static/chunks/3ax_rsb16j94l.js"],"IconMark"]
+b:I[39756,["/alhassan_portfolio/_next/static/chunks/2ir1vibe7pekp.js","/alhassan_portfolio/_next/static/chunks/3gchmmhglxw11.js","/alhassan_portfolio/_next/static/chunks/17grvwv3-dje6.js","/alhassan_portfolio/_next/static/chunks/28f-ec098t9s_.js","/alhassan_portfolio/_next/static/chunks/1_cclm_rautjs.js","/alhassan_portfolio/_next/static/chunks/3ax_rsb16j94l.js"],"default"]
+c:I[37457,["/alhassan_portfolio/_next/static/chunks/2ir1vibe7pekp.js","/alhassan_portfolio/_next/static/chunks/3gchmmhglxw11.js","/alhassan_portfolio/_next/static/chunks/17grvwv3-dje6.js","/alhassan_portfolio/_next/static/chunks/28f-ec098t9s_.js","/alhassan_portfolio/_next/static/chunks/1_cclm_rautjs.js","/alhassan_portfolio/_next/static/chunks/3ax_rsb16j94l.js"],"default"]
+6:X
+e:X
+e:C
+0:{"buildId":"zsK8ysPDmZ46_GRcal2lc","data":[{"rsc":["$","$1","c",{"children":[null,null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":"$@5","staleTime":"$6","varyParams":null},{"rsc":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L7",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L8",null,{"children":["$","$3",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Page not found — Alhassan Alfarran"}],["$","link","1",{"rel":"manifest","href":"/alhassan_portfolio/manifest.webmanifest"}],["$","link","2",{"rel":"icon","href":"/alhassan_portfolio/favicon.ico?favicon.3r5e5oiiqpjb3.ico","sizes":"32x32","type":"image/x-icon"}],["$","link","3",{"rel":"icon","href":"/alhassan_portfolio/icon.svg?icon.07jj70wzzkbg4.svg","sizes":"any","type":"image/svg+xml"}],["$","link","4",{"rel":"apple-touch-icon","href":"/alhassan_portfolio/apple-icon.png?apple-icon.3inxdvxsjo_ws.png","sizes":"180x180","type":"image/png"}],["$","$L9","5",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":"$@a","staleTime":"$6","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Lb",null,{"parallelRouterKey":"children","template":["$","$Lc",null,{}]}]]}],"isPartial":"$@d","staleTime":"$6","varyParams":"$e"}],"isUpgradeableISRFallback":false,"a":"$@f","rootVaryParams":null,"needsRuntimeRequest":"$@10"}
+4:null
+10:true
+6:300
+6:C
+f:0
+a:"$undefined"
+d:"$undefined"
+5:"$undefined"
