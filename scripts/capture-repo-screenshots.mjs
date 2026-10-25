@@ -214,6 +214,19 @@ const SEEDS = {
     // The headline's -0.075em tracking in Fraunces nearly closes the word gaps ("Grantaccess
     // withevidence.") at capture size. Same fix as proposed for the gatehouse repo itself.
     css: "h1{letter-spacing:-.035em!important;word-spacing:.04em}"
+  },
+  "lumen-search": {
+    // A dense search UI: a smaller 16:10 viewport keeps its text readable at card size.
+    viewport: { width: 1152, height: 720 },
+    // The demo loads its 66 MB embedding model in the page; once it is ready, run one of its own
+    // example questions so the card shows hybrid results with citations and the extractive answer.
+    async after(page) {
+      await page.waitForSelector('#model-status[data-state="ready"]', { timeout: 120000 });
+      await page.fill("#q", "Is it OK to block passwords that appeared in data breaches?");
+      await page.press("#q", "Enter");
+      await page.waitForSelector("#results .hit");
+      await page.waitForTimeout(800);
+    }
   }
 };
 
@@ -228,6 +241,7 @@ const FEATURED = {
   // 1440x900 crop of docs/pulseboard-dashboard.png from the kyan9400/pulseboard repo instead.
   // Pass names explicitly (e.g. `-- deployledger gatehouse`) to avoid overwriting it.
   items: [
+    { name: "lumen-search", url: "https://kyan9400.github.io/lumen-search/" },
     { name: "pulseboard", url: "https://pulseboard-five-tau.vercel.app/" },
     { name: "deployledger", url: "https://deployledger.vercel.app" },
     { name: "gatehouse", url: "https://gatehouse-nine.vercel.app" },
@@ -315,8 +329,9 @@ async function load(page, url) {
 }
 
 async function capture(browser, group, item) {
+  const seed = SEEDS[item.name];
   const context = await browser.newContext({
-    viewport: group.viewport,
+    viewport: seed?.viewport ?? group.viewport,
     deviceScaleFactor: group.deviceScaleFactor,
     colorScheme: "dark",
     reducedMotion: "reduce",
@@ -324,7 +339,6 @@ async function capture(browser, group, item) {
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
   });
   const page = await context.newPage();
-  const seed = SEEDS[item.name];
   try {
     if (seed?.routes) await seed.routes(page);
     await load(page, item.url);

@@ -48,8 +48,8 @@ type CuratedRepo = {
 
 /*
  * Hand-curated, ORDERED showcase. Baked from `gh repo view kyan9400/<name>` so the section renders
- * complete even when the GitHub API is rate-limited or down. The four repos featured as projects
- * (pulseboard, deployledger, gatehouse, webhook-workbench) are intentionally not listed here.
+ * complete even when the GitHub API is rate-limited or down. The five repos featured as projects
+ * (lumen-search, pulseboard, deployledger, gatehouse, webhook-workbench) are intentionally not listed here.
  *
  * Order: the strongest live apps first, led by backend, AI and frontend work (the site's focus is web
  * and AI systems); platform tooling after them. getGithubRepos() then moves every repo that has a

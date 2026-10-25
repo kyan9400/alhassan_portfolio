@@ -254,7 +254,7 @@ export function Projects({ projects: localized, index }: { projects: Project[]; 
   const openSource = localized.filter((p) => p.kind === "open-source");
 
   return (
-    <section id="projects" className="section cv-auto [--cv-h:3300px] sm:[--cv-h:7040px] md:[--cv-h:4400px] lg:[--cv-h:3960px]">
+    <section id="projects" className="section cv-auto [--cv-h:3100px] sm:[--cv-h:6300px] md:[--cv-h:4800px] lg:[--cv-h:4420px]">
       <div className="shell">
         <SectionHeader index={index} eyebrow={copy.projectsEyebrow} title={copy.projectsTitle} description={copy.projectsSubtitle} />
 

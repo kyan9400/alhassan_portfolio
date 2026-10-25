@@ -134,7 +134,7 @@ export const projects: Project[] = [
       "LLM-assisted answers grounded in the retrieved passages"
     ],
     longDescription:
-      "Engineering and technical documentation is a mix of PDFs, Word files, Excel sheets and scans. My current work at Elektroservis in Moscow is a search and RAG system that makes all of it searchable in one place.\n\nThe ingestion pipeline parses each format and runs scanned documents through OCR before indexing. Retrieval is hybrid: keyword matching catches exact terms, while semantic search — sentence-transformers embeddings in a FAISS index — finds passages that say the same thing in different words. Combining the two is meant to give more relevant answers than either approach alone.\n\nFastAPI pipelines connect parsing, indexing, retrieval and LLM-assisted answers. The system is in active development and the code is private, so the diagram shows the architecture.",
+      "Engineering and technical documentation is a mix of PDFs, Word files, Excel sheets and scans. My current work at Elektroservis in Moscow is a search and RAG system that makes all of it searchable in one place.\n\nThe ingestion pipeline parses each format and runs scanned documents through OCR before indexing. Retrieval is hybrid: keyword matching catches exact terms, while semantic search — sentence-transformers embeddings in a FAISS index — finds passages that say the same thing in different words. Combining the two is meant to give more relevant answers than either approach alone.\n\nFastAPI pipelines connect parsing, indexing, retrieval and LLM-assisted answers. The system is in active development and the code is private, so the diagram shows the architecture; my open-source Lumen Search shows the same techniques on public documents.",
     tech: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"],
     image: "/images/projects/document-rag.svg",
     imageKind: "diagram",
@@ -179,6 +179,35 @@ export const projects: Project[] = [
       { label: "API", nodes: [{ name: "Node.js", note: "one REST interface" }] },
       { label: "UI", nodes: [{ name: "React", note: "KPI dashboards · filters" }] }
     ]
+  },
+  {
+    slug: "lumen-search",
+    year: 2026,
+    title: "Lumen Search",
+    kind: "open-source",
+    rolePurpose: "Open source · Hybrid document search (RAG)",
+    description:
+      "Hybrid document search with citations over PDF, Word, Excel and scanned pages, in English and Russian — BM25 plus multilingual embeddings in FAISS, OCR and a FastAPI service.",
+    whatItDoes: [
+      "Parses PDF, Word, Excel, Markdown and HTML; scanned pages go through Tesseract OCR in English and Russian",
+      "Chunks by section and spreadsheet row, so every result cites a page, a law article or a row",
+      "Hybrid retrieval: BM25 and multilingual-e5 embeddings in FAISS, fused by rank, with optional cross-encoder reranking",
+      "FastAPI service with a Redis cache, answers with numbered sources, and a demo that runs in the browser"
+    ],
+    longDescription:
+      "Lumen Search is the open-source counterpart of the system I build at work: one search over PDFs, Word files, Excel sheets and scans, where every answer shows exactly where it came from. It indexes eight public documents — NIST and OWASP security guidance in English, the Russian personal data law in Russian, and two scans that only OCR can read.\n\nParsing follows each document's structure — PDF bookmarks and numbered headings, Word heading styles, one spreadsheet row per record — so results cite a page and section, an article of a law, or a sheet and row. Retrieval runs BM25 over Snowball-stemmed English and Russian words next to multilingual-e5 embeddings in FAISS, fuses the two rankings, and can rerank the top results with a multilingual cross-encoder.\n\nQuality is measured on 62 hand-labelled questions: hybrid search puts a correct passage in the top five for 75.8% of them, and reranking raises that to 83.9%; the README also says where it is weak. The service starts with one docker compose command, and the live demo runs the same search in the browser with a 66 MB int8 model, while CI checks the JavaScript port against the Python code.",
+    tech: ["Python", "FastAPI", "FAISS", "sentence-transformers", "Tesseract OCR", "Redis", "Docker"],
+    github: "https://github.com/kyan9400/lumen-search",
+    live: "https://kyan9400.github.io/lumen-search/",
+    image: "/images/projects/lumen-search.webp",
+    imageKind: "screenshot",
+    problem:
+      "Documents arrive as a mix of PDFs, Word files, spreadsheets and scans; plain keyword search misses paraphrases and can't say where an answer came from.",
+    solution:
+      "Structure-aware parsing with OCR, BM25 and embedding retrieval fused by rank, optional reranking, and citations down to the page, article or spreadsheet row.",
+    result:
+      "83.9% of 62 labelled questions get a correct passage in the top five after reranking. Live demo in the browser; tests on three Python versions and a Docker smoke test in CI.",
+    resultLabel: "builtIn"
   },
   {
     slug: "pulseboard",
@@ -393,7 +422,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "Ответы с помощью LLM на основе найденных фрагментов"
       ],
       longDescription:
-        "Документация ПТО — это смесь PDF, файлов Word, таблиц Excel и сканов. Моя текущая работа в «Электросервисе» в Москве — система поиска и RAG, которая позволяет искать по всему этому в одном месте.\n\nПайплайн загрузки разбирает каждый формат и прогоняет сканы через OCR перед индексацией. Поиск гибридный: совпадение по ключевым словам находит точные термины, а семантический поиск — эмбеддинги sentence-transformers в индексе FAISS — находит фрагменты, где то же самое сказано другими словами. Сочетание двух подходов нужно, чтобы ответы были релевантнее, чем у каждого из них по отдельности.\n\nПайплайны на FastAPI связывают парсинг, индексацию, поиск и ответы с помощью LLM. Система в активной разработке, а код закрыт, поэтому здесь показана схема архитектуры.",
+        "Документация ПТО — это смесь PDF, файлов Word, таблиц Excel и сканов. Моя текущая работа в «Электросервисе» в Москве — система поиска и RAG, которая позволяет искать по всему этому в одном месте.\n\nПайплайн загрузки разбирает каждый формат и прогоняет сканы через OCR перед индексацией. Поиск гибридный: совпадение по ключевым словам находит точные термины, а семантический поиск — эмбеддинги sentence-transformers в индексе FAISS — находит фрагменты, где то же самое сказано другими словами. Сочетание двух подходов нужно, чтобы ответы были релевантнее, чем у каждого из них по отдельности.\n\nПайплайны на FastAPI связывают парсинг, индексацию, поиск и ответы с помощью LLM. Система в активной разработке, а код закрыт, поэтому здесь показана схема архитектуры; те же приёмы на открытых документах показывает мой open-source проект Lumen Search.",
       problem:
         "Инженерные документы разбросаны по PDF, Word, Excel и сканам, а обычный поиск по ключевым словам плохо справляется с таким набором.",
       solution:
@@ -418,7 +447,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "إجابات بمساعدة LLM مبنية على المقاطع المسترجَعة"
       ],
       longDescription:
-        "الوثائق الهندسية والفنية خليط من ملفات PDF وWord وجداول Excel ومستندات ممسوحة ضوئياً. وعملي الحالي في Elektroservis بموسكو نظام بحث وRAG يجعل هذا كله قابلاً للبحث في مكان واحد.\n\nيحلّل خط معالجة الاستقبال كل صيغة ويمرّر المستندات الممسوحة عبر OCR قبل الفهرسة. والبحث هجين: مطابقة الكلمات المفتاحية تلتقط المصطلحات الدقيقة، بينما يعثر البحث الدلالي — بتضمينات sentence-transformers وفهرس FAISS — على المقاطع التي تحمل المعنى نفسه بصياغة مختلفة. والغاية من الجمع بينهما إجابات أوثق صلة بالسؤال مما يقدّمه كلٌّ منهما منفرداً.\n\nتربط خطوط المعالجة على FastAPI بين التحليل والفهرسة والاسترجاع والإجابات المدعومة بنماذج LLM. النظام قيد التطوير النشط والكود خاص، لذا يعرض المخطط البنية.",
+        "الوثائق الهندسية والفنية خليط من ملفات PDF وWord وجداول Excel ومستندات ممسوحة ضوئياً. وعملي الحالي في Elektroservis بموسكو نظام بحث وRAG يجعل هذا كله قابلاً للبحث في مكان واحد.\n\nيحلّل خط معالجة الاستقبال كل صيغة ويمرّر المستندات الممسوحة عبر OCR قبل الفهرسة. والبحث هجين: مطابقة الكلمات المفتاحية تلتقط المصطلحات الدقيقة، بينما يعثر البحث الدلالي — بتضمينات sentence-transformers وفهرس FAISS — على المقاطع التي تحمل المعنى نفسه بصياغة مختلفة. والغاية من الجمع بينهما إجابات أوثق صلة بالسؤال مما يقدّمه كلٌّ منهما منفرداً.\n\nتربط خطوط المعالجة على FastAPI بين التحليل والفهرسة والاسترجاع والإجابات المدعومة بنماذج LLM. النظام قيد التطوير النشط والكود خاص، لذا يعرض المخطط البنية، ويعرض مشروعي مفتوح المصدر Lumen Search الأساليب نفسها على مستندات عامة.",
       problem:
         "الوثائق الهندسية موزّعة بين ملفات PDF وWord وExcel ومستندات ممسوحة، والبحث التقليدي بالكلمات المفتاحية لا يتعامل جيداً مع هذا المزيج.",
       solution:
@@ -475,6 +504,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "API", nodes: [{ name: "Node.js", note: "واجهة REST واحدة" }] },
         { label: "الواجهة", nodes: [{ name: "React", note: "لوحات المؤشرات · التصفية" }] }
       ]
+    }
+  },
+  "lumen-search": {
+    ru: {
+      title: "Lumen Search",
+      rolePurpose: "Open source · гибридный поиск по документам (RAG)",
+      description:
+        "Гибридный поиск со ссылками на источник по PDF, Word, Excel и сканам на английском и русском: BM25 и многоязычные эмбеддинги в FAISS, OCR и сервис на FastAPI.",
+      whatItDoes: [
+        "Разбирает PDF, Word, Excel, Markdown и HTML; сканы проходят через OCR Tesseract на английском и русском",
+        "Делит текст по разделам и строкам таблиц, поэтому каждый результат указывает страницу, статью закона или строку",
+        "Гибридный поиск: BM25 и эмбеддинги multilingual-e5 в FAISS, объединённые по рангам, с переранжированием кросс-энкодером",
+        "Сервис на FastAPI с кешем Redis, ответы с пронумерованными источниками и демо, которое работает прямо в браузере"
+      ],
+      longDescription:
+        "Lumen Search — открытый аналог системы, которую я делаю на работе: единый поиск по PDF, файлам Word, таблицам Excel и сканам, где у каждого ответа видно, откуда он взят. В индексе восемь открытых документов: рекомендации NIST и OWASP по безопасности на английском, закон о персональных данных на русском и два скана, которые можно прочитать только через OCR.\n\nРазбор повторяет структуру документа — закладки PDF и нумерованные заголовки, стили заголовков Word, одна строка таблицы на запись, — поэтому результат ссылается на страницу и раздел, статью закона или лист и строку. Поиск идёт двумя способами: BM25 по словам английского и русского, приведённым к основе стеммером Snowball, и эмбеддинги multilingual-e5 в FAISS; два ранжирования объединяются, а лучшие результаты можно переранжировать многоязычным кросс-энкодером.\n\nКачество измерено на 62 вопросах с ручной разметкой: гибридный поиск находит верный фрагмент в первой пятёрке для 75,8% вопросов, а с переранжированием — для 83,9%; в README честно описаны и слабые места. Сервис запускается одной командой docker compose, а живое демо выполняет тот же поиск в браузере с int8-моделью на 66 МБ; CI проверяет, что JavaScript-версия совпадает с кодом на Python.",
+      problem:
+        "Документы приходят вперемешку — PDF, Word, таблицы и сканы, а обычный поиск по ключевым словам не находит перефразированное и не показывает, откуда взят ответ.",
+      solution:
+        "Разбор с учётом структуры и OCR, поиск BM25 и по эмбеддингам с объединением по рангам, переранжирование и ссылки вплоть до страницы, статьи или строки таблицы.",
+      result:
+        "Для 83,9% из 62 размеченных вопросов верный фрагмент попадает в первую пятёрку после переранжирования. Живое демо в браузере; тесты на трёх версиях Python и проверка Docker-образа в CI."
+    },
+    ar: {
+      title: "Lumen Search",
+      rolePurpose: "مفتوح المصدر · بحث هجين في المستندات (RAG)",
+      description:
+        "بحث هجين يذكر مصدر كل نتيجة في ملفات PDF وWord وExcel والصفحات الممسوحة ضوئياً، بالإنجليزية والروسية: BM25 وتضمينات متعددة اللغات في FAISS، وOCR، وخدمة FastAPI.",
+      whatItDoes: [
+        "يحلّل ملفات PDF وWord وExcel وMarkdown وHTML، وتمرّ الصفحات الممسوحة عبر Tesseract OCR بالإنجليزية والروسية",
+        "يقسّم النص حسب الأقسام وصفوف الجداول، فتشير كل نتيجة إلى صفحة أو مادة من القانون أو صف",
+        "بحث هجين: BM25 مع تضمينات multilingual-e5 في FAISS يُدمجان حسب الترتيب، مع إعادة ترتيب اختيارية بنموذج cross-encoder",
+        "خدمة FastAPI مع تخزين مؤقت في Redis، وإجابات بمصادر مرقّمة، وعرض تجريبي يعمل داخل المتصفح"
+      ],
+      longDescription:
+        "Lumen Search هو النظير مفتوح المصدر للنظام الذي أبنيه في عملي: بحث واحد في ملفات PDF وWord وجداول Excel والمستندات الممسوحة، تُظهر فيه كل إجابة مصدرها بدقة. ويضم الفهرس ثمانية مستندات عامة: إرشادات NIST وOWASP الأمنية بالإنجليزية، وقانون البيانات الشخصية الروسي بالروسية، ومستندين ممسوحين لا يمكن قراءتهما إلا عبر OCR.\n\nيتبع التحليل بنية كل مستند — إشارات PDF المرجعية والعناوين المرقّمة، وأنماط العناوين في Word، وصفاً واحداً من الجدول لكل سجل — فتُحيل النتيجة إلى صفحة وقسم، أو مادة من القانون، أو ورقة وصف. ويجري البحث بطريقتين: BM25 على كلمات إنجليزية وروسية مردودة إلى جذورها بأداة Snowball، وتضمينات multilingual-e5 في FAISS، ثم يُدمج الترتيبان، ويمكن إعادة ترتيب أفضل النتائج بنموذج cross-encoder متعدد اللغات.\n\nوالجودة مقيسة على 62 سؤالاً صُنّفت يدوياً: يضع البحث الهجين مقطعاً صحيحاً بين أول خمس نتائج في 75.8% من الأسئلة، وترفع إعادة الترتيب النسبة إلى 83.9%، ويذكر ملف README نقاط الضعف أيضاً. تعمل الخدمة بأمر docker compose واحد، ويشغّل العرض الحيّ البحث نفسه داخل المتصفح بنموذج int8 حجمه 66 ميغابايت، ويتحقق CI من تطابق نسخة JavaScript مع كود Python.",
+      problem:
+        "تصل المستندات خليطاً من ملفات PDF وWord والجداول والمستندات الممسوحة، والبحث التقليدي بالكلمات المفتاحية لا يجد الصياغات المختلفة ولا يبيّن مصدر الإجابة.",
+      solution:
+        "تحليل يراعي بنية المستند مع OCR، وبحث BM25 وبحث بالتضمينات يُدمجان حسب الترتيب، وإعادة ترتيب اختيارية، وإحالات تصل إلى الصفحة أو المادة أو صف الجدول.",
+      result:
+        "يحصل 83.9% من 62 سؤالاً مصنّفاً على مقطع صحيح بين أول خمس نتائج بعد إعادة الترتيب. عرض حيّ في المتصفح، واختبارات على ثلاثة إصدارات من Python وفحص لصورة Docker في CI."
     }
   },
   pulseboard: {
