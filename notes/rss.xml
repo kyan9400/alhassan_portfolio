@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes — Alhassan Alfarran</title>
+    <link>https://alhassan-portfolio-sigma.vercel.app/en/notes</link>
+    <atom:link href="https://alhassan-portfolio-sigma.vercel.app/notes/rss.xml" rel="self" type="application/rss+xml" />
+    <description>Short write-ups on engineering work by Alhassan Alfarran, Full-Stack &amp; Python Developer.</description>
+    <lastBuildDate>Mon, 28 Sep 2026 00:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Fix the query, then cache: how I cut a critical endpoint&apos;s response time by ~60%</title>
+      <link>https://alhassan-portfolio-sigma.vercel.app/en/notes/fix-the-query-then-cache</link>
+      <guid isPermaLink="true">https://alhassan-portfolio-sigma.vercel.app/en/notes/fix-the-query-then-cache</guid>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Notes from a Node.js and MongoDB service: why the query should be fixed before a cache goes in, how a cache-aside layer works, and how to keep the response contract intact along the way.</description>
+    </item>
+    <item>
+      <title>Сначала запрос, потом кэш: как я сократил время ответа критичного эндпоинта примерно на 60%</title>
+      <link>https://alhassan-portfolio-sigma.vercel.app/ru/notes/fix-the-query-then-cache-ru</link>
+      <guid isPermaLink="true">https://alhassan-portfolio-sigma.vercel.app/ru/notes/fix-the-query-then-cache-ru</guid>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Заметки о сервисе на Node.js и MongoDB: почему сначала нужно исправить запрос и только потом добавлять кэш, как устроен cache-aside и как при этом не сломать контракт ответа.</description>
+    </item>
+    <item>
+      <title>Hybrid search for engineering documents: why keyword + FAISS beats pure vector search</title>
+      <link>https://alhassan-portfolio-sigma.vercel.app/en/notes/hybrid-search-engineering-documents</link>
+      <guid isPermaLink="true">https://alhassan-portfolio-sigma.vercel.app/en/notes/hybrid-search-engineering-documents</guid>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Notes on search over PDF, Word, Excel and scanned files: OCR before indexing, chunking with metadata, keyword plus dense retrieval, rank fusion and grounded answers.</description>
+    </item>
+    <item>
+      <title>Гибридный поиск по инженерной документации: почему ключевые слова + FAISS лучше чисто векторного поиска</title>
+      <link>https://alhassan-portfolio-sigma.vercel.app/ru/notes/hybrid-search-engineering-documents-ru</link>
+      <guid isPermaLink="true">https://alhassan-portfolio-sigma.vercel.app/ru/notes/hybrid-search-engineering-documents-ru</guid>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Заметки о поиске по PDF, Word, Excel и сканам: OCR до индексации, чанкинг с метаданными, лексический и векторный поиск, слияние рангов и ответы с опорой на найденные фрагменты.</description>
+    </item>
+  </channel>
+</rss>

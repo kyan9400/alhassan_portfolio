@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://alhassan-portfolio-sigma.vercel.app/sitemap.xml

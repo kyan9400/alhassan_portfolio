@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en" />
+<changefreq>monthly</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en" />
+<changefreq>monthly</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en" />
+<changefreq>monthly</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/cv</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/cv" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/cv" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/cv" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/cv" />
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/cv</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/cv" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/cv" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/cv" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/cv" />
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/cv</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/cv" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/cv" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/cv" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/cv" />
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/archive</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/archive" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/archive" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/archive" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/archive" />
+<changefreq>monthly</changefreq>
+<priority>0.6</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/archive</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/archive" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/archive" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/archive" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/archive" />
+<changefreq>monthly</changefreq>
+<priority>0.6</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/archive</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/archive" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/archive" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/archive" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/archive" />
+<changefreq>monthly</changefreq>
+<priority>0.6</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/okkp-platform</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/okkp-platform</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/okkp-platform" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/okkp-platform" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/document-intelligence-rag</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/document-intelligence-rag</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/document-intelligence-rag" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/document-intelligence-rag" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/lumen-search</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/lumen-search</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/lumen-search" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/pulseboard</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/pulseboard</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/pulseboard" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/pulseboard" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/deployledger</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/deployledger</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/deployledger" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/deployledger" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/gatehouse</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/gatehouse</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/gatehouse" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/gatehouse" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/webhook-workbench</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/webhook-workbench</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/webhook-workbench" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/webhook-workbench" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/notes</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/notes" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/notes" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/notes" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/notes" />
+<changefreq>weekly</changefreq>
+<priority>0.6</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/notes</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/notes" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/notes" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/notes" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/notes" />
+<changefreq>weekly</changefreq>
+<priority>0.6</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/notes</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/notes" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/notes" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/notes" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/notes" />
+<changefreq>weekly</changefreq>
+<priority>0.6</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/notes/fix-the-query-then-cache</loc>
+<lastmod>2026-09-28</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/notes/fix-the-query-then-cache-ru</loc>
+<lastmod>2026-09-28</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/notes/hybrid-search-engineering-documents</loc>
+<lastmod>2026-09-28</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/notes/hybrid-search-engineering-documents-ru</loc>
+<lastmod>2026-09-28</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+</urlset>
