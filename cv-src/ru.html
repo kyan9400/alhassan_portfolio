@@ -176,6 +176,7 @@
     color: var(--muted);
     font-size: 8.9pt;
   }
+  .meta a { color: var(--accent); }
 
   ul.points {
     margin: 0;
@@ -234,7 +235,7 @@
     <li>Москва, Россия (ВНЖ)</li>
     <li><a href="tel:+79193999749">+7 919 399 97 49</a></li>
     <li><a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></li>
-    <li><span class="label">Telegram:</span> <a href="https://t.me/hassan775775">@hassan775775</a></li>
+    <li><span class="label">Telegram:</span> <a href="https://t.me/hassan_9400">@hassan_9400</a></li>
   </ul>
   <ul class="contacts">
     <li><span class="label">Портфолио:</span> <a href="{{SITE_URL}}">{{SITE_HOST}}</a></li>
@@ -328,6 +329,22 @@
         <li>Разрабатываю веб-приложения и дашборды на React/TypeScript и бэкенды на Python/FastAPI для международных клиентов.</li>
         <li>Pathwise — приложение на FastAPI + PostgreSQL с асинхронным бэкендом.</li>
         <li>Веду полный цикл работы с клиентом: постановка задачи, оценка, разработка и поддержка после запуска.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section>
+    <h2>Open-source проект</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Lumen Search <span class="org">— гибридный поиск по документам со ссылками на источник</span></h3>
+        <span class="dates">окт. 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/lumen-search">github.com/kyan9400/lumen-search</a> · онлайн-демо: <a href="https://kyan9400.github.io/lumen-search/">kyan9400.github.io/lumen-search</a></p>
+      <ul class="points">
+        <li>Поиск по PDF, Word, Excel и сканам на английском и русском: BM25 + многоязычные эмбеддинги в FAISS, Tesseract OCR, FastAPI, Redis.</li>
+        <li>У каждого результата указаны страница, раздел или строка таблицы; с переранжированием верный фрагмент попадает в первую пятёрку для <strong class="metric">83,9%</strong> из 62 размеченных вопросов.</li>
       </ul>
     </article>
   </section>

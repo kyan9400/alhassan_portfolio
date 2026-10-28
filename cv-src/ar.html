@@ -176,6 +176,7 @@
     color: var(--muted);
     font-size: 8.9pt;
   }
+  .meta a { color: var(--accent); }
 
   ul.points {
     margin: 0;
@@ -253,7 +254,7 @@
     <li>موسكو، روسيا (إقامة)</li>
     <li><bdi><a href="tel:+79193999749">+7 919 399 97 49</a></bdi></li>
     <li><bdi><a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></bdi></li>
-    <li><span class="label">تيليغرام:</span> <bdi><a href="https://t.me/hassan775775">@hassan775775</a></bdi></li>
+    <li><span class="label">تيليغرام:</span> <bdi><a href="https://t.me/hassan_9400">@hassan_9400</a></bdi></li>
   </ul>
   <ul class="contacts">
     <li><span class="label">الموقع:</span> <bdi><a href="{{SITE_URL}}">{{SITE_HOST}}</a></bdi></li>
@@ -345,6 +346,22 @@
         <li>بناء تطبيقات ويب ولوحات تحكم بـ <bdi>React/TypeScript</bdi> وخدمات خلفية بـ <bdi>Python/FastAPI</bdi> لعملاء دوليين.</li>
         <li>مشروع <bdi>Pathwise</bdi>: تطبيق <bdi>FastAPI + PostgreSQL</bdi> بخدمة خلفية غير متزامنة (<bdi>async</bdi>).</li>
         <li>إدارة دورة العمل كاملة مع العميل: تحديد النطاق والتقدير والتسليم والدعم بعد الإطلاق.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section>
+    <h2>مشروع مفتوح المصدر</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3><bdi>Lumen Search</bdi> <span class="org">— بحث هجين في المستندات يذكر مصدر كل نتيجة</span></h3>
+        <span class="dates">أكتوبر 2026</span>
+      </div>
+      <p class="meta"><bdi><a href="https://github.com/kyan9400/lumen-search">github.com/kyan9400/lumen-search</a></bdi> · عرض حيّ: <bdi><a href="https://kyan9400.github.io/lumen-search/">kyan9400.github.io/lumen-search</a></bdi></p>
+      <ul class="points">
+        <li>بحث في ملفات <bdi>PDF</bdi> و<bdi>Word</bdi> و<bdi>Excel</bdi> والصفحات الممسوحة ضوئياً بالإنجليزية والروسية: <bdi>BM25</bdi> مع تضمينات متعددة اللغات في <bdi>FAISS</bdi>، و<bdi>Tesseract OCR</bdi>، و<bdi>FastAPI</bdi>، و<bdi>Redis</bdi>.</li>
+        <li>تذكر كل نتيجة صفحتها أو قسمها أو صفّ الجدول الذي جاءت منه، ومع إعادة الترتيب يظهر مقطع صحيح بين أول خمس نتائج في <strong class="metric">83.9%</strong> من 62 سؤالاً مصنّفاً يدوياً.</li>
       </ul>
     </article>
   </section>

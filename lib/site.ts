@@ -8,8 +8,8 @@ import type { Locale } from "@/lib/types";
 export const CONTACT_EMAIL = "kyan775909@gmail.com";
 export const GITHUB_URL = "https://github.com/kyan9400";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/alhassan-alfarran-880b00246/";
-export const TELEGRAM_URL = "https://t.me/hassan775775";
-export const TELEGRAM_HANDLE = "@hassan775775";
+export const TELEGRAM_URL = "https://t.me/hassan_9400";
+export const TELEGRAM_HANDLE = "@hassan_9400";
 
 /** Short brand name per language (same values as `brandName` in lib/copy.ts). */
 export const BRAND_NAMES: Record<Locale, string> = { en: "Alhassan", ru: "Альхассан", ar: "الحسن" };
