@@ -136,33 +136,6 @@
 <priority>0.7</priority>
 </url>
 <url>
-<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite</loc>
-<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
-<changefreq>yearly</changefreq>
-<priority>0.7</priority>
-</url>
-<url>
-<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite</loc>
-<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
-<changefreq>yearly</changefreq>
-<priority>0.7</priority>
-</url>
-<url>
-<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite</loc>
-<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ai-dashboard-suite" />
-<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ai-dashboard-suite" />
-<changefreq>yearly</changefreq>
-<priority>0.7</priority>
-</url>
-<url>
 <loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search</loc>
 <xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/lumen-search" />
 <xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/lumen-search" />
