@@ -73,47 +73,46 @@ export const projects: Project[] = [
     title: "OKKP Operations Platform",
     kind: "work",
     company: "Avenue Group",
-    rolePurpose: "Chief Full-Stack Developer · From scratch",
+    rolePurpose: "Lead developer on the project · 2025",
     description:
-      "An operational management platform I designed and shipped from scratch: employee management, violation tracking and reporting dashboards, with role-based access and audit logs.",
+      "An internal quality-control web system for a network of 9 vehicle depots. I designed the architecture and API and wrote most of the code: violations and fines, employees, a document archive and Excel export.",
     whatItDoes: [
-      "Employee management, violation tracking and reporting dashboards",
-      "Role-based access control and audit logs across modules",
-      "Secure media uploads through Cloudinary and Multer",
-      "Excel exports that produce audit-ready datasets without a developer"
+      "Violations and fines module with server-side filtering (name, department, type, status, depot, period) and pagination",
+      "Employee profiles with photo, contract and questionnaire uploads; driver call-backs; in-app notifications",
+      "Document archive on Cloudinary with a local-disk fallback",
+      "Per-depot KPI tiles and in-browser Excel export (SheetJS)"
     ],
     longDescription:
-      "At Avenue Group I was the Chief Full-Stack Developer on OKKP, an operational management platform that started from an empty repository. The goal was one system for the company's day-to-day operations, with clear boundaries between the UI, the business logic and the data layer.\n\nI architected it end to end: a React + TypeScript single-page app, a Node.js / Express REST API, and a data layer on PostgreSQL and MongoDB. On top of that I built the core modules — employee management, violation tracking and reporting dashboards — with role-based access control and audit logs, plus a secure media-upload pipeline on Cloudinary and Multer.\n\nReporting had to work for people who don't write queries, so Excel exports let non-technical staff produce audit-ready datasets on their own. I also owned deployment and production support, and delivered a fully responsive interface in Tailwind CSS.",
-    tech: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"],
+      "At Avenue Group I was the lead developer on OKKP, an internal quality-control web system for a network of 9 vehicle depots, in a team of three. I designed the architecture and the API and wrote most of the code (~177 of 183 commits in 2025 across the project's three repositories).\n\nThe stack is a React 18 + TypeScript single-page app (Vite, Tailwind CSS), a Node.js / Express 5 REST API and MongoDB (Mongoose). The core is the violations and fines module: server-side filtering by name, department, type, status, depot and period, pagination, photo and video attachments, and deletion confirmed by password. Around it sit modules for employees, driver call-backs, a document archive on Cloudinary with a local-disk fallback, and in-app notifications. Sign-in uses JWT (bcrypt), by email or phone.\n\nThe home page shows KPI tiles per depot, and violations, employees, driver calls and the depot summary export to Excel right in the browser. Deployment is Docker Compose (MongoDB + API) on a Linux server behind a reverse proxy, with CI on GitHub Actions.",
+    tech: ["React", "TypeScript", "Vite", "Node.js", "Express", "MongoDB", "Cloudinary", "SheetJS", "Docker Compose", "Tailwind CSS"],
     image: "/images/projects/okkp-platform.svg",
     imageKind: "diagram",
     problem:
-      "Avenue Group needed one system for day-to-day operations — employees, violations and reporting — and the reports had to work for staff who don't write queries.",
+      "Avenue Group's 9 vehicle depots needed one internal system to record violations and fines, keep employee records and produce reports without a developer.",
     solution:
-      "I architected and built it end to end: a React + TypeScript SPA, a Node.js / Express REST API and a PostgreSQL + MongoDB data layer, with role-based access, audit logs and secure Cloudinary uploads. I also owned deployment and production support.",
-    result: "Shipped to production; non-technical staff export audit-ready Excel datasets on their own.",
+      "A React + TypeScript SPA on a Node.js / Express API and MongoDB, with server-side filtering, a Cloudinary document archive, JWT sign-in and in-browser Excel export, deployed with Docker Compose and CI on GitHub Actions.",
+    result: "Deployed on the company's Linux server; staff filter violations and export reports to Excel on their own.",
     resultLabel: "result",
     codeNote: "nda",
     flow: [
-      { label: "Frontend", nodes: [{ name: "React + TypeScript", note: "SPA · dashboards per role" }], edge: "REST" },
+      { label: "Frontend", nodes: [{ name: "React + TypeScript", note: "SPA · Vite · Tailwind" }], edge: "REST · JWT" },
       {
         label: "API",
         nodes: [
-          { name: "Node.js / Express", note: "REST API" },
-          { name: "Auth · RBAC", module: true },
+          { name: "Node.js / Express 5", note: "REST API" },
+          { name: "Auth · JWT", module: true },
           { name: "Employees", module: true },
           { name: "Violations", module: true },
-          { name: "Reporting", module: true },
-          { name: "Audit log", module: true }
+          { name: "Call-backs", module: true },
+          { name: "Archive", module: true }
         ],
-        edge: "SQL · documents · media"
+        edge: "documents · media"
       },
       {
         label: "Data",
         nodes: [
-          { name: "PostgreSQL", note: "SQL" },
-          { name: "MongoDB", note: "documents" },
-          { name: "Cloudinary", note: "media" }
+          { name: "MongoDB", note: "Mongoose" },
+          { name: "Cloudinary", note: "media · local fallback" }
         ]
       }
     ]
@@ -121,63 +120,34 @@ export const projects: Project[] = [
   {
     slug: "document-intelligence-rag",
     year: 2026,
-    title: "Engineering Document Search (RAG)",
+    title: "Engineering Document Search",
     kind: "work",
     company: "Elektroservis",
-    rolePurpose: "Current role · RAG document search",
+    rolePurpose: "Python developer · Apr–Oct 2026 · semantic + full-text search",
     description:
-      "Search and RAG over engineering and technical documentation — PDF, Word, Excel and scanned files — with hybrid keyword + semantic retrieval behind a FastAPI service.",
+      "Semantic and full-text search over an engineering-documentation archive of ~4.1k PDF, DOCX, XLSX and RTF files: a custom inverted index plus FAISS on sentence-transformers, behind a FastAPI service. No LLM generation.",
     whatItDoes: [
-      "Indexes PDF, Word and Excel files, including scanned documents via OCR",
-      "Hybrid search: keyword matching plus semantic retrieval with sentence-transformers + FAISS",
-      "FastAPI ingestion and query pipelines",
-      "LLM-assisted answers grounded in the retrieved passages"
+      "Finds a cable mark, document code, equipment designation or phrase and returns the document, page (or sheet and rows), fragment and network path",
+      "Hybrid search: a custom inverted index plus FAISS semantic search on sentence-transformers (all-MiniLM-L6-v2)",
+      "Detects scans automatically and OCRs selected pages with Tesseract + Poppler",
+      "Reliability labels — exact match, needs review, partial match — and one result per document"
     ],
     longDescription:
-      "Engineering and technical documentation is a mix of PDFs, Word files, Excel sheets and scans. My current work at Elektroservis in Moscow is a search and RAG system that makes all of it searchable in one place.\n\nThe ingestion pipeline parses each format and runs scanned documents through OCR before indexing. Retrieval is hybrid: keyword matching catches exact terms, while semantic search — sentence-transformers embeddings in a FAISS index — finds passages that say the same thing in different words. Combining the two is meant to give more relevant answers than either approach alone.\n\nFastAPI pipelines connect parsing, indexing, retrieval and LLM-assisted answers. The system is in active development and the code is private, so the diagram shows the architecture; my open-source Lumen Search shows the same techniques on public documents.",
-    tech: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"],
+      "Elektroservis keeps its engineering (PTO) documentation in a network archive of about 4.1k PDF, DOCX, XLSX and RTF files, about 1.5k of them with text. From April to October 2026, under civil-law contracts, I built a search service over it: an engineer types a cable mark, a document code, an equipment designation or a phrase and gets the document, the PDF page (or Excel sheet and rows, Word section), a text fragment and the network path. Documents never leave the company network.\n\nSearch is hybrid, with no LLM generation: a custom inverted index over words and designations, plus FAISS semantic search on sentence-transformers embeddings (all-MiniLM-L6-v2). Designations are matched by general rules: look-alike Latin and Cyrillic letters, spaces and hyphens do not break a match, while numbers and marks are never substituted. Scans are detected automatically and selected pages go through Tesseract + Poppler OCR. The backend is FastAPI, the interface is plain HTML/JS, and it runs as a systemd service on Ubuntu Server with an atomic index swap and rollback.\n\nCode and mark queries went from 9–10 s to 1.2–1.7 s and phrase queries from 55–70 s to 2–4 s; after the move to the inverted index, p95 is 0.18 s on 55 control queries. Quality is held by 739 pytest tests and a 104-query control set with top-1/top-5 metrics. I built it with AI agents (Codex, Cursor, Claude Code): I gathered the requirements, wrote the agent briefs, reviewed the changes and checked them on the production index. The client accepted the work in September 2026. The code is private, so the diagram shows the architecture.",
+    tech: ["Python", "FastAPI", "FAISS", "sentence-transformers", "Tesseract OCR", "pytest", "systemd"],
     image: "/images/projects/document-rag.svg",
     imageKind: "diagram",
     problem:
-      "Engineering documents are spread across PDF, Word, Excel and scanned files — a mix that plain keyword search handles poorly.",
+      "Engineers searched a network archive of PDF, Word, Excel and RTF files and scans by hand. Designations such as cable marks and document codes must match exactly, while phrases need meaning-based search.",
     solution:
-      "OCR and parsing for every format, hybrid retrieval (sentence-transformers + FAISS), FastAPI pipelines and LLM-assisted answers.",
-    result: "In development at Elektroservis — one search across PDF, Word, Excel and scanned engineering documents.",
-    resultLabel: "status",
+      "A custom inverted index for exact designations plus FAISS semantic search, OCR for scans and reliability labels on every result; FastAPI backend, plain HTML/JS interface, deployed as a systemd service.",
+    result: "Accepted by the client in September 2026: 0.18 s p95, 739 tests and a 104-query control set.",
+    resultLabel: "result",
     codeNote: "nda",
     flow: [
-      { label: "Ingest", nodes: [{ name: "PDF · Word · Excel" }, { name: "OCR", note: "scanned files" }] },
-      { label: "Index", nodes: [{ name: "sentence-transformers" }, { name: "FAISS" }, { name: "keyword" }] },
-      { label: "Query", nodes: [{ name: "FastAPI", note: "hybrid retrieval" }, { name: "LLM", note: "answer" }] }
-    ]
-  },
-  {
-    slug: "ai-dashboard-suite",
-    title: "Client KPI Dashboards",
-    kind: "work",
-    company: "Freelance",
-    rolePurpose: "Freelance client work · React dashboards",
-    description:
-      "Interactive KPI dashboards for a freelance client, bringing several data sources together behind one Node.js API.",
-    whatItDoes: [
-      "Filterable KPI modules instead of static exports",
-      "A Node.js API that brings several data sources together",
-      "Trend views that make changes easy to spot"
-    ],
-    longDescription:
-      "A freelance client was working from static exports and one-off spreadsheets, so trends stayed hidden until someone refreshed a report by hand. The goal was interactive dashboards that make KPIs easier to read.\n\nI built a React front end with filterable KPI modules and trend views, and a Node.js API that brings several data sources together behind one REST interface. The code belongs to the client, so the diagram shows the architecture.",
-    tech: ["React", "Node.js", "REST API"],
-    image: "/images/projects/ai-dashboard-suite.svg",
-    imageKind: "diagram",
-    problem: "Decisions ran on static exports and spreadsheets, so trends surfaced late.",
-    solution: "React dashboards with filterable KPIs and trend views, on a Node.js API over several data sources.",
-    result: "Filterable KPIs in one place instead of hand-refreshed reports.",
-    resultLabel: "result",
-    codeNote: "client",
-    flow: [
-      { label: "Data", nodes: [{ name: "Multiple sources" }] },
-      { label: "API", nodes: [{ name: "Node.js", note: "one REST interface" }] },
-      { label: "UI", nodes: [{ name: "React", note: "KPI dashboards · filters" }] }
+      { label: "Ingest", nodes: [{ name: "PDF · DOCX · XLSX · RTF" }, { name: "OCR", note: "Tesseract · scans" }] },
+      { label: "Index", nodes: [{ name: "Inverted index", note: "words · designations" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
+      { label: "Query", nodes: [{ name: "FastAPI", note: "hybrid ranking" }, { name: "HTML / JS", note: "search UI" }] }
     ]
   },
   {
@@ -185,7 +155,7 @@ export const projects: Project[] = [
     year: 2026,
     title: "Lumen Search",
     kind: "open-source",
-    rolePurpose: "Open source · Hybrid document search (RAG)",
+    rolePurpose: "Open-source prototype, built with AI agents · Hybrid document search (RAG)",
     description:
       "Hybrid document search with citations over PDF, Word, Excel and scanned pages, in English and Russian — BM25 plus multilingual embeddings in FAISS, OCR and a FastAPI service.",
     whatItDoes: [
@@ -195,7 +165,7 @@ export const projects: Project[] = [
       "FastAPI service with a Redis cache, answers with numbered sources, and a demo that runs in the browser"
     ],
     longDescription:
-      "Lumen Search is the open-source counterpart of the system I build at work: one search over PDFs, Word files, Excel sheets and scans, where every answer shows exactly where it came from. It indexes eight public documents — NIST and OWASP security guidance in English, the Russian personal data law in Russian, and two scans that only OCR can read.\n\nParsing follows each document's structure — PDF bookmarks and numbered headings, Word heading styles, one spreadsheet row per record — so results cite a page and section, an article of a law, or a sheet and row. Retrieval runs BM25 over Snowball-stemmed English and Russian words next to multilingual-e5 embeddings in FAISS, fuses the two rankings, and can rerank the top results with a multilingual cross-encoder.\n\nQuality is measured on 62 hand-labelled questions: hybrid search puts a correct passage in the top five for 75.8% of them, and reranking raises that to 83.9%; the README also says where it is weak. The service starts with one docker compose command, and the live demo runs the same search in the browser with a 66 MB int8 model, while CI checks the JavaScript port against the Python code.",
+      "Lumen Search is an open-source prototype I built with AI agents, on the same theme as my document-search work: one search over PDFs, Word files, Excel sheets and scans, where every answer shows exactly where it came from. It indexes eight public documents — NIST and OWASP security guidance in English, the Russian personal data law in Russian, and two scans that only OCR can read.\n\nParsing follows each document's structure — PDF bookmarks and numbered headings, Word heading styles, one spreadsheet row per record — so results cite a page and section, an article of a law, or a sheet and row. Retrieval runs BM25 over Snowball-stemmed English and Russian words next to multilingual-e5 embeddings in FAISS, fuses the two rankings, and can rerank the top results with a multilingual cross-encoder.\n\nQuality is measured on 62 hand-labelled questions: hybrid search puts a correct passage in the top five for 75.8% of them, and reranking raises that to 83.9%; the README also says where it is weak. The service starts with one docker compose command, and the live demo runs the same search in the browser with a 66 MB int8 model, while CI checks the JavaScript port against the Python code.",
     tech: ["Python", "FastAPI", "FAISS", "sentence-transformers", "Tesseract OCR", "Redis", "Docker"],
     github: "https://github.com/kyan9400/lumen-search",
     live: "https://kyan9400.github.io/lumen-search/",
@@ -214,7 +184,7 @@ export const projects: Project[] = [
     year: 2026,
     title: "Pulseboard",
     kind: "open-source",
-    rolePurpose: "Open source · Uptime & SLO monitoring",
+    rolePurpose: "Open-source prototype, built with AI agents · Uptime & SLO monitoring",
     description:
       "Self-hosted HTTP uptime monitoring with automatic incidents, SLO error budgets, a public status page and Prometheus metrics — all in one container.",
     whatItDoes: [
@@ -241,7 +211,7 @@ export const projects: Project[] = [
     year: 2026,
     title: "DeployLedger",
     kind: "open-source",
-    rolePurpose: "Open source · Release operations & DORA metrics",
+    rolePurpose: "Open-source prototype, built with AI agents · Release operations & DORA metrics",
     description:
       "A self-hosted release-operations control plane: it ingests deployment events, computes DORA metrics and helps decide whether the next release is safe to ship.",
     whatItDoes: [
@@ -268,7 +238,7 @@ export const projects: Project[] = [
     year: 2026,
     title: "Gatehouse",
     kind: "open-source",
-    rolePurpose: "Open source · Just-in-time access control",
+    rolePurpose: "Open-source prototype, built with AI agents · Just-in-time access control",
     description:
       "A self-hosted access request and approval control plane: narrowly scoped, short-lived access, with every decision recorded in a verifiable audit chain.",
     whatItDoes: [
@@ -294,7 +264,7 @@ export const projects: Project[] = [
     year: 2026,
     title: "Webhook Workbench",
     kind: "open-source",
-    rolePurpose: "Open source · Webhook debugging in Go",
+    rolePurpose: "Open-source prototype, built with AI agents · Webhook debugging in Go",
     description:
       "A private, self-hosted workbench to capture, inspect, verify and safely replay webhooks — one dependency-free Go binary with the UI built in.",
     whatItDoes: [
@@ -322,87 +292,85 @@ export const projects: Project[] = [
 const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> = {
   "okkp-platform": {
     ru: {
-      title: "OKKP — платформа операционного управления",
+      title: "OKKP — внутренняя система контроля качества",
       company: "Avenue Group",
-      rolePurpose: "Главный full-stack разработчик · с нуля",
+      rolePurpose: "Ведущий разработчик проекта · 2025",
       description:
-        "Платформа операционного управления, которую я спроектировал и запустил с нуля: управление сотрудниками, учёт нарушений и отчётные дашборды с ролевым доступом и журналом аудита.",
+        "Внутренняя веб-система контроля качества для сети из 9 автопарков. Я спроектировал архитектуру и API и написал большую часть кода: нарушения и штрафы, сотрудники, электронный архив и выгрузка в Excel.",
       whatItDoes: [
-        "Управление сотрудниками, учёт нарушений и отчётные дашборды",
-        "Ролевой доступ и журнал аудита во всех модулях",
-        "Защищённая загрузка медиафайлов через Cloudinary и Multer",
-        "Выгрузка в Excel: данные для аудита без участия разработчика"
+        "Модуль нарушений и штрафов: серверная фильтрация (ФИО, отдел, тип, статус, парк, период) и пагинация",
+        "Карточки сотрудников с загрузкой фото, договоров и анкет; обзвон водителей; внутренние уведомления",
+        "Электронный архив документов в Cloudinary с откатом на локальный диск",
+        "KPI-карточки по паркам и экспорт в Excel прямо в браузере (SheetJS)"
       ],
       longDescription:
-        "В Avenue Group я был главным full-stack разработчиком OKKP — платформы операционного управления, которая начиналась с пустого репозитория. Задача — единая система для повседневной работы компании с чёткими границами между интерфейсом, бизнес-логикой и слоем данных.\n\nАрхитектуру я выстроил целиком: SPA на React + TypeScript, REST API на Node.js / Express, данные в PostgreSQL и MongoDB. Поверх неё — ключевые модули: управление сотрудниками, учёт нарушений и отчётные дашборды с ролевым доступом и журналом аудита, а также защищённая загрузка медиафайлов через Cloudinary и Multer.\n\nОтчётность должна была работать для людей, которые не пишут запросы, поэтому выгрузка в Excel позволяет сотрудникам без технической подготовки самостоятельно собирать данные для аудита. Деплой и поддержка в продакшене тоже были на мне, а интерфейс на Tailwind CSS полностью адаптивный.",
+        "В Avenue Group я был ведущим разработчиком OKKP — внутренней веб-системы контроля качества для сети из 9 автопарков; в команде было три человека. Я спроектировал архитектуру и API и написал большую часть кода (≈177 из 183 коммитов 2025 года в трёх репозиториях проекта).\n\nСтек: SPA на React 18 + TypeScript (Vite, Tailwind CSS), REST API на Node.js / Express 5 и MongoDB (Mongoose). Основа — модуль нарушений и штрафов: серверная фильтрация по ФИО, отделу, типу, статусу, парку и периоду, пагинация, вложения фото и видео, удаление с подтверждением паролем. Вокруг него — модули сотрудников, обзвона водителей, электронного архива документов (Cloudinary с откатом на локальный диск) и внутренних уведомлений. Вход — JWT (bcrypt), по email или телефону.\n\nНа главной странице — KPI-карточки по паркам, а нарушения, сотрудники, обзвон водителей и сводка по паркам выгружаются в Excel прямо в браузере. Деплой — Docker Compose (MongoDB + API) на Linux-сервере за reverse proxy, CI — на GitHub Actions.",
       problem:
-        "Avenue Group нужна была единая система для операционной работы — сотрудники, нарушения, отчётность, — причём отчёты должны были работать для сотрудников, которые не пишут запросы.",
+        "Сети из 9 автопарков Avenue Group нужна была единая внутренняя система: учёт нарушений и штрафов, данные сотрудников и отчёты без участия разработчика.",
       solution:
-        "Я спроектировал и построил её целиком: SPA на React + TypeScript, REST API на Node.js / Express и слой данных на PostgreSQL + MongoDB, с ролевым доступом, журналом аудита и защищённой загрузкой файлов в Cloudinary. Деплой и поддержка в продакшене — тоже на мне.",
-      result: "Запущена в продакшен; сотрудники сами выгружают данные для аудита в Excel.",
+        "SPA на React + TypeScript поверх API на Node.js / Express и MongoDB: серверная фильтрация, архив документов в Cloudinary, JWT-аутентификация и выгрузка в Excel в браузере; деплой через Docker Compose, CI на GitHub Actions.",
+      result: "Развёрнута на Linux-сервере компании; сотрудники сами фильтруют нарушения и выгружают отчёты в Excel.",
       flow: [
-        { label: "Фронтенд", nodes: [{ name: "React + TypeScript", note: "SPA · дашборды по ролям" }], edge: "REST" },
+        { label: "Фронтенд", nodes: [{ name: "React + TypeScript", note: "SPA · Vite · Tailwind" }], edge: "REST · JWT" },
         {
           label: "API",
           nodes: [
-            { name: "Node.js / Express", note: "REST API" },
-            { name: "Авторизация · RBAC", module: true },
+            { name: "Node.js / Express 5", note: "REST API" },
+            { name: "Авторизация · JWT", module: true },
             { name: "Сотрудники", module: true },
             { name: "Нарушения", module: true },
-            { name: "Отчётность", module: true },
-            { name: "Журнал аудита", module: true }
+            { name: "Обзвон", module: true },
+            { name: "Архив", module: true }
           ],
-          edge: "SQL · документы · медиа"
+          edge: "документы · медиа"
         },
         {
           label: "Данные",
           nodes: [
-            { name: "PostgreSQL", note: "SQL" },
-            { name: "MongoDB", note: "документы" },
-            { name: "Cloudinary", note: "медиа" }
+            { name: "MongoDB", note: "Mongoose" },
+            { name: "Cloudinary", note: "медиа · локальный откат" }
           ]
         }
       ]
     },
     ar: {
-      title: "منصة OKKP لإدارة العمليات",
+      title: "OKKP — نظام داخلي لمراقبة الجودة",
       company: "Avenue Group",
-      rolePurpose: "كبير مطوري Full-Stack · من الصفر",
+      rolePurpose: "المطوّر الرئيسي للمشروع · 2025",
       description:
-        "منصة لإدارة العمليات صمّمتها وأطلقتها من الصفر: إدارة الموظفين وتتبّع المخالفات ولوحات التقارير، مع صلاحيات حسب الأدوار وسجل تدقيق.",
+        "نظام ويب داخلي لمراقبة الجودة في شبكة من 9 مرائب مركبات. صمّمتُ البنية والواجهة البرمجية وكتبتُ معظم الكود: المخالفات والغرامات، والموظفون، وأرشيف الوثائق، والتصدير إلى Excel.",
       whatItDoes: [
-        "إدارة الموظفين وتتبّع المخالفات ولوحات التقارير",
-        "صلاحيات حسب الأدوار وسجل تدقيق في جميع الوحدات",
-        "رفع آمن للوسائط عبر Cloudinary وMulter",
-        "تصدير إلى Excel يُنتج بيانات جاهزة للتدقيق دون تدخّل مطوّر"
+        "وحدة المخالفات والغرامات: تصفية من جهة الخادم (الاسم، القسم، النوع، الحالة، المرأب، الفترة) وترقيم الصفحات",
+        "ملفات الموظفين مع رفع الصور والعقود والاستبيانات، ومتابعة اتصالات السائقين، وإشعارات داخلية",
+        "أرشيف وثائق على Cloudinary مع بديل على القرص المحلي",
+        "بطاقات مؤشرات KPI لكل مرأب وتصدير إلى Excel داخل المتصفح (SheetJS)"
       ],
       longDescription:
-        "في Avenue Group كنت كبير مطوري Full-Stack في مشروع OKKP، وهو منصة لإدارة العمليات بدأت من مستودع فارغ. كان الهدف نظاماً واحداً للعمل اليومي في الشركة، بحدود واضحة بين الواجهة ومنطق الأعمال وطبقة البيانات.\n\nصمّمت البنية بالكامل: تطبيق صفحة واحدة (SPA) مبني على React وTypeScript، وREST API مبنية على Node.js وExpress، وطبقة بيانات على PostgreSQL وMongoDB. وفوق ذلك بنيت الوحدات الأساسية — إدارة الموظفين وتتبّع المخالفات ولوحات التقارير — مع صلاحيات حسب الأدوار وسجل تدقيق، إضافة إلى آلية آمنة لرفع الوسائط عبر Cloudinary وMulter.\n\nكان على التقارير أن تخدم أشخاصاً لا يكتبون استعلامات، لذلك يتيح التصدير إلى Excel للموظفين غير التقنيين إعداد بيانات جاهزة للتدقيق بأنفسهم. وتولّيت أيضاً النشر ودعم بيئة الإنتاج، وقدّمت واجهة متجاوبة بالكامل مبنية على Tailwind CSS.",
+        "في Avenue Group كنتُ المطوّر الرئيسي لنظام OKKP، وهو نظام ويب داخلي لمراقبة الجودة في شبكة من 9 مرائب مركبات، ضمن فريق من ثلاثة أشخاص. صمّمتُ البنية والواجهة البرمجية وكتبتُ معظم الكود (نحو 177 من 183 إيداعاً في 2025 عبر مستودعات المشروع الثلاثة).\n\nالتقنيات: تطبيق صفحة واحدة على React 18 + TypeScript ‏(Vite وTailwind CSS)، وREST API على Node.js / Express 5، وقاعدة MongoDB ‏(Mongoose). وجوهر النظام وحدة المخالفات والغرامات: تصفية من جهة الخادم حسب الاسم والقسم والنوع والحالة والمرأب والفترة، وترقيم الصفحات، ومرفقات الصور والفيديو، وحذف يتطلّب تأكيداً بكلمة المرور. وحولها وحدات للموظفين ومتابعة اتصالات السائقين وأرشيف الوثائق (Cloudinary مع بديل على القرص المحلي) والإشعارات الداخلية. والدخول عبر JWT ‏(bcrypt) بالبريد الإلكتروني أو الهاتف.\n\nتعرض الصفحة الرئيسية بطاقات KPI لكل مرأب، وتُصدَّر المخالفات والموظفون واتصالات السائقين وملخّص المرائب إلى Excel داخل المتصفح مباشرة. والنشر عبر Docker Compose ‏(MongoDB + API) على خادم Linux خلف reverse proxy، وCI على GitHub Actions.",
       problem:
-        "احتاجت Avenue Group إلى نظام واحد للعمل التشغيلي اليومي — الموظفون والمخالفات والتقارير — وكان على التقارير أن تخدم موظفين لا يكتبون استعلامات.",
+        "احتاجت شبكة مرائب Avenue Group التسعة إلى نظام داخلي واحد لتسجيل المخالفات والغرامات وحفظ بيانات الموظفين وإعداد التقارير دون تدخّل مطوّر.",
       solution:
-        "صمّمتُ النظام وبنيته بالكامل: تطبيق SPA على React + TypeScript، وواجهة REST على Node.js / Express، وطبقة بيانات PostgreSQL + MongoDB، مع صلاحيات حسب الأدوار وسجل تدقيق ورفع آمن للملفات عبر Cloudinary. وتولّيتُ النشر والدعم في بيئة الإنتاج.",
-      result: "أُطلقت في بيئة الإنتاج، ويصدّر الموظفون بيانات التدقيق إلى Excel بأنفسهم.",
+        "تطبيق SPA على React + TypeScript فوق API على Node.js / Express وMongoDB، مع تصفية من جهة الخادم وأرشيف وثائق على Cloudinary ومصادقة JWT وتصدير إلى Excel داخل المتصفح؛ والنشر عبر Docker Compose وCI على GitHub Actions.",
+      result: "يعمل على خادم Linux الخاص بالشركة، ويصفّي الموظفون المخالفات ويصدّرون التقارير إلى Excel بأنفسهم.",
       flow: [
-        { label: "الواجهة", nodes: [{ name: "React + TypeScript", note: "SPA · لوحات لكل دور" }], edge: "REST" },
+        { label: "الواجهة", nodes: [{ name: "React + TypeScript", note: "SPA · Vite · Tailwind" }], edge: "REST · JWT" },
         {
           label: "API",
           nodes: [
-            { name: "Node.js / Express", note: "REST API" },
-            { name: "المصادقة · RBAC", module: true },
+            { name: "Node.js / Express 5", note: "REST API" },
+            { name: "المصادقة · JWT", module: true },
             { name: "الموظفون", module: true },
             { name: "المخالفات", module: true },
-            { name: "التقارير", module: true },
-            { name: "سجل التدقيق", module: true }
+            { name: "الاتصالات", module: true },
+            { name: "الأرشيف", module: true }
           ],
-          edge: "SQL · مستندات · وسائط"
+          edge: "مستندات · وسائط"
         },
         {
           label: "البيانات",
           nodes: [
-            { name: "PostgreSQL", note: "SQL" },
-            { name: "MongoDB", note: "مستندات" },
-            { name: "Cloudinary", note: "وسائط" }
+            { name: "MongoDB", note: "Mongoose" },
+            { name: "Cloudinary", note: "وسائط · بديل محلي" }
           ]
         }
       ]
@@ -410,106 +378,60 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
   },
   "document-intelligence-rag": {
     ru: {
-      title: "Поиск по технической документации (RAG)",
+      title: "Поиск по технической документации",
       company: "Электросервис",
-      rolePurpose: "Текущая работа · RAG-поиск по документации",
+      rolePurpose: "Python-разработчик · апрель–октябрь 2026 · семантический и полнотекстовый поиск",
       description:
-        "Поиск и RAG по документации ПТО — PDF, Word, Excel и сканам — с гибридным поиском по ключевым словам и по смыслу на базе FastAPI.",
+        "Семантический и полнотекстовый поиск по архиву документации ПТО — около 4,1 тыс. файлов PDF, DOCX, XLSX и RTF: собственный инвертированный индекс плюс FAISS на sentence-transformers, сервис на FastAPI. Без генерации LLM.",
       whatItDoes: [
-        "Индексирует PDF, Word и Excel, включая сканы через OCR",
-        "Гибридный поиск: ключевые слова плюс семантика на sentence-transformers и FAISS",
-        "Пайплайны загрузки и запросов на FastAPI",
-        "Ответы с помощью LLM на основе найденных фрагментов"
+        "Находит марку кабеля, шифр, обозначение оборудования или фразу и возвращает документ, страницу (или лист и строки), фрагмент и сетевой путь",
+        "Гибридный поиск: собственный инвертированный индекс плюс семантический поиск FAISS на sentence-transformers (all-MiniLM-L6-v2)",
+        "Сканы определяются автоматически; выбранные страницы проходят OCR (Tesseract + Poppler)",
+        "Метки надёжности — «Точное совпадение», «Требуется проверка», «Совпадает частично» — и один результат на документ"
       ],
       longDescription:
-        "Документация ПТО — это смесь PDF, файлов Word, таблиц Excel и сканов. Моя текущая работа в «Электросервисе» в Москве — система поиска и RAG, которая позволяет искать по всему этому в одном месте.\n\nПайплайн загрузки разбирает каждый формат и прогоняет сканы через OCR перед индексацией. Поиск гибридный: совпадение по ключевым словам находит точные термины, а семантический поиск — эмбеддинги sentence-transformers в индексе FAISS — находит фрагменты, где то же самое сказано другими словами. Сочетание двух подходов нужно, чтобы ответы были релевантнее, чем у каждого из них по отдельности.\n\nПайплайны на FastAPI связывают парсинг, индексацию, поиск и ответы с помощью LLM. Система в активной разработке, а код закрыт, поэтому здесь показана схема архитектуры; те же приёмы на открытых документах показывает мой open-source проект Lumen Search.",
+        "Документация ПТО «Электросервиса» хранится в сетевом архиве: около 4,1 тыс. файлов PDF, DOCX, XLSX и RTF, из них около 1,5 тыс. — с текстом. С апреля по октябрь 2026 года по договорам ГПХ я сделал сервис поиска по нему: инженер вводит марку кабеля, шифр, обозначение оборудования или фразу и получает документ, страницу PDF (лист и строки Excel, раздел Word), фрагмент текста и сетевой путь. Документы не покидают сеть компании.\n\nПоиск гибридный, без генерации LLM: собственный инвертированный индекс по словам и обозначениям плюс семантический поиск FAISS на эмбеддингах sentence-transformers (all-MiniLM-L6-v2). Обозначения сравниваются по общим правилам: латиница и кириллица одинакового начертания, пробелы и дефисы не мешают совпадению, а номера и марки не подменяются. Сканы определяются автоматически, выбранные страницы проходят OCR (Tesseract + Poppler). Бэкенд — FastAPI, интерфейс — HTML/JS без фреймворков; сервис работает как служба systemd на Ubuntu Server с атомарной заменой индекса и откатом.\n\nЗапросы по шифрам и маркам ускорились с 9–10 с до 1,2–1,7 с, фразовые — с 55–70 с до 2–4 с; после перехода на инвертированный индекс p95 — 0,18 с на 55 контрольных запросах. Качество держат 739 тестов pytest и контрольный набор из 104 запросов с метриками top-1/top-5. Делал с AI-агентами (Codex, Cursor, Claude Code): собирал требования, писал ТЗ для агентов, ревьюил изменения и проверял их на рабочем индексе. Работа принята заказчиком в сентябре 2026 года. Код закрыт, поэтому здесь показана схема архитектуры.",
       problem:
-        "Инженерные документы разбросаны по PDF, Word, Excel и сканам, а обычный поиск по ключевым словам плохо справляется с таким набором.",
+        "Инженеры искали по сетевому архиву PDF, Word, Excel, RTF и сканов вручную. Обозначения — марки кабелей, шифры — должны совпадать точно, а фразам нужен поиск по смыслу.",
       solution:
-        "OCR и парсинг всех форматов, гибридный поиск (sentence-transformers + FAISS), пайплайны на FastAPI и ответы с помощью LLM.",
-      result: "В разработке в «Электросервисе»: единый поиск по PDF, Word, Excel и сканам технической документации.",
+        "Собственный инвертированный индекс для точных обозначений плюс семантический поиск FAISS, OCR для сканов и метки надёжности у каждого результата; бэкенд на FastAPI, интерфейс на HTML/JS, служба systemd.",
+      result: "Принято заказчиком в сентябре 2026 года: p95 — 0,18 с, 739 тестов и контрольный набор из 104 запросов.",
       flow: [
-        { label: "Загрузка", nodes: [{ name: "PDF · Word · Excel" }, { name: "OCR", note: "сканы" }] },
-        { label: "Индекс", nodes: [{ name: "sentence-transformers" }, { name: "FAISS" }, { name: "ключевые слова" }] },
-        { label: "Запрос", nodes: [{ name: "FastAPI", note: "гибридный поиск" }, { name: "LLM", note: "ответ" }] }
+        { label: "Загрузка", nodes: [{ name: "PDF · DOCX · XLSX · RTF" }, { name: "OCR", note: "Tesseract · сканы" }] },
+        { label: "Индекс", nodes: [{ name: "Инвертированный индекс", note: "слова · обозначения" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
+        { label: "Запрос", nodes: [{ name: "FastAPI", note: "гибридное ранжирование" }, { name: "HTML / JS", note: "интерфейс поиска" }] }
       ]
     },
     ar: {
-      title: "البحث في الوثائق الهندسية (RAG)",
+      title: "البحث في الوثائق الهندسية",
       company: "Elektroservis",
-      rolePurpose: "عملي الحالي · بحث RAG في الوثائق",
+      rolePurpose: "مطوّر Python · أبريل–أكتوبر 2026 · بحث دلالي ونصي كامل",
       description:
-        "بحث وRAG في الوثائق الهندسية والفنية — ملفات PDF وWord وExcel والمستندات الممسوحة ضوئياً — ببحث هجين يجمع بين الكلمات المفتاحية والمعنى عبر خدمة FastAPI.",
+        "بحث دلالي ونصي كامل في أرشيف الوثائق الهندسية — نحو 4.1 ألف ملف PDF وDOCX وXLSX وRTF: فهرس مقلوب خاص بالمشروع مع FAISS على sentence-transformers، خلف خدمة FastAPI. دون توليد نصوص بنماذج LLM.",
       whatItDoes: [
-        "فهرسة ملفات PDF وWord وExcel، بما فيها المستندات الممسوحة عبر OCR",
-        "بحث هجين: مطابقة الكلمات المفتاحية مع البحث الدلالي باستخدام sentence-transformers وFAISS",
-        "خطوط معالجة على FastAPI لاستقبال المستندات والاستعلام",
-        "إجابات بمساعدة LLM مبنية على المقاطع المسترجَعة"
+        "يعثر على رمز كابل أو رمز وثيقة أو تسمية معدّة أو عبارة، ويعيد الوثيقة والصفحة (أو الورقة والصفوف) والمقتطف والمسار الشبكي",
+        "بحث هجين: فهرس مقلوب خاص بالمشروع مع بحث دلالي عبر FAISS على sentence-transformers ‏(all-MiniLM-L6-v2)",
+        "يكتشف المستندات الممسوحة تلقائياً ويمرّر صفحات مختارة عبر OCR ‏(Tesseract + Poppler)",
+        "تسميات موثوقية — تطابق تام، يحتاج إلى مراجعة، تطابق جزئي — ونتيجة واحدة لكل وثيقة"
       ],
       longDescription:
-        "الوثائق الهندسية والفنية خليط من ملفات PDF وWord وجداول Excel ومستندات ممسوحة ضوئياً. وعملي الحالي في Elektroservis بموسكو نظام بحث وRAG يجعل هذا كله قابلاً للبحث في مكان واحد.\n\nيحلّل خط معالجة الاستقبال كل صيغة ويمرّر المستندات الممسوحة عبر OCR قبل الفهرسة. والبحث هجين: مطابقة الكلمات المفتاحية تلتقط المصطلحات الدقيقة، بينما يعثر البحث الدلالي — بتضمينات sentence-transformers وفهرس FAISS — على المقاطع التي تحمل المعنى نفسه بصياغة مختلفة. والغاية من الجمع بينهما إجابات أوثق صلة بالسؤال مما يقدّمه كلٌّ منهما منفرداً.\n\nتربط خطوط المعالجة على FastAPI بين التحليل والفهرسة والاسترجاع والإجابات المدعومة بنماذج LLM. النظام قيد التطوير النشط والكود خاص، لذا يعرض المخطط البنية، ويعرض مشروعي مفتوح المصدر Lumen Search الأساليب نفسها على مستندات عامة.",
+        "تحفظ Elektroservis وثائقها الهندسية (قسم PTO) في أرشيف شبكي من نحو 4.1 ألف ملف PDF وDOCX وXLSX وRTF، منها نحو 1.5 ألف تحتوي نصاً. ومن أبريل إلى أكتوبر 2026، بموجب عقود مدنية، بنيتُ خدمة بحث فيه: يكتب المهندس رمز كابل أو رمز وثيقة أو تسمية معدّة أو عبارة، فيحصل على الوثيقة وصفحة PDF (أو ورقة Excel وصفوفها، أو قسم Word) ومقتطف من النص والمسار الشبكي. ولا تغادر الوثائق شبكة الشركة.\n\nالبحث هجين ودون توليد نصوص بنماذج LLM: فهرس مقلوب خاص بالمشروع للكلمات والتسميات، مع بحث دلالي عبر FAISS على تضمينات sentence-transformers ‏(all-MiniLM-L6-v2). وتُطابَق التسميات بقواعد عامة: الحروف اللاتينية والكيريلية المتشابهة والمسافات والشرطات لا تمنع التطابق، بينما لا تُستبدل الأرقام والرموز أبداً. وتُكتشف المستندات الممسوحة تلقائياً وتمرّ صفحات مختارة منها عبر OCR ‏(Tesseract + Poppler). الخلفية على FastAPI والواجهة HTML/JS دون أطر عمل، وتعمل الخدمة عبر systemd على Ubuntu Server مع استبدال ذرّي للفهرس وإمكانية التراجع.\n\nانخفض زمن استعلامات الرموز من 9–10 ثوانٍ إلى 1.2–1.7 ثانية، والاستعلامات النصية من 55–70 ثانية إلى 2–4 ثوانٍ، وبعد الانتقال إلى الفهرس المقلوب بلغ زمن p95 ‏0.18 ثانية على 55 استعلام تحكّم. وتحفظ الجودةَ 739 اختبار pytest ومجموعة تحكّم من 104 استعلامات بمقاييس top-1/top-5. بنيتُه بمساعدة وكلاء الذكاء الاصطناعي (Codex وCursor وClaude Code): جمعتُ المتطلبات وكتبتُ المهام للوكلاء وراجعتُ التغييرات وتحقّقتُ منها على الفهرس الفعلي. وقبِل العميل العمل في سبتمبر 2026. الكود خاص، لذا يعرض المخطط البنية.",
       problem:
-        "الوثائق الهندسية موزّعة بين ملفات PDF وWord وExcel ومستندات ممسوحة، والبحث التقليدي بالكلمات المفتاحية لا يتعامل جيداً مع هذا المزيج.",
+        "كان المهندسون يبحثون يدوياً في أرشيف شبكي من ملفات PDF وWord وExcel وRTF والمستندات الممسوحة. ويجب أن تتطابق التسميات — رموز الكابلات والوثائق — تطابقاً تاماً، بينما تحتاج العبارات إلى بحث بالمعنى.",
       solution:
-        "OCR وتحليل لكل الصيغ، وبحث هجين (sentence-transformers + FAISS)، وخطوط معالجة على FastAPI، وإجابات بمساعدة LLM.",
-      result: "قيد التطوير في Elektroservis — بحث واحد يشمل ملفات PDF وWord وExcel والوثائق الهندسية الممسوحة ضوئياً.",
+        "فهرس مقلوب خاص بالمشروع للتسميات الدقيقة مع بحث دلالي عبر FAISS، وOCR للمستندات الممسوحة، وتسمية موثوقية لكل نتيجة؛ وخلفية FastAPI وواجهة HTML/JS وخدمة systemd.",
+      result: "قبِله العميل في سبتمبر 2026: زمن p95 بلغ 0.18 ثانية، و739 اختباراً، ومجموعة تحكّم من 104 استعلامات.",
       flow: [
-        { label: "الاستقبال", nodes: [{ name: "PDF · Word · Excel" }, { name: "OCR", note: "المستندات الممسوحة" }] },
-        { label: "الفهرسة", nodes: [{ name: "sentence-transformers" }, { name: "FAISS" }, { name: "الكلمات المفتاحية" }] },
-        { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "بحث هجين" }, { name: "LLM", note: "الإجابة" }] }
-      ]
-    }
-  },
-  "ai-dashboard-suite": {
-    ru: {
-      title: "KPI-дашборды для клиента",
-      company: "Фриланс",
-      rolePurpose: "Фриланс, клиентский проект · дашборды на React",
-      description:
-        "Интерактивные KPI-дашборды для клиента на фрилансе: данные из нескольких источников сведены за единым API на Node.js.",
-      whatItDoes: [
-        "Фильтруемые KPI-модули вместо статичных выгрузок",
-        "API на Node.js, который сводит несколько источников данных",
-        "Графики трендов, на которых изменения видны сразу"
-      ],
-      longDescription:
-        "Клиент на фрилансе работал со статичными выгрузками и разовыми таблицами, поэтому тренды оставались незаметными, пока кто-нибудь не обновит отчёт вручную. Нужны были интерактивные дашборды, в которых легко читать KPI.\n\nЯ сделал фронтенд на React с фильтруемыми KPI-модулями и графиками трендов и API на Node.js, который сводит несколько источников данных в один REST-интерфейс. Код принадлежит клиенту, поэтому здесь показана схема архитектуры.",
-      problem: "Решения принимались по статичным выгрузкам и таблицам, поэтому тренды замечали поздно.",
-      solution: "Дашборды на React с фильтруемыми KPI и графиками трендов; API на Node.js сводит несколько источников данных.",
-      result: "Фильтруемые KPI в одном месте вместо отчётов, которые обновляют вручную.",
-      flow: [
-        { label: "Данные", nodes: [{ name: "Несколько источников" }] },
-        { label: "API", nodes: [{ name: "Node.js", note: "единый REST-интерфейс" }] },
-        { label: "UI", nodes: [{ name: "React", note: "KPI-дашборды · фильтры" }] }
-      ]
-    },
-    ar: {
-      title: "لوحات مؤشرات أداء لعميل",
-      company: "عمل حر",
-      rolePurpose: "عمل حر لعميل · لوحات React",
-      description:
-        "لوحات مؤشرات تفاعلية لأحد عملاء العمل الحر، تجمع بيانات عدة مصادر خلف واجهة API واحدة على Node.js.",
-      whatItDoes: [
-        "وحدات مؤشرات أداء قابلة للتصفية بدلاً من الملفات الثابتة",
-        "واجهة API على Node.js تجمع بيانات عدة مصادر",
-        "عروض للاتجاهات تُظهر التغيّرات بسرعة"
-      ],
-      longDescription:
-        "كان أحد عملائي في العمل الحر يعتمد على ملفات مُصدَّرة ثابتة وجداول متفرقة، فتبقى الاتجاهات مخفية حتى يحدّث أحدهم التقرير يدوياً. وكان المطلوب لوحات تفاعلية تجعل قراءة المؤشرات أسهل.\n\nبنيت واجهة React بوحدات مؤشرات قابلة للتصفية وعروض للاتجاهات، وواجهة API على Node.js تجمع بيانات عدة مصادر خلف واجهة REST واحدة. الكود ملك للعميل، لذا يعرض المخطط البنية.",
-      problem: "كانت القرارات تعتمد على ملفات مُصدَّرة وجداول ثابتة، فتُكتشف الاتجاهات متأخرة.",
-      solution: "لوحات React بمؤشرات قابلة للتصفية وعروض للاتجاهات، وواجهة API على Node.js فوق عدة مصادر.",
-      result: "مؤشرات قابلة للتصفية في مكان واحد بدلاً من تقارير تُحدَّث يدوياً.",
-      flow: [
-        { label: "البيانات", nodes: [{ name: "مصادر متعددة" }] },
-        { label: "API", nodes: [{ name: "Node.js", note: "واجهة REST واحدة" }] },
-        { label: "الواجهة", nodes: [{ name: "React", note: "لوحات المؤشرات · التصفية" }] }
+        { label: "الاستقبال", nodes: [{ name: "PDF · DOCX · XLSX · RTF" }, { name: "OCR", note: "Tesseract · المستندات الممسوحة" }] },
+        { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
+        { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
     }
   },
   "lumen-search": {
     ru: {
       title: "Lumen Search",
-      rolePurpose: "Open source · гибридный поиск по документам (RAG)",
+      rolePurpose: "Open-source-прототип, сделан с AI-агентами · гибридный поиск по документам (RAG)",
       description:
         "Гибридный поиск со ссылками на источник по PDF, Word, Excel и сканам на английском и русском: BM25 и многоязычные эмбеддинги в FAISS, OCR и сервис на FastAPI.",
       whatItDoes: [
@@ -519,7 +441,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "Сервис на FastAPI с кешем Redis, ответы с пронумерованными источниками и демо, которое работает прямо в браузере"
       ],
       longDescription:
-        "Lumen Search — открытый аналог системы, которую я делаю на работе: единый поиск по PDF, файлам Word, таблицам Excel и сканам, где у каждого ответа видно, откуда он взят. В индексе восемь открытых документов: рекомендации NIST и OWASP по безопасности на английском, закон о персональных данных на русском и два скана, которые можно прочитать только через OCR.\n\nРазбор повторяет структуру документа — закладки PDF и нумерованные заголовки, стили заголовков Word, одна строка таблицы на запись, — поэтому результат ссылается на страницу и раздел, статью закона или лист и строку. Поиск идёт двумя способами: BM25 по словам английского и русского, приведённым к основе стеммером Snowball, и эмбеддинги multilingual-e5 в FAISS; два ранжирования объединяются, а лучшие результаты можно переранжировать многоязычным кросс-энкодером.\n\nКачество измерено на 62 вопросах с ручной разметкой: гибридный поиск находит верный фрагмент в первой пятёрке для 75,8% вопросов, а с переранжированием — для 83,9%; в README честно описаны и слабые места. Сервис запускается одной командой docker compose, а живое демо выполняет тот же поиск в браузере с int8-моделью на 66 МБ; CI проверяет, что JavaScript-версия совпадает с кодом на Python.",
+        "Lumen Search — open-source-прототип, который я сделал с AI-агентами на ту же тему, что и мой рабочий поиск по документации: единый поиск по PDF, файлам Word, таблицам Excel и сканам, где у каждого ответа видно, откуда он взят. В индексе восемь открытых документов: рекомендации NIST и OWASP по безопасности на английском, закон о персональных данных на русском и два скана, которые можно прочитать только через OCR.\n\nРазбор повторяет структуру документа — закладки PDF и нумерованные заголовки, стили заголовков Word, одна строка таблицы на запись, — поэтому результат ссылается на страницу и раздел, статью закона или лист и строку. Поиск идёт двумя способами: BM25 по словам английского и русского, приведённым к основе стеммером Snowball, и эмбеддинги multilingual-e5 в FAISS; два ранжирования объединяются, а лучшие результаты можно переранжировать многоязычным кросс-энкодером.\n\nКачество измерено на 62 вопросах с ручной разметкой: гибридный поиск находит верный фрагмент в первой пятёрке для 75,8% вопросов, а с переранжированием — для 83,9%; в README честно описаны и слабые места. Сервис запускается одной командой docker compose, а живое демо выполняет тот же поиск в браузере с int8-моделью на 66 МБ; CI проверяет, что JavaScript-версия совпадает с кодом на Python.",
       problem:
         "Документы приходят вперемешку — PDF, Word, таблицы и сканы, а обычный поиск по ключевым словам не находит перефразированное и не показывает, откуда взят ответ.",
       solution:
@@ -529,7 +451,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
     },
     ar: {
       title: "Lumen Search",
-      rolePurpose: "مفتوح المصدر · بحث هجين في المستندات (RAG)",
+      rolePurpose: "نموذج أولي مفتوح المصدر بُني بمساعدة وكلاء الذكاء الاصطناعي · بحث هجين في المستندات (RAG)",
       description:
         "بحث هجين يذكر مصدر كل نتيجة في ملفات PDF وWord وExcel والصفحات الممسوحة ضوئياً، بالإنجليزية والروسية: BM25 وتضمينات متعددة اللغات في FAISS، وOCR، وخدمة FastAPI.",
       whatItDoes: [
@@ -539,7 +461,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         "خدمة FastAPI مع تخزين مؤقت في Redis، وإجابات بمصادر مرقّمة، وعرض تجريبي يعمل داخل المتصفح"
       ],
       longDescription:
-        "Lumen Search هو النظير مفتوح المصدر للنظام الذي أبنيه في عملي: بحث واحد في ملفات PDF وWord وجداول Excel والمستندات الممسوحة، تُظهر فيه كل إجابة مصدرها بدقة. ويضم الفهرس ثمانية مستندات عامة: إرشادات NIST وOWASP الأمنية بالإنجليزية، وقانون البيانات الشخصية الروسي بالروسية، ومستندين ممسوحين لا يمكن قراءتهما إلا عبر OCR.\n\nيتبع التحليل بنية كل مستند — إشارات PDF المرجعية والعناوين المرقّمة، وأنماط العناوين في Word، وصفاً واحداً من الجدول لكل سجل — فتُحيل النتيجة إلى صفحة وقسم، أو مادة من القانون، أو ورقة وصف. ويجري البحث بطريقتين: BM25 على كلمات إنجليزية وروسية مردودة إلى جذورها بأداة Snowball، وتضمينات multilingual-e5 في FAISS، ثم يُدمج الترتيبان، ويمكن إعادة ترتيب أفضل النتائج بنموذج cross-encoder متعدد اللغات.\n\nوالجودة مقيسة على 62 سؤالاً صُنّفت يدوياً: يضع البحث الهجين مقطعاً صحيحاً بين أول خمس نتائج في 75.8% من الأسئلة، وترفع إعادة الترتيب النسبة إلى 83.9%، ويذكر ملف README نقاط الضعف أيضاً. تعمل الخدمة بأمر docker compose واحد، ويشغّل العرض الحيّ البحث نفسه داخل المتصفح بنموذج int8 حجمه 66 ميغابايت، ويتحقق CI من تطابق نسخة JavaScript مع كود Python.",
+        "Lumen Search نموذج أولي مفتوح المصدر بنيتُه بمساعدة وكلاء الذكاء الاصطناعي، في موضوع عملي نفسه على البحث في الوثائق: بحث واحد في ملفات PDF وWord وجداول Excel والمستندات الممسوحة، تُظهر فيه كل إجابة مصدرها بدقة. ويضم الفهرس ثمانية مستندات عامة: إرشادات NIST وOWASP الأمنية بالإنجليزية، وقانون البيانات الشخصية الروسي بالروسية، ومستندين ممسوحين لا يمكن قراءتهما إلا عبر OCR.\n\nيتبع التحليل بنية كل مستند — إشارات PDF المرجعية والعناوين المرقّمة، وأنماط العناوين في Word، وصفاً واحداً من الجدول لكل سجل — فتُحيل النتيجة إلى صفحة وقسم، أو مادة من القانون، أو ورقة وصف. ويجري البحث بطريقتين: BM25 على كلمات إنجليزية وروسية مردودة إلى جذورها بأداة Snowball، وتضمينات multilingual-e5 في FAISS، ثم يُدمج الترتيبان، ويمكن إعادة ترتيب أفضل النتائج بنموذج cross-encoder متعدد اللغات.\n\nوالجودة مقيسة على 62 سؤالاً صُنّفت يدوياً: يضع البحث الهجين مقطعاً صحيحاً بين أول خمس نتائج في 75.8% من الأسئلة، وترفع إعادة الترتيب النسبة إلى 83.9%، ويذكر ملف README نقاط الضعف أيضاً. تعمل الخدمة بأمر docker compose واحد، ويشغّل العرض الحيّ البحث نفسه داخل المتصفح بنموذج int8 حجمه 66 ميغابايت، ويتحقق CI من تطابق نسخة JavaScript مع كود Python.",
       problem:
         "تصل المستندات خليطاً من ملفات PDF وWord والجداول والمستندات الممسوحة، والبحث التقليدي بالكلمات المفتاحية لا يجد الصياغات المختلفة ولا يبيّن مصدر الإجابة.",
       solution:
@@ -551,7 +473,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
   pulseboard: {
     ru: {
       title: "Pulseboard",
-      rolePurpose: "Open source · мониторинг доступности и SLO",
+      rolePurpose: "Open-source-прототип, сделан с AI-агентами · мониторинг доступности и SLO",
       description:
         "Мониторинг доступности HTTP-сервисов на собственном сервере: автоматические инциденты, бюджеты ошибок SLO, публичная страница статуса и метрики Prometheus — в одном контейнере.",
       whatItDoes: [
@@ -570,7 +492,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
     },
     ar: {
       title: "Pulseboard",
-      rolePurpose: "مفتوح المصدر · مراقبة التوفّر وأهداف SLO",
+      rolePurpose: "نموذج أولي مفتوح المصدر بُني بمساعدة وكلاء الذكاء الاصطناعي · مراقبة التوفّر وأهداف SLO",
       description:
         "مراقبة توفّر خدمات HTTP على خادمك الخاص، مع حوادث تُفتح تلقائياً وميزانيات أخطاء SLO وصفحة حالة عامة ومقاييس Prometheus — في حاوية واحدة.",
       whatItDoes: [
@@ -591,7 +513,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
   deployledger: {
     ru: {
       title: "DeployLedger",
-      rolePurpose: "Open source · релизы и метрики DORA",
+      rolePurpose: "Open-source-прототип, сделан с AI-агентами · релизы и метрики DORA",
       description:
         "Сервис управления релизами на собственной инфраструктуре: принимает события деплоя, считает метрики DORA и помогает решить, можно ли безопасно выкатывать следующий релиз.",
       whatItDoes: [
@@ -610,7 +532,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
     },
     ar: {
       title: "DeployLedger",
-      rolePurpose: "مفتوح المصدر · عمليات الإصدار ومقاييس DORA",
+      rolePurpose: "نموذج أولي مفتوح المصدر بُني بمساعدة وكلاء الذكاء الاصطناعي · عمليات الإصدار ومقاييس DORA",
       description:
         "خدمة لإدارة عمليات الإصدار تعمل على بنيتك الخاصة: تستقبل أحداث النشر، وتحسب مقاييس DORA، وتساعد على تقرير ما إذا كان الإصدار التالي آمناً.",
       whatItDoes: [
@@ -631,7 +553,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
   gatehouse: {
     ru: {
       title: "Gatehouse",
-      rolePurpose: "Open source · доступ по принципу just-in-time",
+      rolePurpose: "Open-source-прототип, сделан с AI-агентами · доступ по принципу just-in-time",
       description:
         "Сервис запросов и согласования доступа на собственной инфраструктуре: узкий и временный доступ, а каждое решение записывается в проверяемый журнал аудита.",
       whatItDoes: [
@@ -650,7 +572,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
     },
     ar: {
       title: "Gatehouse",
-      rolePurpose: "مفتوح المصدر · صلاحيات وصول عند الحاجة",
+      rolePurpose: "نموذج أولي مفتوح المصدر بُني بمساعدة وكلاء الذكاء الاصطناعي · صلاحيات وصول عند الحاجة",
       description:
         "خدمة لطلب صلاحيات الوصول والموافقة عليها تعمل على بنيتك الخاصة: وصول محدود النطاق وقصير الأجل، وكل قرار موثّق في سلسلة تدقيق قابلة للتحقق.",
       whatItDoes: [
@@ -670,7 +592,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
   "webhook-workbench": {
     ru: {
       title: "Webhook Workbench",
-      rolePurpose: "Open source · отладка вебхуков на Go",
+      rolePurpose: "Open-source-прототип, сделан с AI-агентами · отладка вебхуков на Go",
       description:
         "Приватный инструмент на собственном сервере: принимает, показывает, проверяет и безопасно переотправляет вебхуки. Один бинарник на Go без зависимостей со встроенным интерфейсом.",
       whatItDoes: [
@@ -689,7 +611,7 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
     },
     ar: {
       title: "Webhook Workbench",
-      rolePurpose: "مفتوح المصدر · تصحيح webhooks بلغة Go",
+      rolePurpose: "نموذج أولي مفتوح المصدر بُني بمساعدة وكلاء الذكاء الاصطناعي · تصحيح webhooks بلغة Go",
       description:
         "أداة خاصة تعمل على خادمك لالتقاط webhooks وفحصها والتحقق منها وإعادة إرسالها بأمان — ملف تنفيذي واحد بلغة Go بلا اعتماديات، والواجهة مدمجة فيه.",
       whatItDoes: [

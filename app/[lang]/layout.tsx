@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: LayoutParams): Promise<Metada
       "TypeScript",
       "Node.js",
       "FastAPI",
-      "RAG",
+      "Semantic search",
       "AI systems",
       "Moscow"
     ],
@@ -94,7 +94,6 @@ const jsonLd = {
       jobTitle: "Full-Stack & Python Developer",
       url: SITE_URL,
       image: `${SITE_URL}/images/alhassan.webp`,
-      worksFor: { "@type": "Organization", name: "Elektroservis", alternateName: "Электросервис" },
       alumniOf: [
         { "@type": "CollegeOrUniversity", name: "National University of Science and Technology MISIS", alternateName: "НИТУ МИСИС" },
         { "@type": "CollegeOrUniversity", name: "Ural Federal University", alternateName: "УрФУ" }
@@ -108,9 +107,7 @@ const jsonLd = {
         "Node.js",
         "Python",
         "FastAPI",
-        "PostgreSQL",
         "MongoDB",
-        "Retrieval-augmented generation",
         "Semantic search",
         "OCR",
         "Docker",

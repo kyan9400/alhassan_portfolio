@@ -3,7 +3,7 @@
 import { useCopy } from "@/lib/hooks";
 import { Bidi, Reveal, SectionHeader } from "@/components/ui/primitives";
 
-/** Position of the "AI & Search" group in copy.skillsGroups (the same in every locale): set in accent ink. */
+/** Position of the "Search & Documents" group in copy.skillsGroups (the same in every locale): set in accent ink. */
 const HIGHLIGHT_GROUP = 2;
 
 /** The stack as one index table: layer label in mono, tools as plain text, hairlines between rows. */

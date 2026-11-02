@@ -3,7 +3,7 @@ import { SITE_HOST } from "@/lib/ui-copy";
 import { LOCALES } from "@/lib/i18n";
 import { STATIC_EXPORT } from "@/lib/base-path";
 
-export const alt = "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Available immediately";
+export const alt = "Alhassan Alfarran — Full-Stack & Python Developer. Moscow · Open to offers";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -13,7 +13,7 @@ export const contentType = "image/png";
  */
 export const generateStaticParams = STATIC_EXPORT ? () => LOCALES.map((lang) => ({ lang })) : undefined;
 
-const STACK = ["React", "TypeScript", "Node.js", "Python / FastAPI", "RAG & search"];
+const STACK = ["React", "TypeScript", "Node.js", "Python / FastAPI", "Document search"];
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -66,7 +66,7 @@ export default function OpengraphImage() {
             }}
           >
             <div style={{ width: 12, height: 12, borderRadius: 999, background: "#4ade80" }} />
-            Moscow · Available immediately
+            Moscow · Open to offers
           </div>
         </div>
 

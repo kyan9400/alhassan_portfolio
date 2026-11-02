@@ -224,9 +224,9 @@ const CURATED: CuratedRepo[] = [
     displayName: "OpsMind",
     category: "ai",
     language: "TypeScript",
-    description: "AI-powered operations & knowledge platform: Next.js, Node.js, PostgreSQL, Python RAG, Docker, CI/CD.",
-    ru: "Платформа операций и базы знаний с AI: Next.js, Node.js, PostgreSQL, RAG на Python, Docker, CI/CD.",
-    ar: "منصة للعمليات والمعرفة مدعومة بالذكاء الاصطناعي: Next.js وNode.js وPostgreSQL وRAG بلغة Python وDocker وCI/CD.",
+    description: "Prototype built with Claude Code: an AI operations & knowledge platform on Next.js, Node.js, PostgreSQL, Python RAG, Docker and CI/CD.",
+    ru: "Прототип, сделан с Claude Code: платформа операций и базы знаний с AI на Next.js, Node.js, PostgreSQL, RAG на Python, Docker и CI/CD.",
+    ar: "نموذج أولي بُني باستخدام Claude Code: منصة للعمليات والمعرفة مدعومة بالذكاء الاصطناعي على Next.js وNode.js وPostgreSQL وRAG بلغة Python وDocker وCI/CD.",
     topics: ["rag", "nextjs", "nodejs", "postgresql", "python", "docker"],
     stars: 0
   },

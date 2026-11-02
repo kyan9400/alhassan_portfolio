@@ -194,23 +194,23 @@ export const uiCopy: Record<Locale, UiCopy> = {
       night: "Hello, night owl"
     },
     heroIntro:
-      "Full-stack & Python developer in Moscow: React + TypeScript up front, Node.js or FastAPI behind it. In 2025 I built the OKKP operations platform from scratch as Chief Full-Stack Developer at Avenue Group.",
+      "Python & full-stack developer in Moscow, building commercially since 2024: React + TypeScript up front, FastAPI or Node.js behind it. In 2026 I built search over an engineering-document archive (0.18 s p95, accepted by the client); in 2025 I was the lead developer of OKKP at Avenue Group.",
     heroScroll: "Scroll to explore",
     currentlyLabel: "Currently",
-    currentlyValue: "building RAG search with FastAPI & FAISS at Elektroservis",
+    currentlyValue: "open to Python and full-stack roles",
     aboutStoryTitle: "The short story.",
     aboutStory: [
       {
         label: "Where it started",
-        body: "In 2020 I took on my first freelance clients — scoping, estimating, delivering and supporting the work myself."
+        body: "In 2024, during my Master's, I started working commercially: freelance web apps for clients, then full-stack work at Junzi Tech Solutions."
       },
       {
         label: "Building with real teams",
-        body: "At Avenue Group I designed and shipped the OKKP platform from scratch as Chief Full-Stack Developer, from architecture to deployment and production support."
+        body: "At Avenue Group I was the lead developer of OKKP, an internal quality-control system for 9 vehicle depots: I designed the architecture and API and wrote most of the code, in a team of three."
       },
       {
-        label: "Where I am now",
-        body: "Today I build RAG search over engineering documents at Elektroservis in Moscow — FastAPI, OCR, sentence-transformers and FAISS — with a Master's from NUST MISIS (2024–2026) behind me."
+        label: "Latest project",
+        body: "In 2026 I built semantic and full-text search over an engineering-document archive for Elektroservis — FastAPI, an inverted index, sentence-transformers, FAISS and OCR — with a Master's from NUST MISIS (2024–2026) behind me."
       }
     ],
     nextProject: "Next project",
@@ -298,7 +298,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       retry: "Try again",
       home: "Back to home"
     },
-    availabilityLine: "Available immediately · Moscow on-site/hybrid or remote · full-time or contract",
+    availabilityLine: "Open to offers · Moscow on-site/hybrid or remote · full-time or contract",
     diagram: {
       region: "Architecture diagram",
       swipe: "Swipe sideways to see the whole diagram",
@@ -306,15 +306,15 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     projectCta: {
       eyebrow: "What's next",
-      title: "Hiring for a full-stack, Python or AI role — or need something like this built? Let's talk.",
-      body: "I'm available immediately — on-site or hybrid in Moscow, or remote; full-time or contract. I reply within 48 hours — faster on Telegram.",
+      title: "Hiring for a full-stack or Python role — or need something like this built? Let's talk.",
+      body: "I'm open to offers — on-site or hybrid in Moscow, or remote; full-time or contract. I reply within 48 hours — faster on Telegram.",
       contact: "Get in touch"
     },
     meta: {
       homeTitle: "Alhassan Alfarran — Full-Stack & Python Developer, Moscow",
       nameSuffix: "Alhassan Alfarran",
       homeDescription:
-        "Full-stack & Python developer in Moscow: React, TypeScript, Node.js, FastAPI, PostgreSQL and RAG document search. Built an operations platform from scratch as Chief Full-Stack Developer. Available now — on-site, hybrid or remote.",
+        "Python & full-stack developer in Moscow: FastAPI, React + TypeScript, Node.js, MongoDB and document search. Lead developer of an internal system for 9 vehicle depots. Open to offers — on-site, hybrid or remote.",
       cvDescription:
         "One-page CV of Alhassan Alfarran, Full-Stack & Python Developer in Moscow: experience, projects, skills, education, certifications and languages. Printable, with a PDF download."
     },
@@ -404,23 +404,23 @@ export const uiCopy: Record<Locale, UiCopy> = {
       night: "Привет, полуночник"
     },
     heroIntro:
-      "Full-stack / Python-разработчик из Москвы: React и TypeScript на фронтенде, Node.js или FastAPI на бэкенде. В 2025 году в Avenue Group с нуля построил платформу OKKP как главный full-stack разработчик.",
+      "Python / full-stack-разработчик из Москвы, коммерческая разработка с 2024 года: React и TypeScript на фронтенде, FastAPI или Node.js на бэкенде. В 2026 году сделал поиск по архиву технической документации (p95 — 0,18 с, работа принята заказчиком), в 2025-м был ведущим разработчиком OKKP в Avenue Group.",
     heroScroll: "Листайте дальше",
     currentlyLabel: "Сейчас",
-    currentlyValue: "строю RAG-поиск на FastAPI и FAISS в «Электросервисе»",
+    currentlyValue: "открыт к предложениям: Python и full-stack",
     aboutStoryTitle: "Коротко обо мне.",
     aboutStory: [
       {
         label: "С чего всё началось",
-        body: "В 2020 году я взял первые заказы на фрилансе: сам ставил задачу, оценивал сроки, разрабатывал и поддерживал результат."
+        body: "В 2024 году, во время магистратуры, начал работать коммерчески: веб-приложения для заказчиков на фрилансе, затем full-stack-разработка в Junzi Tech Solutions."
       },
       {
         label: "Работа в командах",
-        body: "В Avenue Group как главный full-stack разработчик я с нуля спроектировал и запустил платформу OKKP — от архитектуры до деплоя и поддержки в продакшене."
+        body: "В Avenue Group я был ведущим разработчиком OKKP — внутренней системы контроля качества для 9 автопарков: спроектировал архитектуру и API и написал большую часть кода в команде из трёх человек."
       },
       {
-        label: "Где я сейчас",
-        body: "Сейчас в «Электросервисе» в Москве строю RAG-поиск по технической документации на FastAPI, OCR, sentence-transformers и FAISS; за плечами — магистратура НИТУ МИСИС (2024–2026)."
+        label: "Последний проект",
+        body: "В 2026 году сделал для «Электросервиса» семантический и полнотекстовый поиск по архиву технической документации — FastAPI, инвертированный индекс, sentence-transformers, FAISS и OCR; за плечами — магистратура НИТУ МИСИС (2024–2026)."
       }
     ],
     nextProject: "Следующий проект",
@@ -507,7 +507,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       retry: "Попробовать снова",
       home: "На главную"
     },
-    availabilityLine: "Готов приступить сразу · Москва: офис или гибрид, либо удалённо · полная занятость или контракт",
+    availabilityLine: "Открыт к предложениям · Москва: офис или гибрид, либо удалённо · полная занятость или контракт",
     diagram: {
       region: "Схема архитектуры",
       swipe: "Листайте в сторону, чтобы увидеть всю схему",
@@ -515,15 +515,15 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     projectCta: {
       eyebrow: "Что дальше",
-      title: "Ищете full-stack, Python- или AI-разработчика — или нужно сделать что-то похожее? Давайте обсудим.",
-      body: "Готов приступить сразу: офис или гибрид в Москве, либо удалённо; полная занятость или контракт. Отвечаю в течение 48 часов, в Telegram — быстрее.",
+      title: "Ищете full-stack- или Python-разработчика — или нужно сделать что-то похожее? Давайте обсудим.",
+      body: "Открыт к предложениям: офис или гибрид в Москве, либо удалённо; полная занятость или контракт. Отвечаю в течение 48 часов, в Telegram — быстрее.",
       contact: "Связаться"
     },
     meta: {
       homeTitle: "Альхассан Альфарран — Full-stack / Python-разработчик, Москва",
       nameSuffix: "Альхассан Альфарран",
       homeDescription:
-        "Full-stack и Python-разработчик в Москве: React, TypeScript, Node.js, FastAPI, PostgreSQL и RAG-поиск по документам. Как Chief Full-Stack Developer построил с нуля платформу для операционного управления. Готов приступить сразу — офис, гибрид или удалённо.",
+        "Python / full-stack-разработчик в Москве: FastAPI, React + TypeScript, Node.js, MongoDB и поиск по документам. Ведущий разработчик внутренней системы для 9 автопарков. Открыт к предложениям — офис, гибрид или удалённо.",
       cvDescription:
         "Резюме Альхассана Альфаррана на одной странице, Full-stack / Python-разработчик в Москве: опыт, проекты, навыки, образование, сертификаты и языки. Можно распечатать или скачать PDF."
     },
@@ -613,23 +613,23 @@ export const uiCopy: Record<Locale, UiCopy> = {
       night: "أهلاً يا ساهر الليل"
     },
     heroIntro:
-      "مطوّر Full-Stack وPython في موسكو: React وTypeScript في الواجهة، وNode.js أو FastAPI في الخلفية. في 2025 بنيتُ منصة OKKP من الصفر بصفتي كبير مطوري Full-Stack في Avenue Group.",
+      "مطوّر Python وFull-Stack في موسكو، أعمل في التطوير التجاري منذ 2024: React وTypeScript في الواجهة، وFastAPI أو Node.js في الخلفية. في 2026 بنيتُ بحثاً في أرشيف للوثائق الهندسية (زمن p95 بلغ 0.18 ثانية، وقبِله العميل)، وفي 2025 كنتُ المطوّر الرئيسي لنظام OKKP في Avenue Group.",
     heroScroll: "مرّر للاستكشاف",
     currentlyLabel: "حالياً",
-    currentlyValue: "أبني نظام بحث RAG باستخدام FastAPI وFAISS في Elektroservis",
+    currentlyValue: "منفتح على عروض عمل في Python وFull-Stack",
     aboutStoryTitle: "القصة باختصار.",
     aboutStory: [
       {
         label: "البداية",
-        body: "في عام 2020 بدأت العمل مع أول عملائي كمطوّر مستقل: أحدّد النطاق وأقدّر الجهد وأسلّم العمل وأدعمه بنفسي."
+        body: "في عام 2024، أثناء دراسة الماجستير، بدأتُ العمل التجاري: تطبيقات ويب لعملاء كمطوّر مستقل، ثم تطوير Full-Stack في Junzi Tech Solutions."
       },
       {
         label: "العمل مع فرق حقيقية",
-        body: "في Avenue Group صمّمت منصة OKKP وأطلقتها من الصفر بصفتي كبير مطوري Full-Stack، من البنية حتى النشر والدعم في بيئة الإنتاج."
+        body: "في Avenue Group كنتُ المطوّر الرئيسي لنظام OKKP، وهو نظام داخلي لمراقبة الجودة في 9 مرائب مركبات: صمّمتُ البنية والواجهة البرمجية وكتبتُ معظم الكود ضمن فريق من ثلاثة أشخاص."
       },
       {
-        label: "أين أنا الآن",
-        body: "أبني اليوم في Elektroservis بموسكو بحث RAG في الوثائق الهندسية باستخدام FastAPI وOCR وsentence-transformers وFAISS، بعد دراسة الماجستير في جامعة MISIS (2024–2026)."
+        label: "آخر مشروع",
+        body: "في 2026 بنيتُ لشركة Elektroservis بحثاً دلالياً ونصياً كاملاً في أرشيف الوثائق الهندسية باستخدام FastAPI وفهرس مقلوب وsentence-transformers وFAISS وOCR، بعد دراسة الماجستير في جامعة MISIS (2024–2026)."
       }
     ],
     nextProject: "المشروع التالي",
@@ -716,7 +716,7 @@ export const uiCopy: Record<Locale, UiCopy> = {
       retry: "إعادة المحاولة",
       home: "العودة إلى الرئيسية"
     },
-    availabilityLine: "متاح فوراً · حضورياً أو بنظام هجين في موسكو أو عن بُعد · دوام كامل أو بعقد",
+    availabilityLine: "منفتح على عروض العمل · حضورياً أو بنظام هجين في موسكو أو عن بُعد · دوام كامل أو بعقد",
     diagram: {
       region: "مخطط البنية",
       swipe: "مرّر أفقياً لرؤية المخطط كاملاً",
@@ -724,15 +724,15 @@ export const uiCopy: Record<Locale, UiCopy> = {
     },
     projectCta: {
       eyebrow: "الخطوة التالية",
-      title: "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي — أو تحتاج إلى بناء شيء مشابه؟ لنتحدث.",
-      body: "متاح فوراً — حضورياً أو بنظام هجين في موسكو، أو عن بُعد؛ بدوام كامل أو بعقد. أردّ خلال 48 ساعة — وأسرع عبر Telegram.",
+      title: "تبحث عن مطوّر Full-Stack أو Python — أو تحتاج إلى بناء شيء مشابه؟ لنتحدث.",
+      body: "منفتح على عروض العمل — حضورياً أو بنظام هجين في موسكو، أو عن بُعد؛ بدوام كامل أو بعقد. أردّ خلال 48 ساعة — وأسرع عبر Telegram.",
       contact: "تواصل معي"
     },
     meta: {
       homeTitle: "الحسن الفران — مطوّر Full-Stack وPython، موسكو",
       nameSuffix: "الحسن الفران",
       homeDescription:
-        "مطوّر Full-Stack وPython في موسكو: React وTypeScript وNode.js وFastAPI وPostgreSQL والبحث في المستندات بتقنية RAG. بنيت منصة لإدارة العمليات من الصفر بصفتي Chief Full-Stack Developer. متاح فوراً — حضورياً أو بنظام هجين أو عن بُعد.",
+        "مطوّر Python وFull-Stack في موسكو: FastAPI وReact + TypeScript وNode.js وMongoDB والبحث في المستندات. المطوّر الرئيسي لنظام داخلي لـ 9 مرائب مركبات. منفتح على عروض العمل — حضورياً أو بنظام هجين أو عن بُعد.",
       cvDescription:
         "السيرة الذاتية للحسن الفران في صفحة واحدة، مطوّر Full-Stack وPython في موسكو: الخبرة والمشاريع والمهارات والتعليم والشهادات واللغات. قابلة للطباعة مع تنزيل بصيغة PDF."
     },

@@ -21,8 +21,8 @@ export function Experience({ index }: { index?: string }) {
         <SectionHeader index={index} eyebrow={copy.experienceEyebrow} title={copy.experienceTitle} description={copy.experienceDescription} />
 
         <ol className="border-b hairline">
-          {copy.experienceItems.map((item, i) => (
-            <Role key={`${item.company}-${item.period}`} item={item} current={i === 0} />
+          {copy.experienceItems.map((item) => (
+            <Role key={`${item.company}-${item.period}`} item={item} current={Boolean(item.current)} />
           ))}
         </ol>
 

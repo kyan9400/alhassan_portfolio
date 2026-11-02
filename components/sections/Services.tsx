@@ -18,7 +18,7 @@ const SMART_PLATFORM_URL = "https://github.com/kyan9400/smart-platform";
 const PROOF_TARGETS: ({ kind: "project"; slug: string } | { kind: "section"; id: string } | { kind: "external"; href: string })[] = [
   { kind: "project", slug: "okkp-platform" },
   { kind: "project", slug: "document-intelligence-rag" },
-  { kind: "project", slug: "ai-dashboard-suite" },
+  { kind: "project", slug: "okkp-platform" },
   { kind: "section", id: "case-study" },
   { kind: "external", href: SMART_PLATFORM_URL }
 ];

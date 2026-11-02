@@ -432,7 +432,7 @@ export function buildPassages(locale: Locale): (Passage & { meta: string })[] {
 
   add("availability", "availability", ui.availabilityLine, ui.askCv.sources.availability, "/#contact", copy.contactLocation);
   add("availability", "available-body", copy.availableBody, ui.askCv.sources.availability, "/#services");
-  add("about", "currently", `${ui.currentlyLabel}: ${ui.currentlyValue}`, copy.aboutEyebrow, "/#about", "#avail");
+  add("availability", "currently", `${ui.currentlyLabel}: ${ui.currentlyValue}`, ui.askCv.sources.availability, "/#contact");
 
   add(
     "contact",

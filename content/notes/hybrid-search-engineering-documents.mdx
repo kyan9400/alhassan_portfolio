@@ -1,15 +1,16 @@
 ---
 title: Hybrid search for engineering documents: why keyword + FAISS beats pure vector search
-description: Notes on search over PDF, Word, Excel and scanned files: OCR before indexing, chunking with metadata, keyword plus dense retrieval, rank fusion and grounded answers.
+description: Notes on search over PDF, Word, Excel and scanned files: OCR before indexing, chunking with metadata, keyword plus dense retrieval, rank fusion and results you can trace to a page.
 date: 2026-09-28
 lang: en
 draft: false
 ---
 
-Since January 2026 I have been working at Elektroservis in Moscow on search and RAG over engineering
-documentation: PDF, Word and Excel files, and scanned documents. The stack is OCR for scans, hybrid keyword and
-semantic search (sentence-transformers embeddings in FAISS) and FastAPI pipelines for ingestion and queries. This
-note explains why hybrid retrieval is a better fit for this kind of corpus than pure vector search. The system
+From April to October 2026 I built a search service over engineering documentation for Elektroservis: an archive
+of about 4.1k PDF, Word, Excel and RTF files, including scanned documents. The stack is OCR for selected scanned
+pages (Tesseract + Poppler), hybrid search — a custom inverted index plus sentence-transformers embeddings in
+FAISS — and a FastAPI service. It returns ranked documents and pages; there is no LLM generation, so it is search,
+not RAG. This note explains why hybrid retrieval is a better fit for this kind of corpus than pure vector search. The system
 and its data are under NDA, so everything here stays at the level of general technique, and the snippets are
 simplified and illustrative.
 
@@ -114,9 +115,10 @@ merged = rrf([keyword_ids, dense_ids])
 A chunk that ranks well in both lists rises to the top; a chunk only one retriever finds still has a chance. It
 is simple, needs no training data and is easy to reason about when a result looks wrong.
 
-### Grounding answers in retrieved passages
+### If you add generated answers on top
 
-When the system produces an answer rather than a list, the answer should be built only from retrieved passages,
+The Elektroservis service returns a ranked list, not generated text. If a system on top of the same retrieval
+produces an answer rather than a list (I tried this in WhyDoc, a RAG prototype built with Claude Code), the answer should be built only from retrieved passages,
 and each claim should point back to its source: file, page, section. If the passages do not contain the answer,
 the correct output is "not found in the documents", not a guess. For engineering data, a cited "I don't know"
 is far more useful than a fluent paragraph with no sources.

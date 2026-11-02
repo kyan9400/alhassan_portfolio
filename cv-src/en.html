@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Alhassan Alfarran — CV, Software Engineer (Web &amp; AI Systems)</title>
+<title>Alhassan Alfarran — CV, Python / Full-Stack Developer</title>
 <meta name="author" content="Alhassan Alfarran">
-<meta name="description" content="CV: Software Engineer — Web &amp; AI Systems. Python/FastAPI, RAG, React/TypeScript, Node.js. Moscow.">
+<meta name="description" content="CV: Python / Full-Stack Developer. FastAPI, React + TypeScript, Node.js, MongoDB, document search. Moscow.">
 <style>
   :root {
     --ink: #17151f;
@@ -229,7 +229,7 @@
 
 <header>
   <h1>Alhassan Alfarran</h1>
-  <p class="role-title">Software Engineer — Web &amp; AI Systems</p>
+  <p class="role-title">Python / Full-Stack Developer (FastAPI, React + TypeScript)</p>
 
   <ul class="contacts">
     <li>Moscow, Russia (residence permit)</li>
@@ -244,7 +244,7 @@
   </ul>
 
   <p class="availability">
-    <span>Available immediately</span><span>on-site, hybrid or remote</span><span>full-time or contract</span>
+    <span>Open to offers</span><span>on-site, hybrid or remote</span><span>full-time or contract</span>
   </p>
 </header>
 
@@ -253,23 +253,26 @@
   <section>
     <h2>Professional Summary</h2>
     <p>
-      Software Engineer specialising in Web &amp; AI Systems, building production platforms since 2020. Currently developing
-      document search and RAG systems in Python/FastAPI (OCR, hybrid semantic search with <span class="nw">sentence-transformers</span> + FAISS).
-      Previously architected a greenfield operational platform end-to-end in React, TypeScript, Node.js, PostgreSQL and MongoDB,
-      from API design and data modelling to deployment and production support. Focus on clean interfaces between UI, services
-      and AI layers, and on features that work in real workflows — not demos.
+      Building software commercially since 2024. In 2026 I built semantic and full-text search over technical documentation
+      (FastAPI, <span class="nw">sentence-transformers</span>, FAISS, a custom inverted index): an archive of ~4.1k files (~1.5k documents
+      with text), 0.18 s p95 response time, 739 automated tests, accepted by the client. In 2025 I was the lead developer of an
+      internal web system for a network of 9 vehicle depots (React + TypeScript, Node.js/Express, MongoDB, Docker Compose).
+      I develop with AI agents (Claude Code, Cursor, Codex): I set the task, review the changes, check them with tests and on
+      real data, and deploy them.
     </p>
   </section>
 
   <section>
     <h2>Technical Skills</h2>
     <div class="skills">
-      <p><span class="k">Languages:</span> Python, JavaScript, TypeScript, SQL, PHP, C++, C, Solidity</p>
-      <p><span class="k">Backend:</span> FastAPI, Node.js, Express, REST API design, async Python, authentication, role-based access, audit logging</p>
-      <p><span class="k">Frontend:</span> React, Next.js, Angular, Tailwind CSS, HTML5/CSS3, Vite, Figma</p>
-      <p><span class="k">AI &amp; Data:</span> RAG pipelines, LLM integration, <span class="nw">sentence-transformers</span>, FAISS, hybrid search, OCR, PDF/Word/Excel parsing, Pandas, NumPy, data visualisation</p>
-      <p><span class="k">Databases:</span> PostgreSQL, MongoDB, Redis</p>
-      <p><span class="k">Tools &amp; Practices:</span> Git, GitHub, JIRA, Agile/Scrum, code review, debugging &amp; profiling, Cloudinary</p>
+      <p><span class="k">Languages:</span> Python, TypeScript, JavaScript</p>
+      <p><span class="k">Backend:</span> FastAPI, Node.js / Express, REST APIs, JWT authentication, background jobs, file uploads (Multer)</p>
+      <p><span class="k">Search &amp; documents:</span> <span class="nw">sentence-transformers</span>, FAISS, inverted index, hybrid search; pypdf, python-docx, openpyxl; OCR (Tesseract, Poppler)</p>
+      <p><span class="k">LLM (prototypes built with AI agents):</span> RAG (FAISS + BM25, RRF), OpenAI-compatible APIs, MCP server</p>
+      <p><span class="k">Frontend:</span> React 18, TypeScript, Vite, Next.js, Tailwind CSS, responsive UI, framework-free HTML/CSS/JS</p>
+      <p><span class="k">Databases:</span> MongoDB (Mongoose); SQLite / PostgreSQL — university project (built with Codex)</p>
+      <p><span class="k">Infrastructure &amp; quality:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (basic), GitHub Actions, Git, pytest</p>
+      <p><span class="k">Data:</span> pandas, NumPy, scikit-learn — university projects</p>
     </div>
   </section>
 
@@ -278,29 +281,30 @@
 
     <article class="entry">
       <div class="entry-head">
-        <h3>Python / Full-Stack Developer <span class="org">— Elektroservis (Электросервис)</span></h3>
-        <span class="dates">Jan 2026 — Present</span>
+        <h3>Python Developer <span class="org">— Elektroservis (Электросервис)</span></h3>
+        <span class="dates">Apr 2026 — Oct 2026</span>
       </div>
-      <p class="meta">Moscow, Russia</p>
+      <p class="meta">Contractor (civil-law contracts) · remote</p>
       <ul class="points">
-        <li>Building a document search and RAG system for engineering (PTO) documentation: indexing PDF, Word and Excel files, including scanned documents via OCR.</li>
-        <li>Implemented hybrid search combining keyword matching with semantic retrieval (<span class="nw">sentence-transformers</span> + FAISS) to improve answer relevance.</li>
-        <li>Developed FastAPI ingestion and query pipelines connecting parsing, indexing, retrieval and LLM-assisted answers.</li>
+        <li>Built a search service for an engineering-documentation (PTO) archive: an engineer enters a cable mark, document code, equipment designation or a phrase and gets the document, the page, a text fragment and the network path.</li>
+        <li>Hybrid search with no LLM generation: a custom inverted index plus FAISS semantic search on <span class="nw">sentence-transformers</span> embeddings; FastAPI backend, plain HTML/JS UI. PDF, DOCX, XLSX and RTF indexing (~4.1k files, ~1.5k with text); OCR of selected scanned pages (Tesseract + Poppler).</li>
+        <li>Speed: code and mark queries from 9–10 s to 1.2–1.7 s, phrase queries from 55–70 s to 2–4 s; <strong class="metric">0.18 s p95</strong> after moving to the inverted index.</li>
+        <li>Quality: <strong class="metric">739</strong> pytest tests and a 104-query control set (top-1/top-5); systemd service on Ubuntu Server with atomic index swap and rollback. Accepted by the client in September 2026.</li>
+        <li>Built with AI agents (Codex, Cursor, Claude Code): gathered requirements, wrote the agent briefs, reviewed the changes and verified them on the production index.</li>
       </ul>
     </article>
 
     <article class="entry">
       <div class="entry-head">
-        <h3>Chief Full-Stack Developer <span class="org">— Avenue Group</span></h3>
-        <span class="dates">Jan 2025 — Dec 2025</span>
+        <h3>Full-Stack Developer (lead developer on the project) <span class="org">— Avenue Group</span></h3>
+        <span class="dates">May 2025 — Dec 2025</span>
       </div>
-      <p class="meta">Moscow, Russia · On-site</p>
+      <p class="meta">Moscow, Russia · team of 3</p>
       <ul class="points">
-        <li>Designed and shipped OKKP from scratch — a full-stack operational management platform with clear boundaries between UI, business logic and data layers.</li>
-        <li>Architected the system end-to-end: React + TypeScript SPA, Node.js / Express REST API, PostgreSQL + MongoDB data layer.</li>
-        <li>Built core modules — employee management, violation tracking, reporting dashboards — with role-based access control and audit logs.</li>
-        <li>Built a secure media-upload pipeline (Cloudinary, Multer) and Excel-export reporting that lets non-technical staff produce audit-ready datasets.</li>
-        <li>Owned deployment and production support; delivered a fully responsive Tailwind CSS UI.</li>
+        <li>Designed the architecture and API of OKKP, an internal quality-control web system for 9 vehicle depots, and wrote most of the code (~177 of 183 commits in 2025).</li>
+        <li>Violations and fines module with server-side filtering and pagination; modules for employees, driver call-backs, a document archive (Cloudinary with local-disk fallback) and notifications.</li>
+        <li>Per-depot KPI tiles and in-browser Excel export (SheetJS); JWT authentication (bcrypt); responsive Tailwind CSS UI.</li>
+        <li>Deployment with Docker Compose (MongoDB + API) on a Linux server; CI on GitHub Actions. Stack: React 18, TypeScript, Vite, Node.js, Express 5, MongoDB.</li>
       </ul>
     </article>
 
@@ -309,40 +313,55 @@
         <h3>Full-Stack Web Developer <span class="org">— Junzi Tech Solutions</span></h3>
         <span class="dates">Oct 2024 — Jul 2025</span>
       </div>
-      <p class="meta">Full-time</p>
       <ul class="points">
-        <li>Delivered full-stack features across client web applications using Node.js, Express, MongoDB and React in Agile teams.</li>
-        <li>Optimised a critical API endpoint with a caching layer and query refactoring, cutting average response time by <strong class="metric">~60%</strong>.</li>
-        <li>Designed RESTful APIs with consistent validation, error handling and response contracts; took part in code reviews and sprint planning.</li>
+        <li>Full-stack features for web applications with Node.js, Express, MongoDB and React.</li>
+        <li>Cut the response time of a critical API endpoint by <strong class="metric">~60%</strong> (caching and a redesigned database query).</li>
       </ul>
     </article>
 
     <article class="entry">
       <div class="entry-head">
-        <h3>Freelance Full-Stack Developer <span class="org">— Self-employed</span></h3>
-        <span class="dates">Jan 2020 — Present</span>
+        <h3>Freelance Developer</h3>
+        <span class="dates">2024 — Present</span>
       </div>
-      <p class="meta">Remote · client projects alongside full-time roles</p>
+      <p class="meta">Remote</p>
       <ul class="points">
-        <li>Built React/TypeScript web apps and dashboards and Python/FastAPI backends for international clients.</li>
-        <li>Pathwise: FastAPI + PostgreSQL application with an async backend.</li>
-        <li>Managed the full client lifecycle: scoping, estimation, delivery and post-launch support.</li>
+        <li>React / Next.js / TypeScript and Tailwind CSS web applications for clients.</li>
       </ul>
     </article>
   </section>
 
   <section>
-    <h2>Open-Source Project</h2>
+    <h2>Projects</h2>
 
     <article class="entry">
       <div class="entry-head">
-        <h3>Lumen Search <span class="org">— hybrid document search with citations</span></h3>
+        <h3>WhyDoc <span class="org">— prototype, built with Claude Code</span></h3>
+        <span class="dates">Oct 2026</span>
+      </div>
+      <ul class="points">
+        <li>RAG over documents: answers cite the PDF page or Excel cell, and claims are checked against the source. FAISS + BM25 (RRF), FastAPI, LLM via an OpenAI-compatible API.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Lumen Search <span class="org">— open-source prototype, built with AI agents</span></h3>
         <span class="dates">Oct 2026</span>
       </div>
       <p class="meta"><a href="https://github.com/kyan9400/lumen-search">github.com/kyan9400/lumen-search</a> · live demo: <a href="https://kyan9400.github.io/lumen-search/">kyan9400.github.io/lumen-search</a></p>
       <ul class="points">
-        <li>Searches PDF, Word, Excel and scanned pages in English and Russian: BM25 + multilingual embeddings in FAISS, Tesseract OCR, FastAPI, Redis.</li>
-        <li>Cites the page, section or spreadsheet row of every result; with reranking, a correct passage is in the top 5 for <strong class="metric">83.9%</strong> of 62 labelled questions.</li>
+        <li>Hybrid search with citations over PDF, Word, Excel and scanned pages in English and Russian: BM25 + multilingual embeddings in FAISS, Tesseract OCR, FastAPI.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Pathwise <span class="org">— master's thesis, built with Codex</span></h3>
+        <span class="dates">2026</span>
+      </div>
+      <ul class="points">
+        <li>Recommender system for study programmes: FastAPI, scikit-learn (TF-IDF + cosine similarity), pandas, PostgreSQL or SQLite; Next.js front end.</li>
       </ul>
     </article>
   </section>
@@ -385,11 +404,10 @@
     <ul class="langs">
       <li><b>Arabic</b> — native</li>
       <li><b>English</b> — C1 (professional)</li>
-      <li><b>Russian</b> — conversational</li>
+      <li><b>Russian</b> — B2 (professional working)</li>
     </ul>
   </section>
 
 </main>
-
 </body>
 </html>

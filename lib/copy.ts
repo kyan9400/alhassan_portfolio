@@ -4,9 +4,9 @@ import { withBasePath } from "@/lib/base-path";
 /*
  * Site copy in English, Russian and Arabic.
  * Career facts must match the CV (public/cv/Alhassan_Alfarran_CV_EN1.pdf):
- * freelance since 2020 plus three companies, the only performance metric is
- * "~60% lower average response time on a critical endpoint" (Junzi Tech
- * Solutions), Russian is conversational. Keep all three locales in sync when editing.
+ * commercial development since 2024 (freelance plus three companies); Elektroservis
+ * (Apr–Oct 2026) is search with no LLM generation, not RAG; OKKP is MongoDB only, with no
+ * RBAC or audit log; Russian is B2. Keep all three locales in sync when editing.
  */
 
 /**
@@ -18,6 +18,8 @@ export type OrgMark = { monogram: string; logo?: string };
 
 export type ExperienceItem = {
   period: string;
+  /** Ongoing role: gets the "Currently" mark. */
+  current?: boolean;
   title: string;
   company: string;
   mark: OrgMark;
@@ -86,7 +88,7 @@ export type CopyDictionary = {
   education: EducationItem[];
   /** Real items from the EN CV only; the site shows the relevant subset (the full list is in the CV). */
   certifications: Certification[];
-  /** Spoken languages with levels (CV page). EN C1, Arabic native, Russian conversational. */
+  /** Spoken languages with levels (CV page). EN C1, Arabic native, Russian B2. */
   languages: { name: string; level: string }[];
   contactEyebrow: string;
   contactTitle: string;
@@ -211,7 +213,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navContact: "Contact",
     brandMonogram: "AA",
     brandName: "Alhassan",
-    heroAvailability: "Available immediately",
+    heroAvailability: "Open to offers",
     heroEyebrow: "Full-Stack & Python Developer — Web & AI Systems",
     heroTitle: "Alhassan Alfarran",
     heroHeadlineTop: "Web platforms",
@@ -221,22 +223,23 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     heroSecondaryCta: "Download CV",
     heroStats: [
       { value: "~60%", label: "lower avg. response time on a critical endpoint" },
-      { value: "OKKP", label: "platform built from scratch as Chief Full-Stack" },
-      { value: "4", label: "open-source tools with live demos" },
+      { value: "OKKP", label: "internal system for 9 vehicle depots, as lead developer" },
+      { value: "0.18 s", label: "p95 search response over an engineering-document archive" },
       { value: "3", label: "languages · EN C1 · AR · RU" }
     ],
     aboutEyebrow: "About",
     aboutTitle: "Three languages. One full stack.",
     aboutBody:
-      "Arabic is my first language and English (C1) my professional one. I studied in Russia — a Bachelor's at Ural Federal University in Yekaterinburg, then a Master's at NUST MISIS in Moscow. I like owning a feature end to end: the data model, the API contract, the permission rules and the Excel export a non-technical colleague can run on their own.",
+      "Arabic is my first language and English (C1) my professional one. I studied in Russia — a Bachelor's at Ural Federal University in Yekaterinburg, then a Master's at NUST MISIS in Moscow. I like owning a feature end to end: the data model, the API contract, the interface and the Excel export a non-technical colleague can run on their own.",
     projectsEyebrow: "Selected work",
     projectsTitle: "Projects I've built.",
     projectsSubtitle:
-      "Projects from my roles — private code, so you see the architecture — plus open-source tools with live demos.",
+      "Projects from my roles — private code, so you see the architecture — plus open-source prototypes built with AI agents, with live demos.",
     projectsEmpty: "Selected projects will appear here.",
     githubReposEyebrow: "GitHub",
     githubReposTitle: "More on GitHub",
-    githubReposDescription: "Tools, experiments and earlier work — hand-picked and grouped by area.",
+    githubReposDescription:
+      "Prototypes, experiments and earlier work — hand-picked and grouped by area. Many of the recent ones are prototypes built with AI agents (Claude Code, Codex).",
     githubReposViewMore: "Show more",
     githubReposEmpty: "No repositories to show.",
     skillsEyebrow: "Capabilities",
@@ -249,80 +252,85 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       },
       {
         name: "Backend",
-        items: ["Node.js", "Express", "FastAPI", "Python (async)", "REST API design", "Auth & RBAC", "Audit logging"]
+        items: ["Python", "FastAPI", "Node.js", "Express", "REST API design", "JWT authentication", "File uploads (Multer)"]
       },
       {
-        name: "AI & Search",
-        items: ["RAG pipelines", "LLM integration", "sentence-transformers", "FAISS", "Hybrid search", "OCR", "Pandas & NumPy"]
+        name: "Search & Documents",
+        items: [
+          "sentence-transformers",
+          "FAISS",
+          "Inverted index",
+          "Hybrid search",
+          "OCR (Tesseract, Poppler)",
+          "PDF / Word / Excel parsing",
+          "LLM / RAG (prototypes, built with AI agents)"
+        ]
       },
       {
         name: "Data & Storage",
-        items: ["PostgreSQL", "MongoDB", "Redis", "SQL", "Cloudinary", "PDF / Word / Excel parsing"]
+        items: ["MongoDB (Mongoose)", "Cloudinary", "SQLite / PostgreSQL (university project)", "pandas & NumPy (university projects)"]
       },
       {
         name: "Delivery & Tools",
-        items: ["Git & GitHub", "Docker", "CI/CD", "GitHub Actions", "Linux", "Kubernetes (basics)", "Vercel", "Jira & Scrum"]
+        items: ["Git & GitHub", "Docker / Docker Compose (basic)", "GitHub Actions", "Linux (Ubuntu, systemd)", "pytest", "Vercel", "Claude Code · Cursor · Codex"]
       }
     ],
     experienceEyebrow: "Experience",
     experienceTitle: "Where I've worked.",
     experienceDescription:
-      "Freelance since 2020 and three companies — from client projects to a platform built from scratch, and the RAG search I'm building now.",
+      "Commercial development since 2024: three companies and freelance work — from an internal system for 9 vehicle depots to search over an engineering-document archive.",
     experienceItems: [
       {
-        period: "Jan 2026 — Present",
-        title: "Python / Full-Stack Developer",
+        period: "Apr 2026 — Oct 2026",
+        title: "Python Developer",
         company: "Elektroservis",
         mark: { monogram: "E" },
-        location: "Moscow",
-        summary: "Building a document search and RAG system for engineering and technical documentation.",
+        location: "Remote · civil-law contracts",
+        summary: "Built a semantic and full-text search service over an engineering (PTO) documentation archive; accepted by the client.",
         highlights: [
-          "Built ingestion for PDF, Word and Excel files, with OCR for scanned documents.",
-          "Implemented hybrid search — keyword matching plus semantic retrieval (sentence-transformers + FAISS) — to improve answer relevance.",
-          "Developed FastAPI ingestion and query pipelines that connect parsing, indexing, retrieval and LLM-assisted answers."
+          "An engineer enters a cable mark, document code, equipment designation or a phrase and gets the document, the PDF page (Excel sheet and rows, Word section), a text fragment and the network path.",
+          "Hybrid search with no LLM generation: a custom inverted index plus FAISS semantic search on sentence-transformers embeddings (all-MiniLM-L6-v2), behind FastAPI with a plain HTML/JS interface.",
+          "Indexed PDF, DOCX, XLSX and RTF files — an archive of ~4.1k files, ~1.5k documents with text — with OCR of selected scanned pages (Tesseract + Poppler).",
+          "Speed: code and mark queries from 9–10 s to 1.2–1.7 s, phrase queries from 55–70 s to 2–4 s; 0.18 s p95 after moving to the inverted index.",
+          "Quality: 739 automated tests (pytest) and a 104-query control set with top-1/top-5 metrics. Runs as a systemd service on Ubuntu Server.",
+          "Built with AI agents (Codex, Cursor, Claude Code): I gathered the requirements, wrote the agent briefs, reviewed the changes and verified them on the production index."
         ],
-        stack: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"]
+        stack: ["Python", "FastAPI", "sentence-transformers", "FAISS", "Tesseract OCR", "pytest", "systemd"]
       },
       {
-        period: "Jan 2025 — Dec 2025",
-        title: "Chief Full-Stack Developer",
+        period: "May 2025 — Dec 2025",
+        title: "Full-Stack Developer (lead developer on the project)",
         company: "Avenue Group",
         mark: { monogram: "AG" },
-        location: "Moscow · on-site",
-        summary: "Designed and shipped OKKP from scratch — a full-stack operational management platform.",
+        location: "Moscow · team of 3",
+        summary: "Lead developer of OKKP, an internal quality-control web system for a network of 9 vehicle depots.",
         highlights: [
-          "Architected it end to end: React + TypeScript SPA, Node.js / Express REST API, PostgreSQL + MongoDB.",
-          "Built employee management, violation tracking and reporting dashboards with role-based access control and audit logs.",
-          "Built Excel exports that let non-technical staff produce audit-ready datasets on their own.",
-          "Added secure media uploads (Cloudinary, Multer); owned deployment and production support."
+          "Designed the architecture and API and wrote most of the code (~177 of 183 commits in 2025): React 18 + TypeScript (Vite), Node.js / Express 5, MongoDB.",
+          "Violations and fines module with server-side filtering and pagination; modules for employees, driver call-backs, a Cloudinary document archive and in-app notifications.",
+          "Per-depot KPI tiles and in-browser Excel export (SheetJS) of violations, employees and the depot summary; JWT sign-in.",
+          "Deployment with Docker Compose on a Linux server; CI on GitHub Actions."
         ],
-        stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"]
+        stack: ["React", "TypeScript", "Vite", "Node.js", "Express", "MongoDB", "Cloudinary", "Docker Compose", "GitHub Actions"]
       },
       {
         period: "Oct 2024 — Jul 2025",
         title: "Full-Stack Web Developer",
         company: "Junzi Tech Solutions",
         mark: { monogram: "JT" },
-        summary: "Delivered full-stack features for client web applications in Agile teams.",
-        highlights: [
-          "Cut the average response time of a critical API endpoint by ~60% with a caching layer and query refactoring.",
-          "Designed REST APIs with consistent validation, error handling and response contracts; reviewed teammates' code and took part in sprint planning."
-        ],
+        summary: "Full-stack features for web applications with Node.js, Express, MongoDB and React.",
+        highlights: ["Cut the response time of a critical API endpoint by ~60% with caching and a redesigned database query."],
         stack: ["Node.js", "Express", "MongoDB", "React"]
       },
       {
-        period: "Jan 2020 — Present",
-        title: "Full-Stack Developer",
+        period: "2024 — Present",
+        current: true,
+        title: "Freelance Developer",
         company: "Freelance",
         mark: { monogram: "F" },
         location: "Remote",
-        summary: "Projects for international clients, alongside my studies and full-time roles.",
-        highlights: [
-          "React / TypeScript web apps and dashboards; Python / FastAPI backends.",
-          "Pathwise — a FastAPI + PostgreSQL application with an async backend.",
-          "Owned the full client lifecycle: scoping, estimation, delivery and post-launch support."
-        ],
-        stack: ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL"]
+        summary: "Web applications for clients, alongside my studies and full-time roles.",
+        highlights: ["React / Next.js / TypeScript and Tailwind CSS web applications for clients."],
+        stack: ["React", "Next.js", "TypeScript", "Tailwind CSS"]
       }
     ],
     education: [
@@ -343,12 +351,12 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     languages: [
       { name: "English", level: "C1" },
       { name: "Arabic", level: "Native" },
-      { name: "Russian", level: "Conversational" }
+      { name: "Russian", level: "B2" }
     ],
     contactEyebrow: "Contact",
     contactTitle: "Hiring, or have a project? Let's talk.",
     contactDescription:
-      "Hiring for a full-stack, Python or AI role — or planning a web app, a dashboard or AI document search? Tell me what you need. Telegram is the fastest way to reach me.",
+      "Hiring for a full-stack or Python role — or planning a web app, an internal tool or search over your documents? Tell me what you need. Telegram is the fastest way to reach me.",
     contactEmailLabel: "Email me",
     contactCvLabel: "Download CV",
     cvDownloads: [
@@ -429,18 +437,18 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     servicesItems: [
       {
         title: "Full-stack web platforms",
-        description: "Admin panels and internal tools with authentication, role-based access, audit logs and clean REST APIs — like OKKP.",
+        description: "Admin panels and internal tools with authentication, server-side filtering, file uploads and clean REST APIs — like OKKP.",
         proof: "Example: OKKP"
       },
       {
-        title: "AI document search",
-        description: "RAG over PDF, Word and Excel, OCR for scans, hybrid keyword + semantic search and FastAPI pipelines.",
-        proof: "Example: engineering document search (RAG)"
+        title: "Document search",
+        description: "Search over PDF, Word, Excel and RTF archives: OCR for scans, an inverted index plus semantic search, FastAPI services.",
+        proof: "Example: engineering document search"
       },
       {
         title: "Dashboards & reporting",
-        description: "KPI dashboards, charts and Excel exports your team can use without asking a developer.",
-        proof: "Example: client dashboards"
+        description: "KPI tiles, filterable tables and Excel exports your team can use without asking a developer.",
+        proof: "Example: OKKP reporting"
       },
       {
         title: "API performance & backend",
@@ -503,7 +511,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     navContact: "Контакты",
     brandMonogram: "АА",
     brandName: "Альхассан",
-    heroAvailability: "Готов приступить сразу",
+    heroAvailability: "Открыт к предложениям",
     heroEyebrow: "Full-stack / Python-разработчик — веб- и AI-системы",
     heroEyebrowShort: "Full-stack / Python-разработчик",
     heroTitle: "Альхассан Альфарран",
@@ -514,22 +522,23 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     heroSecondaryCta: "Скачать резюме",
     heroStats: [
       { value: "~60%", label: "сокращение среднего времени ответа критичного эндпоинта" },
-      { value: "OKKP", label: "платформа с нуля до продакшена" },
-      { value: "4", label: "open-source-проекта с онлайн-демо" },
+      { value: "OKKP", label: "внутренняя система для 9 автопарков, ведущий разработчик" },
+      { value: "0,18 с", label: "p95 ответа поиска по архиву технической документации" },
       { value: "3", label: "языка · EN C1 · AR · RU" }
     ],
     aboutEyebrow: "Обо мне",
     aboutTitle: "Три языка — один стек.",
     aboutBody:
-      "Арабский — мой родной язык, английский (C1) — профессиональный. Учился в России: бакалавриат в УрФУ (Екатеринбург), затем магистратура в НИТУ МИСИС (Москва). Мне нравится отвечать за фичу целиком: модель данных, контракт API, права доступа и Excel-выгрузку, которую сотрудник без технических навыков сделает сам.",
+      "Арабский — мой родной язык, английский (C1) — профессиональный. Учился в России: бакалавриат в УрФУ (Екатеринбург), затем магистратура в НИТУ МИСИС (Москва). Мне нравится отвечать за фичу целиком: модель данных, контракт API, интерфейс и Excel-выгрузку, которую сотрудник без технических навыков сделает сам.",
     projectsEyebrow: "Избранное",
     projectsTitle: "Что я сделал.",
     projectsSubtitle:
-      "Коммерческие проекты — код закрыт, поэтому показываю архитектуру, — и open-source-инструменты, которые можно запустить прямо сейчас.",
+      "Коммерческие проекты — код закрыт, поэтому показываю архитектуру, — и open-source-прототипы, сделанные с AI-агентами, с онлайн-демо.",
     projectsEmpty: "Здесь появятся избранные проекты.",
     githubReposEyebrow: "GitHub",
     githubReposTitle: "Ещё на GitHub",
-    githubReposDescription: "Инструменты, эксперименты и ранние проекты — отобраны вручную и разложены по направлениям.",
+    githubReposDescription:
+      "Прототипы, эксперименты и ранние проекты — отобраны вручную и разложены по направлениям. Многие из недавних — прототипы, сделанные с AI-агентами (Claude Code, Codex).",
     githubReposViewMore: "Показать ещё",
     githubReposEmpty: "Нет репозиториев для показа.",
     skillsEyebrow: "Навыки",
@@ -542,80 +551,85 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       },
       {
         name: "Бэкенд",
-        items: ["Node.js", "Express", "FastAPI", "Python (async)", "Проектирование REST API", "Авторизация и RBAC", "Журналы аудита"]
+        items: ["Python", "FastAPI", "Node.js", "Express", "Проектирование REST API", "JWT-аутентификация", "Загрузка файлов (Multer)"]
       },
       {
-        name: "AI и поиск",
-        items: ["RAG-пайплайны", "Интеграция LLM", "sentence-transformers", "FAISS", "Гибридный поиск", "OCR", "Pandas и NumPy"]
+        name: "Поиск и документы",
+        items: [
+          "sentence-transformers",
+          "FAISS",
+          "Инвертированный индекс",
+          "Гибридный поиск",
+          "OCR (Tesseract, Poppler)",
+          "Парсинг PDF / Word / Excel",
+          "LLM / RAG (прототипы, сделаны с AI-агентами)"
+        ]
       },
       {
         name: "Данные и хранение",
-        items: ["PostgreSQL", "MongoDB", "Redis", "SQL", "Cloudinary", "Парсинг PDF / Word / Excel"]
+        items: ["MongoDB (Mongoose)", "Cloudinary", "SQLite / PostgreSQL (учебный проект)", "pandas и NumPy (учебные проекты)"]
       },
       {
         name: "Поставка и инструменты",
-        items: ["Git и GitHub", "Docker", "CI/CD", "GitHub Actions", "Linux", "Kubernetes (базовый уровень)", "Vercel", "Jira и Scrum"]
+        items: ["Git и GitHub", "Docker / Docker Compose (базовый)", "GitHub Actions", "Linux (Ubuntu, systemd)", "pytest", "Vercel", "Claude Code · Cursor · Codex"]
       }
     ],
     experienceEyebrow: "Опыт",
     experienceTitle: "Где я работал.",
     experienceDescription:
-      "С 2020 года — фриланс и три компании: от клиентских проектов до платформы, построенной с нуля, и RAG-поиска, над которым работаю сейчас.",
+      "Коммерческая разработка с 2024 года: три компании и фриланс — от внутренней системы для 9 автопарков до поиска по архиву технической документации.",
     experienceItems: [
       {
-        period: "Январь 2026 — сейчас",
-        title: "Python / full-stack разработчик",
+        period: "Апрель 2026 — октябрь 2026",
+        title: "Python-разработчик",
         company: "Электросервис",
         mark: { monogram: "Э" },
-        location: "Москва",
-        summary: "Разрабатываю систему поиска и RAG по технической документации ПТО.",
+        location: "Удалённо · договоры ГПХ",
+        summary: "Сделал веб-сервис семантического и полнотекстового поиска по архиву документации ПТО; работа принята заказчиком.",
         highlights: [
-          "Реализовал индексацию PDF, Word и Excel, включая сканы через OCR.",
-          "Реализовал гибридный поиск: ключевые слова + семантика (sentence-transformers + FAISS) — чтобы ответы были релевантнее.",
-          "Разработал на FastAPI пайплайны загрузки и обработки запросов: парсинг, индексация, поиск и ответы с помощью LLM."
+          "Инженер вводит марку кабеля, шифр, обозначение оборудования или фразу и получает документ, страницу PDF (лист и строки Excel, раздел Word), фрагмент текста и сетевой путь.",
+          "Гибридный поиск без генерации LLM: собственный инвертированный индекс плюс семантический поиск FAISS на эмбеддингах sentence-transformers (all-MiniLM-L6-v2); бэкенд на FastAPI, интерфейс на HTML/JS без фреймворков.",
+          "Индексация PDF, DOCX, XLSX и RTF: архив около 4,1 тыс. файлов, около 1,5 тыс. документов с текстом; OCR выбранных страниц сканов (Tesseract + Poppler).",
+          "Скорость: запросы по шифрам и маркам — с 9–10 с до 1,2–1,7 с, фразовые — с 55–70 с до 2–4 с; после перехода на инвертированный индекс p95 — 0,18 с.",
+          "Качество: 739 автотестов (pytest) и контрольный набор из 104 запросов с метриками top-1/top-5. Работает как служба systemd на Ubuntu Server.",
+          "Работал с AI-агентами (Codex, Cursor, Claude Code): собирал требования, писал ТЗ для агентов, ревьюил изменения и проверял их на рабочем индексе."
         ],
-        stack: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"]
+        stack: ["Python", "FastAPI", "sentence-transformers", "FAISS", "Tesseract OCR", "pytest", "systemd"]
       },
       {
-        period: "Январь 2025 — декабрь 2025",
-        title: "Главный full-stack разработчик",
+        period: "Май 2025 — декабрь 2025",
+        title: "Fullstack-разработчик (ведущий разработчик проекта)",
         company: "Avenue Group",
         mark: { monogram: "AG" },
-        location: "Москва · офис",
-        summary: "С нуля спроектировал и запустил OKKP — full-stack платформу операционного управления.",
+        location: "Москва · команда из 3 человек",
+        summary: "Ведущий разработчик OKKP —внутренней веб-системы контроля качества для сети из 9 автопарков.",
         highlights: [
-          "Выстроил архитектуру целиком: SPA на React + TypeScript, REST API на Node.js / Express, PostgreSQL + MongoDB.",
-          "Сделал модули управления сотрудниками, учёта нарушений и отчётных дашбордов с ролевым доступом и журналом аудита.",
-          "Сделал выгрузку в Excel, с которой сотрудники без технической подготовки сами готовят данные для аудита.",
-          "Добавил защищённую загрузку медиафайлов (Cloudinary, Multer); отвечал за деплой и поддержку в продакшене."
+          "Спроектировал архитектуру и API и написал большую часть кода (≈177 из 183 коммитов 2025 года): React 18 + TypeScript (Vite), Node.js / Express 5, MongoDB.",
+          "Модуль нарушений и штрафов с серверной фильтрацией и пагинацией; модули сотрудников, обзвона водителей, электронного архива (Cloudinary) и внутренних уведомлений.",
+          "KPI-карточки по паркам и экспорт в Excel прямо в браузере (SheetJS): нарушения, сотрудники, сводка по паркам; JWT-аутентификация.",
+          "Деплой через Docker Compose на Linux-сервере; CI на GitHub Actions."
         ],
-        stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"]
+        stack: ["React", "TypeScript", "Vite", "Node.js", "Express", "MongoDB", "Cloudinary", "Docker Compose", "GitHub Actions"]
       },
       {
         period: "Октябрь 2024 — июль 2025",
         title: "Full-stack веб-разработчик",
         company: "Junzi Tech Solutions",
         mark: { monogram: "JT" },
-        summary: "Разрабатывал full-stack функциональность клиентских веб-приложений в Agile-командах.",
-        highlights: [
-          "Сократил среднее время ответа критичного эндпоинта API примерно на 60% с помощью слоя кеширования и переработки запросов.",
-          "Проектировал REST API с единой валидацией, обработкой ошибок и контрактами ответов; ревьюил код коллег и участвовал в планировании спринтов."
-        ],
+        summary: "Full-stack-функциональность веб-приложений на Node.js, Express, MongoDB и React.",
+        highlights: ["Сократил время ответа критичной точки API примерно на 60% (кеширование и переработка запроса к базе)."],
         stack: ["Node.js", "Express", "MongoDB", "React"]
       },
       {
-        period: "Январь 2020 — сейчас",
-        title: "Full-stack разработчик",
+        period: "2024 — сейчас",
+        current: true,
+        title: "Фриланс-разработчик",
         company: "Фриланс",
         mark: { monogram: "Ф" },
         location: "Удалённо",
-        summary: "Проекты для международных клиентов — параллельно с учёбой и основной работой.",
-        highlights: [
-          "Веб-приложения и дашборды на React / TypeScript, бэкенды на Python / FastAPI.",
-          "Pathwise — приложение на FastAPI + PostgreSQL с асинхронным бэкендом.",
-          "Полный цикл работы с клиентом: постановка задачи, оценка, разработка и поддержка после запуска."
-        ],
-        stack: ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL"]
+        summary: "Веб-приложения для заказчиков — параллельно с учёбой и основной работой.",
+        highlights: ["Веб-приложения на React / Next.js / TypeScript и Tailwind CSS для заказчиков."],
+        stack: ["React", "Next.js", "TypeScript", "Tailwind CSS"]
       }
     ],
     education: [
@@ -636,12 +650,12 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     languages: [
       { name: "Английский", level: "C1" },
       { name: "Арабский", level: "родной" },
-      { name: "Русский", level: "разговорный" }
+      { name: "Русский", level: "B2" }
     ],
     contactEyebrow: "Контакты",
     contactTitle: "Вакансия или проект? Давайте обсудим.",
     contactDescription:
-      "Ищете full-stack, Python- или AI-разработчика — или планируете веб-приложение, дашборд или поиск по документам? Расскажите, что нужно. Быстрее всего — в Telegram.",
+      "Ищете full-stack- или Python-разработчика — или планируете веб-приложение, внутреннюю систему или поиск по документам? Расскажите, что нужно. Быстрее всего — в Telegram.",
     contactEmailLabel: "Напишите мне",
     contactCvLabel: "Скачать резюме",
     cvDownloads: [
@@ -721,18 +735,18 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     servicesItems: [
       {
         title: "Full-stack веб-платформы",
-        description: "Админ-панели и внутренние системы с авторизацией, ролевым доступом, журналом аудита и аккуратным REST API — как OKKP.",
+        description: "Админ-панели и внутренние системы с авторизацией, серверной фильтрацией, загрузкой файлов и аккуратным REST API — как OKKP.",
         proof: "Пример: OKKP"
       },
       {
-        title: "AI-поиск по документам",
-        description: "RAG по PDF, Word и Excel, OCR для сканов, гибридный поиск по ключевым словам и смыслу, пайплайны на FastAPI.",
-        proof: "Пример: поиск по технической документации (RAG)"
+        title: "Поиск по документам",
+        description: "Поиск по архивам PDF, Word, Excel и RTF: OCR для сканов, инвертированный индекс плюс семантический поиск, сервисы на FastAPI.",
+        proof: "Пример: поиск по технической документации"
       },
       {
         title: "Дашборды и отчётность",
-        description: "KPI-дашборды, графики и выгрузки в Excel, которыми команда пользуется без помощи разработчика.",
-        proof: "Пример: клиентские дашборды"
+        description: "KPI-карточки, таблицы с фильтрами и выгрузки в Excel, которыми команда пользуется без помощи разработчика.",
+        proof: "Пример: отчётность в OKKP"
       },
       {
         title: "Бэкенд и производительность API",
@@ -796,7 +810,7 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     // The logo mark stays the Latin initials in every locale: "حا" did not read as initials.
     brandMonogram: "AA",
     brandName: "الحسن",
-    heroAvailability: "متاح للعمل فوراً",
+    heroAvailability: "منفتح على عروض العمل",
     heroEyebrow: "مطوّر Full-Stack وPython — أنظمة الويب والذكاء الاصطناعي",
     heroTitle: "الحسن الفران",
     // The middle line is nowrap: kept short so it fits a 390px phone.
@@ -807,22 +821,23 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     heroSecondaryCta: "تحميل السيرة الذاتية",
     heroStats: [
       { value: "~60%", label: "انخفاض متوسط زمن استجابة نقطة نهاية API حرجة" },
-      { value: "OKKP", label: "منصة من الصفر حتى الإنتاج" },
-      { value: "4", label: "أدوات مفتوحة المصدر مع عروض حية" },
+      { value: "OKKP", label: "نظام داخلي لـ 9 مرائب مركبات، بصفتي المطوّر الرئيسي" },
+      { value: "0.18 ث", label: "زمن استجابة البحث (p95) في أرشيف الوثائق الهندسية" },
       { value: "3", label: "لغات · العربية · الإنجليزية C1 · الروسية" }
     ],
     aboutEyebrow: "نبذة",
     aboutTitle: "ثلاث لغات — وحزمة تقنية واحدة.",
     aboutBody:
-      "العربية لغتي الأم، والإنجليزية (C1) لغتي المهنية. درستُ في روسيا: البكالوريوس في جامعة الأورال الفيدرالية في يكاترينبورغ، ثم الماجستير في جامعة MISIS في موسكو. أحبّ أن أتولّى الميزة كاملة: نموذج البيانات، وعقد الواجهة البرمجية، وصلاحيات الوصول، وتصدير Excel يستطيع زميل غير تقني إعداده بنفسه.",
+      "العربية لغتي الأم، والإنجليزية (C1) لغتي المهنية. درستُ في روسيا: البكالوريوس في جامعة الأورال الفيدرالية في يكاترينبورغ، ثم الماجستير في جامعة MISIS في موسكو. أحبّ أن أتولّى الميزة كاملة: نموذج البيانات، وعقد الواجهة البرمجية، والواجهة، وتصدير Excel يستطيع زميل غير تقني إعداده بنفسه.",
     projectsEyebrow: "أعمال مختارة",
     projectsTitle: "مشاريع بنيتها.",
     projectsSubtitle:
-      "مشاريع من عملي — الكود خاص، لذا أعرض البنية — إلى جانب أدوات مفتوحة المصدر مع عروض حية.",
+      "مشاريع من عملي — الكود خاص، لذا أعرض البنية — إلى جانب نماذج أولية مفتوحة المصدر بنيتها بمساعدة وكلاء الذكاء الاصطناعي، مع عروض حية.",
     projectsEmpty: "ستُعرض المشاريع المختارة هنا.",
     githubReposEyebrow: "GitHub",
     githubReposTitle: "المزيد على GitHub",
-    githubReposDescription: "أدوات وتجارب وأعمال سابقة — منتقاة بعناية ومصنّفة حسب المجال.",
+    githubReposDescription:
+      "نماذج أولية وتجارب وأعمال سابقة — منتقاة بعناية ومصنّفة حسب المجال. كثير من أحدثها نماذج أولية بُنيت بمساعدة وكلاء الذكاء الاصطناعي (Claude Code وCodex).",
     githubReposViewMore: "عرض المزيد",
     githubReposEmpty: "لا توجد مستودعات للعرض.",
     skillsEyebrow: "المهارات",
@@ -835,80 +850,85 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
       },
       {
         name: "الخدمات الخلفية",
-        items: ["Node.js", "Express", "FastAPI", "Python (async)", "تصميم REST API", "المصادقة وRBAC", "سجلات التدقيق"]
+        items: ["Python", "FastAPI", "Node.js", "Express", "تصميم REST API", "مصادقة JWT", "رفع الملفات (Multer)"]
       },
       {
-        name: "الذكاء الاصطناعي والبحث",
-        items: ["خطوط معالجة RAG", "تكامل LLM", "sentence-transformers", "FAISS", "البحث الهجين", "OCR", "Pandas وNumPy"]
+        name: "البحث والمستندات",
+        items: [
+          "sentence-transformers",
+          "FAISS",
+          "الفهرس المقلوب",
+          "البحث الهجين",
+          "OCR (Tesseract وPoppler)",
+          "تحليل ملفات PDF / Word / Excel",
+          "LLM / RAG (نماذج أولية بُنيت بمساعدة وكلاء الذكاء الاصطناعي)"
+        ]
       },
       {
         name: "البيانات والتخزين",
-        items: ["PostgreSQL", "MongoDB", "Redis", "SQL", "Cloudinary", "تحليل ملفات PDF / Word / Excel"]
+        items: ["MongoDB (Mongoose)", "Cloudinary", "SQLite / PostgreSQL (مشروع جامعي)", "pandas وNumPy (مشاريع جامعية)"]
       },
       {
         name: "التسليم والأدوات",
-        items: ["Git وGitHub", "Docker", "CI/CD", "GitHub Actions", "Linux", "Kubernetes (أساسيات)", "Vercel", "Jira وScrum"]
+        items: ["Git وGitHub", "Docker / Docker Compose (مستوى أساسي)", "GitHub Actions", "Linux (Ubuntu وsystemd)", "pytest", "Vercel", "Claude Code · Cursor · Codex"]
       }
     ],
     experienceEyebrow: "الخبرة",
     experienceTitle: "مسيرتي المهنية.",
     experienceDescription:
-      "منذ 2020: عمل حر وثلاث شركات — من مشاريع العملاء إلى منصة بنيتها من الصفر، واليوم أنظمة بحث RAG.",
+      "تطوير تجاري منذ 2024: ثلاث شركات وعمل حر — من نظام داخلي لـ 9 مرائب مركبات إلى البحث في أرشيف الوثائق الهندسية.",
     experienceItems: [
       {
-        period: "يناير 2026 — حتى الآن",
-        title: "مطوّر Python / Full-Stack",
+        period: "أبريل 2026 — أكتوبر 2026",
+        title: "مطوّر Python",
         company: "Elektroservis",
         mark: { monogram: "E" },
-        location: "موسكو",
-        summary: "أبني نظام بحث وRAG للوثائق الهندسية والفنية.",
+        location: "عن بُعد · عقود مدنية",
+        summary: "بنيتُ خدمة ويب للبحث الدلالي والنصي الكامل في أرشيف الوثائق الهندسية (قسم PTO)، وقبِلها العميل.",
         highlights: [
-          "بنيتُ استقبال ملفات PDF وWord وExcel وفهرستها، مع OCR للمستندات الممسوحة ضوئياً.",
-          "نفّذتُ بحثاً هجيناً يجمع بين مطابقة الكلمات المفتاحية والاسترجاع الدلالي (sentence-transformers + FAISS) لرفع دقة الإجابات.",
-          "طوّرتُ على FastAPI خطوط معالجة لاستقبال المستندات والاستعلام، تربط التحليل والفهرسة والاسترجاع بإجابات مدعومة بنماذج LLM."
+          "يُدخل المهندس رمز كابل أو رمز وثيقة أو تسمية معدّة أو عبارة، فيحصل على الوثيقة وصفحة PDF (أو ورقة Excel وصفوفها، أو قسم Word) ومقتطف من النص والمسار الشبكي.",
+          "بحث هجين دون توليد نصوص بنماذج LLM: فهرس مقلوب خاص بالمشروع مع بحث دلالي عبر FAISS على تضمينات sentence-transformers ‏(all-MiniLM-L6-v2)، وخلفية FastAPI وواجهة HTML/JS دون أطر عمل.",
+          "فهرسة ملفات PDF وDOCX وXLSX وRTF: أرشيف من نحو 4.1 ألف ملف، منها نحو 1.5 ألف وثيقة تحتوي نصاً، مع OCR لصفحات مختارة من المستندات الممسوحة (Tesseract + Poppler).",
+          "السرعة: استعلامات الرموز من 9–10 ثوانٍ إلى 1.2–1.7 ثانية، والاستعلامات النصية من 55–70 ثانية إلى 2–4 ثوانٍ؛ وزمن p95 بلغ 0.18 ثانية بعد الانتقال إلى الفهرس المقلوب.",
+          "الجودة: 739 اختباراً آلياً (pytest) ومجموعة تحكّم من 104 استعلامات بمقاييس top-1/top-5. تعمل الخدمة عبر systemd على Ubuntu Server.",
+          "عملتُ بمساعدة وكلاء الذكاء الاصطناعي (Codex وCursor وClaude Code): جمعتُ المتطلبات وكتبتُ المهام للوكلاء وراجعتُ التغييرات وتحقّقتُ منها على الفهرس الفعلي."
         ],
-        stack: ["Python", "FastAPI", "OCR", "sentence-transformers", "FAISS", "LLM"]
+        stack: ["Python", "FastAPI", "sentence-transformers", "FAISS", "Tesseract OCR", "pytest", "systemd"]
       },
       {
-        period: "يناير 2025 — ديسمبر 2025",
-        title: "كبير مطوري Full-Stack",
+        period: "مايو 2025 — ديسمبر 2025",
+        title: "مطوّر Full-Stack (المطوّر الرئيسي للمشروع)",
         company: "Avenue Group",
         mark: { monogram: "AG" },
-        location: "موسكو · من المكتب",
-        summary: "صمّمت منصة OKKP وأطلقتها من الصفر — منصة متكاملة لإدارة العمليات.",
+        location: "موسكو · فريق من 3 أشخاص",
+        summary: "المطوّر الرئيسي لنظام OKKP، وهو نظام ويب داخلي لمراقبة الجودة في شبكة من 9 مرائب مركبات.",
         highlights: [
-          "صمّمت البنية بالكامل: تطبيق SPA على React + TypeScript، وREST API على Node.js / Express، وقواعد PostgreSQL وMongoDB.",
-          "بنيت وحدات إدارة الموظفين وتتبّع المخالفات ولوحات التقارير، مع صلاحيات حسب الأدوار وسجل تدقيق.",
-          "بنيتُ تصديراً إلى Excel يتيح للموظفين غير التقنيين إعداد بيانات جاهزة للتدقيق بأنفسهم.",
-          "أضفت رفعاً آمناً للوسائط (Cloudinary وMulter)، وتولّيت النشر ودعم بيئة الإنتاج."
+          "صمّمتُ البنية والواجهة البرمجية وكتبتُ معظم الكود (نحو 177 من 183 إيداعاً في 2025): React 18 + TypeScript ‏(Vite)، وNode.js / Express 5، وMongoDB.",
+          "وحدة المخالفات والغرامات مع تصفية وترقيم صفحات من جهة الخادم، ووحدات للموظفين ومتابعة اتصالات السائقين وأرشيف وثائق على Cloudinary وإشعارات داخلية.",
+          "بطاقات مؤشرات KPI لكل مرأب وتصدير إلى Excel داخل المتصفح (SheetJS) للمخالفات والموظفين وملخّص المرائب، ومصادقة JWT.",
+          "النشر عبر Docker Compose على خادم Linux، وCI على GitHub Actions."
         ],
-        stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Cloudinary", "Tailwind CSS"]
+        stack: ["React", "TypeScript", "Vite", "Node.js", "Express", "MongoDB", "Cloudinary", "Docker Compose", "GitHub Actions"]
       },
       {
         period: "أكتوبر 2024 — يوليو 2025",
         title: "مطوّر ويب Full-Stack",
         company: "Junzi Tech Solutions",
         mark: { monogram: "JT" },
-        summary: "طوّرت ميزات متكاملة لتطبيقات ويب خاصة بعملاء الشركة ضمن فرق Agile.",
-        highlights: [
-          "خفّضت متوسط زمن استجابة نقطة نهاية API حرجة بنحو 60% عبر طبقة تخزين مؤقت وإعادة هيكلة الاستعلامات.",
-          "صمّمت واجهات REST API بتحقق موحّد من المدخلات ومعالجة متسقة للأخطاء وعقود استجابة ثابتة، وراجعت كود زملائي وشاركت في تخطيط السبرنتات."
-        ],
+        summary: "ميزات متكاملة لتطبيقات ويب على Node.js وExpress وMongoDB وReact.",
+        highlights: ["خفّضتُ زمن استجابة نقطة نهاية API حرجة بنحو 60% (تخزين مؤقت وإعادة تصميم استعلام قاعدة البيانات)."],
         stack: ["Node.js", "Express", "MongoDB", "React"]
       },
       {
-        period: "يناير 2020 — حتى الآن",
-        title: "مطوّر Full-Stack",
+        period: "2024 — حتى الآن",
+        current: true,
+        title: "مطوّر مستقل",
         company: "عمل حر",
         mark: { monogram: "ع" },
         location: "عن بُعد",
-        summary: "مشاريع لعملاء دوليين، بالتوازي مع الدراسة والعمل بدوام كامل.",
-        highlights: [
-          "تطبيقات ويب ولوحات تحكم على React / TypeScript، وخدمات خلفية على Python / FastAPI.",
-          "Pathwise: تطبيق مبني على FastAPI + PostgreSQL بخدمة خلفية غير متزامنة.",
-          "إدارة دورة العمل كاملة مع العميل: تحديد النطاق والتقدير والتسليم والدعم بعد الإطلاق."
-        ],
-        stack: ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL"]
+        summary: "تطبيقات ويب للعملاء، بالتوازي مع الدراسة والعمل بدوام كامل.",
+        highlights: ["تطبيقات ويب على React / Next.js / TypeScript وTailwind CSS للعملاء."],
+        stack: ["React", "Next.js", "TypeScript", "Tailwind CSS"]
       }
     ],
     education: [
@@ -929,12 +949,12 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     languages: [
       { name: "الإنجليزية", level: "C1" },
       { name: "العربية", level: "اللغة الأم" },
-      { name: "الروسية", level: "مستوى المحادثة" }
+      { name: "الروسية", level: "B2" }
     ],
     contactEyebrow: "تواصل",
     contactTitle: "توظيف أو مشروع؟ لنتحدث.",
     contactDescription:
-      "تبحث عن مطوّر Full-Stack أو Python أو ذكاء اصطناعي — أو تخطّط لتطبيق ويب أو لوحة تحكم أو بحث ذكي في المستندات؟ أخبرني بما تحتاجه. أسرع طريقة للتواصل معي هي Telegram.",
+      "تبحث عن مطوّر Full-Stack أو Python — أو تخطّط لتطبيق ويب أو نظام داخلي أو بحث في مستنداتك؟ أخبرني بما تحتاجه. أسرع طريقة للتواصل معي هي Telegram.",
     contactEmailLabel: "راسلني",
     contactCvLabel: "تحميل السيرة الذاتية",
     cvDownloads: [
@@ -1014,18 +1034,18 @@ export const copyByLocale: Record<Locale, CopyDictionary> = {
     servicesItems: [
       {
         title: "منصات ويب متكاملة",
-        description: "لوحات إدارة وأدوات داخلية بمصادقة وصلاحيات حسب الأدوار وسجلات تدقيق وواجهات REST API واضحة — مثل OKKP.",
+        description: "لوحات إدارة وأدوات داخلية بمصادقة وتصفية من جهة الخادم ورفع للملفات وواجهات REST API واضحة — مثل OKKP.",
         proof: "مثال: OKKP"
       },
       {
-        title: "بحث ذكي في المستندات",
-        description: "RAG في ملفات PDF وWord وExcel، وOCR للمستندات الممسوحة، وبحث هجين بالكلمات المفتاحية والمعنى، وخطوط معالجة على FastAPI.",
-        proof: "مثال: البحث في الوثائق الهندسية (RAG)"
+        title: "البحث في المستندات",
+        description: "بحث في أرشيفات PDF وWord وExcel وRTF: OCR للمستندات الممسوحة، وفهرس مقلوب مع بحث دلالي، وخدمات على FastAPI.",
+        proof: "مثال: البحث في الوثائق الهندسية"
       },
       {
         title: "لوحات مؤشرات وتقارير",
-        description: "لوحات KPI ورسوم بيانية وتصدير إلى Excel يستخدمها فريقك دون الحاجة إلى مطوّر.",
-        proof: "مثال: لوحات مؤشرات لعميل"
+        description: "بطاقات KPI وجداول قابلة للتصفية وتصدير إلى Excel يستخدمها فريقك دون الحاجة إلى مطوّر.",
+        proof: "مثال: التقارير في OKKP"
       },
       {
         title: "أداء API والخدمات الخلفية",
