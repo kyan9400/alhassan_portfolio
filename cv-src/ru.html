@@ -136,11 +136,14 @@
   }
 
   /* ---------- Entries (jobs, education) ---------- */
+  /* A long entry may continue on the next page, but its heading stays with its first lines and no
+     bullet is split. Keeping whole entries together left half-empty pages. */
   .entry {
     margin-top: 8pt;
-    break-inside: avoid;
-    page-break-inside: avoid;
   }
+
+  .entry-head, .entry .meta { break-after: avoid; page-break-after: avoid; }
+  .entry li { break-inside: avoid; page-break-inside: avoid; }
 
   .entry:first-of-type { margin-top: 0; }
 
@@ -333,6 +336,17 @@
 
   <section>
     <h2>Проекты</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Clearhire <span class="org">— open-source-платформа, сделана с Claude Code</span></h3>
+        <span class="dates">нояб. 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/clearhire">github.com/kyan9400/clearhire</a> · онлайн-демо: <a href="https://149-36-1-90.sslip.io">149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>AI-найм: проверка резюме (PDF, Word, сканы с OCR) по каждому требованию со строкой резюме как доказательством, слепой отбор, локальная LLM со ссылками на резюме, аудит в смарт-контракте Solidity. FastAPI, pgvector, Angular, Next.js, NestJS, Helm/Kubernetes. nDCG@10 0,97 на 312 синтетических резюме.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

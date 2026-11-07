@@ -151,6 +151,35 @@ export const projects: Project[] = [
     ]
   },
   {
+    slug: "clearhire",
+    year: 2026,
+    title: "Clearhire",
+    kind: "open-source",
+    rolePurpose: "Open-source platform, built with Claude Code · AI recruiting with evidence",
+    description:
+      "An AI recruiting platform that checks CVs against each requirement of a vacancy and shows the CV line behind every verdict — blind screening, a local LLM that must cite its sources, and an audit log anchored on a blockchain.",
+    whatItDoes: [
+      "Reads CVs in PDF, Word, scans and photos (Tesseract OCR), in English and Russian, into skills, dated roles, languages and degrees",
+      "Ranks candidates by unmet must-haves first, then requirement score, then similarity, with the quote behind every verdict",
+      "Blind screening before the model sees the text; a local LLM (Qwen 3.5 9B) writes summaries and answers that must cite the CV",
+      "Angular console, Next.js careers site and NestJS Telegram bot over one FastAPI API; audit log anchored in a Solidity contract; Helm chart tested on kind in CI"
+    ],
+    longDescription:
+      "Clearhire is an open-source recruiting platform I built with Claude Code to show a whole AI product, from reading a CV to deployment. A candidate can check a CV against a role before applying and see each requirement found or not, with the line of the CV that shows it; recruiters get the same reading, ranked.\n\nThe backend is Python: CVs in PDF, Word or scans go through Tesseract OCR into a profile with dated roles and evidence for each skill, pgvector embeddings power hybrid search, and a C++ skill matcher has a pure-Python fallback. Ranking uses the requirements, not one similarity number. Personal details are replaced before the embedding model reads the text, a local Qwen 3.5 9B writes summaries where uncited sentences are dropped, and every decision goes into a SHA-256 chained audit log whose Merkle roots are anchored hourly in a Solidity contract.\n\nIt is measured on a generated set of 312 CVs and 39 vacancies with known answers: nDCG@10 0.972 against 0.603 for embeddings alone, skills read with F1 0.997, and identical scores in all 486 blind-mode swaps of gender, origin and age. The demo runs live with Docker Compose on a GPU server, and a Helm chart is tested end to end on kind in GitHub Actions.",
+    tech: ["Python", "FastAPI", "PostgreSQL", "pgvector", "Angular", "Next.js", "NestJS", "Solidity", "Kubernetes"],
+    github: "https://github.com/kyan9400/clearhire",
+    live: "https://149-36-1-90.sslip.io",
+    image: "/images/projects/clearhire.webp",
+    imageKind: "screenshot",
+    problem:
+      "Screening tools rank CVs by one similarity score that nobody can explain, can be swayed by names and age, and leave no record a candidate or an auditor could check.",
+    solution:
+      "Requirement-level checks with the CV quote behind each verdict, blind screening before any model, an LLM that may only explain with citations, and a tamper-evident audit log anchored on a chain.",
+    result:
+      "nDCG@10 0.972 on 312 synthetic CVs (embeddings alone: 0.603); identical scores in all 486 blind-mode swaps; a live demo, and CI covering Python, three front ends, the contract and a Kubernetes end-to-end run.",
+    resultLabel: "builtIn"
+  },
+  {
     slug: "lumen-search",
     year: 2026,
     title: "Lumen Search",
@@ -426,6 +455,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
+    }
+  },
+  clearhire: {
+    ru: {
+      title: "Clearhire",
+      rolePurpose: "Open-source-платформа, сделана с Claude Code · AI-найм с доказательствами",
+      description:
+        "AI-платформа для найма: проверяет резюме по каждому требованию вакансии и показывает строку резюме за каждым выводом — слепой отбор, локальная LLM, обязанная ссылаться на источник, и журнал аудита, закреплённый в блокчейне.",
+      whatItDoes: [
+        "Читает резюме в PDF, Word, сканах и фото (OCR Tesseract) на русском и английском: навыки, должности с датами, языки и образование",
+        "Ранжирует кандидатов сначала по невыполненным обязательным требованиям, затем по баллу и сходству, с цитатой за каждым выводом",
+        "Слепой отбор до того, как модель видит текст; локальная LLM (Qwen 3.5 9B) пишет сводки и ответы, обязанные ссылаться на резюме",
+        "Консоль на Angular, сайт вакансий на Next.js и Telegram-бот на NestJS поверх одного API на FastAPI; журнал аудита в смарт-контракте на Solidity; Helm-чарт проверяется на kind в CI"
+      ],
+      longDescription:
+        "Clearhire — open-source-платформа для найма, которую я сделал с Claude Code, чтобы показать AI-продукт целиком, от разбора резюме до развёртывания. Кандидат может проверить резюме по вакансии до отклика и увидеть по каждому требованию, найдено ли оно и какая строка резюме это показывает; рекрутер видит то же самое, уже в рейтинге.\n\nБэкенд на Python: резюме в PDF, Word или сканах проходят через OCR Tesseract и превращаются в профиль с датированными должностями и доказательствами навыков, эмбеддинги в pgvector дают гибридный поиск, а навыки ищет матчер на C++ с запасной реализацией на Python. Рейтинг строится по требованиям, а не по одному числу сходства. Персональные данные заменяются до того, как текст прочитает модель эмбеддингов; локальная Qwen 3.5 9B пишет сводки, из которых удаляются предложения без ссылок; каждое решение попадает в журнал аудита со сцеплением SHA-256, а корни дерева Меркла раз в час закрепляются в смарт-контракте на Solidity.\n\nКачество измерено на сгенерированном наборе из 312 резюме и 39 вакансий с известными ответами: nDCG@10 0,972 против 0,603 у одних эмбеддингов, навыки извлекаются с F1 0,997, а во всех 486 слепых заменах пола, происхождения и возраста баллы не меняются. Демо работает на GPU-сервере в Docker Compose, а Helm-чарт проверяется сквозным тестом на kind в GitHub Actions.",
+      problem:
+        "Инструменты отбора ранжируют резюме по одному числу сходства, которое никто не может объяснить, на него влияют имя и возраст, и не остаётся записи, которую мог бы проверить кандидат или аудитор.",
+      solution:
+        "Проверка по каждому требованию с цитатой из резюме, слепой отбор до любой модели, LLM, которая может только объяснять со ссылками, и журнал аудита, защищённый от подмены и закреплённый в блокчейне.",
+      result:
+        "nDCG@10 0,972 на 312 синтетических резюме (одни эмбеддинги — 0,603); одинаковые баллы во всех 486 слепых заменах; живое демо и CI для Python, трёх фронтендов, контракта и сквозного теста в Kubernetes."
+    },
+    ar: {
+      title: "Clearhire",
+      rolePurpose: "منصة مفتوحة المصدر بُنيت بمساعدة Claude Code · توظيف بالذكاء الاصطناعي مع الأدلة",
+      description:
+        "منصة توظيف بالذكاء الاصطناعي تتحقق من السيرة الذاتية مقابل كل متطلب في الوظيفة وتُظهر السطر الذي يدعم كل حكم، مع فرز يُخفي البيانات الشخصية، ونموذج لغوي محلي ملزم بذكر مصادره، وسجل تدقيق مثبّت على سلسلة كتل.",
+      whatItDoes: [
+        "يقرأ السير الذاتية بصيغ PDF وWord والمستندات الممسوحة والصور (Tesseract OCR) بالإنجليزية والروسية: المهارات والوظائف بتواريخها واللغات والشهادات",
+        "يرتّب المرشحين أولاً حسب المتطلبات الإلزامية غير المستوفاة، ثم حسب الدرجة والتشابه، مع الاقتباس الذي يدعم كل حكم",
+        "فرز يُخفي البيانات الشخصية قبل أن يرى النموذج النص، ونموذج لغوي محلي (Qwen 3.5 9B) يكتب ملخصات وإجابات ملزمة بالاستشهاد بالسيرة الذاتية",
+        "لوحة تحكم بـAngular وموقع وظائف بـNext.js وبوت تيليغرام بـNestJS فوق واجهة FastAPI واحدة، وسجل تدقيق في عقد ذكي بـSolidity، ومخطط Helm يُختبر على kind في CI"
+      ],
+      longDescription:
+        "Clearhire منصة توظيف مفتوحة المصدر بنيتُها بمساعدة Claude Code لأعرض منتج ذكاء اصطناعي كاملاً، من قراءة السيرة الذاتية إلى النشر. يستطيع المرشح فحص سيرته الذاتية مقابل الوظيفة قبل التقديم ليرى لكل متطلب هل وُجد، وأي سطر من سيرته يثبته؛ ويرى مسؤول التوظيف القراءة نفسها مرتّبةً.\n\nالواجهة الخلفية بلغة Python: تمرّ السير الذاتية بصيغ PDF وWord والممسوحة عبر Tesseract OCR وتتحول إلى ملف بوظائف مؤرخة وأدلة على كل مهارة، وتتيح التضمينات في pgvector بحثاً هجيناً، ويبحث مطابِق بلغة C++ عن المهارات مع بديل بلغة Python. يعتمد الترتيب على المتطلبات لا على رقم تشابه واحد. تُستبدل البيانات الشخصية قبل أن يقرأ نموذج التضمين النص، ويكتب نموذج Qwen 3.5 9B المحلي ملخصات تُحذف منها كل جملة بلا استشهاد، ويُسجَّل كل قرار في سجل تدقيق مترابط بـSHA-256 تُثبَّت جذور شجرة ميركل الخاصة به كل ساعة في عقد ذكي بـSolidity.\n\nقيست الجودة على مجموعة مولَّدة من 312 سيرة ذاتية و39 وظيفة بإجابات معروفة: بلغ nDCG@10 0.972 مقابل 0.603 للتضمينات وحدها، واستُخرجت المهارات بمقياس F1 بلغ 0.997، ولم تتغير الدرجات في أيٍّ من 486 تبديلاً للجنس والأصل والعمر في الوضع المخفي. يعمل العرض الحي على خادم GPU عبر Docker Compose، ويُختبر مخطط Helm اختباراً شاملاً على kind في GitHub Actions.",
+      problem:
+        "ترتّب أدوات الفرز السير الذاتية برقم تشابه واحد لا يستطيع أحد تفسيره، وقد يتأثر بالاسم والعمر، ولا تترك سجلاً يمكن للمرشح أو المدقق التحقق منه.",
+      solution:
+        "فحص كل متطلب مع اقتباس من السيرة الذاتية، وفرز يُخفي البيانات الشخصية قبل أي نموذج، ونموذج لغوي لا يُسمح له إلا بالشرح مع الاستشهاد، وسجل تدقيق يكشف أي تلاعب ومثبّت على سلسلة كتل.",
+      result:
+        "بلغ nDCG@10 0.972 على 312 سيرة ذاتية اصطناعية (0.603 للتضمينات وحدها)، ودرجات متطابقة في جميع التبديلات الـ486 في الوضع المخفي، وعرض حي، وCI يغطي Python وثلاث واجهات أمامية والعقد واختباراً شاملاً على Kubernetes."
     }
   },
   "lumen-search": {

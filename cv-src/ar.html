@@ -136,11 +136,14 @@
   }
 
   /* ---------- Entries (jobs, education) ---------- */
+  /* A long entry may continue on the next page, but its heading stays with its first lines and no
+     bullet is split. Keeping whole entries together left half-empty pages. */
   .entry {
     margin-top: 8pt;
-    break-inside: avoid;
-    page-break-inside: avoid;
   }
+
+  .entry-head, .entry .meta { break-after: avoid; page-break-after: avoid; }
+  .entry li { break-inside: avoid; page-break-inside: avoid; }
 
   .entry:first-of-type { margin-top: 0; }
 
@@ -351,6 +354,17 @@
 
   <section>
     <h2>المشاريع</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3><bdi>Clearhire</bdi> <span class="org">— منصة مفتوحة المصدر بُنيت بمساعدة <bdi>Claude Code</bdi></span></h3>
+        <span class="dates">نوفمبر 2026</span>
+      </div>
+      <p class="meta"><bdi><a href="https://github.com/kyan9400/clearhire">github.com/kyan9400/clearhire</a></bdi> · عرض حيّ: <bdi><a href="https://149-36-1-90.sslip.io">149-36-1-90.sslip.io</a></bdi></p>
+      <ul class="points">
+        <li>مطابقة السير الذاتية مع كل متطلب مع السطر الذي يثبته، وفرز يُخفي البيانات الشخصية، ونموذج لغوي محلي يستشهد بالمصدر، وسجل تدقيق مثبّت بعقد <bdi>Solidity</bdi>. <bdi>FastAPI</bdi> و<bdi>Angular</bdi> و<bdi>Next.js</bdi> و<bdi>NestJS</bdi> و<bdi>Kubernetes</bdi>. <bdi>nDCG@10 0.97</bdi>.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

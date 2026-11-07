@@ -136,11 +136,14 @@
   }
 
   /* ---------- Entries (jobs, education) ---------- */
+  /* A long entry may continue on the next page, but its heading stays with its first lines and no
+     bullet is split. Keeping whole entries together left half-empty pages. */
   .entry {
     margin-top: 8pt;
-    break-inside: avoid;
-    page-break-inside: avoid;
   }
+
+  .entry-head, .entry .meta { break-after: avoid; page-break-after: avoid; }
+  .entry li { break-inside: avoid; page-break-inside: avoid; }
 
   .entry:first-of-type { margin-top: 0; }
 
@@ -333,6 +336,17 @@
 
   <section>
     <h2>Projects</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Clearhire <span class="org">— open-source platform, built with Claude Code</span></h3>
+        <span class="dates">Nov 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/clearhire">github.com/kyan9400/clearhire</a> · live demo: <a href="https://149-36-1-90.sslip.io">149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>AI recruiting: checks CVs (PDF, Word, OCR scans) against each requirement with the CV line as evidence, blind screening, a local LLM that must cite the CV, audit log anchored in Solidity. FastAPI, pgvector, Angular, Next.js, NestJS, Helm/Kubernetes. nDCG@10 0.97 on 312 synthetic CVs.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">
