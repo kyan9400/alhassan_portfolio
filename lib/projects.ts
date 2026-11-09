@@ -151,6 +151,35 @@ export const projects: Project[] = [
     ]
   },
   {
+    slug: "depotwin",
+    year: 2026,
+    title: "Depotwin",
+    kind: "open-source",
+    rolePurpose: "Open-source platform, built with Claude Code · Live digital twin of a vehicle fleet",
+    description:
+      "A live 3D digital twin of 240 simulated vehicles in Moscow — a Go and NATS JetStream pipeline into TimescaleDB, failure models that warn of breakdowns days ahead, a local-LLM copilot over read-only queries, and an offline-first driver app.",
+    whatItDoes: [
+      "Simulates 240 vans, trucks and minibuses on the real Moscow road network (OpenStreetMap) in Go, with faults injected and a ground truth the running system never sees",
+      "Streams the readings through NATS JetStream into TimescaleDB, to a 3D twin (React, MapLibre, three.js) over WebSockets, live or replayed",
+      "Predicts overheating and dead batteries days ahead with LightGBM; a local LLM (Qwen 3.5 9B) answers questions in English, Russian or Arabic through fixed read-only queries",
+      "An Expo (React Native) driver app that works offline; Prometheus and Grafana, unit-tested alert rules and a k6 load test in production"
+    ],
+    longDescription:
+      "Depotwin is an open-source platform I built with Claude Code to show a real-time system end to end, measured against a ground truth. A Go simulator drives 240 vans, trucks and minibuses on the Moscow road network from OpenStreetMap, reports like GPS trackers do, and injects faults: fuel theft, failing thermostats and batteries, GPS spoofing, night use. What really happened is published apart, so detectors can be scored without seeing it.\n\nReadings flow through NATS JetStream into TimescaleDB (13.4 million replayed with no gaps or repeats across restarts) and out to a 3D twin built with React, MapLibre and three.js. A FastAPI alerter finds faults as they happen, and LightGBM models on daily features warn of breakdowns: on unseen fleets they caught 156 of 157 overheating failures 4.5 days ahead, against 3.0 days for threshold rules, with fewer false alarms. A copilot on a local Qwen 3.5 9B can only call seven validated, read-only queries and shows the data behind each answer; it answered 17 of 18 held-out questions correctly.\n\nDrivers use an Expo app that queues shifts, inspections and defect reports with photos offline and syncs them in order without duplicates; defects reach the twin at once. Prometheus and Grafana watch every stage, alert rules are unit-tested, and a k6 load test found where the API broke; after the fixes it serves 200 requests a second with no errors while 200 live viewers stay connected.",
+    tech: ["Go", "Python", "TypeScript", "NATS JetStream", "TimescaleDB", "FastAPI", "React", "three.js", "Expo", "LightGBM", "Prometheus"],
+    github: "https://github.com/kyan9400/depotwin",
+    live: "https://depotwin.149-36-1-90.sslip.io",
+    image: "/images/projects/depotwin.webp",
+    imageKind: "screenshot",
+    problem:
+      "Fleet dashboards show where vehicles are, but not what is about to break, and their alerts and predictions are rarely checked against what actually happened.",
+    solution:
+      "A streaming pipeline to a live 3D twin, failure models scored against the threshold rules on unseen fleets, an LLM copilot limited to read-only queries, and an offline-first driver app, all measured against a hidden ground truth.",
+    result:
+      "Overheating caught 4.5 days ahead (rules: 3.0) with fewer false alarms; 17 of 18 held-out copilot questions right; 200 requests/s with no errors under load; a live demo and CI for every part.",
+    resultLabel: "builtIn"
+  },
+  {
     slug: "clearhire",
     year: 2026,
     title: "Clearhire",
@@ -455,6 +484,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
+    }
+  },
+  depotwin: {
+    ru: {
+      title: "Depotwin",
+      rolePurpose: "Open-source-платформа, сделана с Claude Code · Цифровой двойник автопарка в реальном времени",
+      description:
+        "Живой 3D-цифровой двойник 240 смоделированных машин в Москве: конвейер на Go и NATS JetStream в TimescaleDB, модели отказов, предупреждающие о поломках за дни, копилот на локальной LLM поверх запросов только на чтение и приложение водителя, работающее без сети.",
+      whatItDoes: [
+        "Моделирует на Go 240 фургонов, грузовиков и микроавтобусов на реальной дорожной сети Москвы (OpenStreetMap) с неисправностями и эталонной разметкой, которую работающая система не видит",
+        "Передаёт показания через NATS JetStream в TimescaleDB и по WebSocket в 3D-двойник (React, MapLibre, three.js), в реальном времени или в повторе",
+        "Предсказывает перегрев и разряд аккумулятора за дни с помощью LightGBM; локальная LLM (Qwen 3.5 9B) отвечает на вопросы на русском, английском и арабском через фиксированные запросы только на чтение",
+        "Приложение водителя на Expo (React Native) работает без сети; в эксплуатации — Prometheus и Grafana, правила оповещений с тестами и нагрузочный тест k6"
+      ],
+      longDescription:
+        "Depotwin — open-source-платформа, которую я сделал с Claude Code, чтобы показать систему реального времени целиком и измерить её по эталонной разметке. Симулятор на Go ведёт 240 фургонов, грузовиков и микроавтобусов по дорожной сети Москвы из OpenStreetMap, отправляет показания, как GPS-трекеры, и вносит неисправности: слив топлива, отказ термостата и аккумулятора, подмену GPS, ночные поездки. Что произошло на самом деле, публикуется отдельно, поэтому детекторы оцениваются, не видя этого.\n\nПоказания идут через NATS JetStream в TimescaleDB (13,4 млн записей в повторе — без пропусков и дублей при перезапусках) и дальше в 3D-двойник на React, MapLibre и three.js. Сервис оповещений на FastAPI находит неисправности по мере появления, а модели LightGBM на дневных признаках предупреждают о поломках: на незнакомых автопарках они заметили 156 из 157 перегревов за 4,5 дня до отказа против 3,0 дня у пороговых правил и с меньшим числом ложных тревог. Копилот на локальной Qwen 3.5 9B может вызывать только семь проверяемых запросов на чтение и показывает данные за каждым ответом; на 17 из 18 отложенных вопросов он ответил верно.\n\nВодители пользуются приложением на Expo: смены, осмотры и сообщения о неисправностях с фото копятся без сети и уходят по порядку без дублей, а неисправность сразу видна в двойнике. Prometheus и Grafana следят за каждым этапом, правила оповещений покрыты тестами, а нагрузочный тест k6 нашёл, где API ломался; после исправлений он выдерживает 200 запросов в секунду без ошибок при 200 подключённых зрителях.",
+      problem:
+        "Панели автопарка показывают, где машины, но не то, что вот-вот сломается, а их оповещения и прогнозы редко сверяют с тем, что произошло на самом деле.",
+      solution:
+        "Потоковый конвейер в живой 3D-двойник, модели отказов, сравнённые с пороговыми правилами на незнакомых автопарках, LLM-копилот только с запросами на чтение и приложение водителя, работающее без сети, — всё измерено по скрытой эталонной разметке.",
+      result:
+        "Перегрев замечен за 4,5 дня (правила: 3,0) с меньшим числом ложных тревог; 17 из 18 отложенных вопросов к копилоту — верно; 200 запросов в секунду без ошибок под нагрузкой; онлайн-демо и CI для каждой части."
+    },
+    ar: {
+      title: "Depotwin",
+      rolePurpose: "منصة مفتوحة المصدر، بُنيت باستخدام Claude Code · توأم رقمي حيّ لأسطول مركبات",
+      description:
+        "توأم رقمي حيّ ثلاثي الأبعاد لـ240 مركبة محاكاة في موسكو: مسار بيانات بلغة Go وNATS JetStream إلى TimescaleDB، ونماذج أعطال تنبّه إلى الأعطال قبل وقوعها بأيام، ومساعد بنموذج لغوي محلي عبر استعلامات للقراءة فقط، وتطبيق للسائقين يعمل دون اتصال.",
+      whatItDoes: [
+        "يحاكي بلغة Go ‏240 شاحنة صغيرة وشاحنة وحافلة صغيرة على شبكة طرق موسكو الحقيقية (OpenStreetMap)، مع أعطال مدسوسة وحقيقة مرجعية لا يراها النظام العامل",
+        "ينقل القراءات عبر NATS JetStream إلى TimescaleDB، ثم عبر WebSocket إلى توأم ثلاثي الأبعاد (React وMapLibre وthree.js)، مباشرةً أو بإعادة التشغيل",
+        "يتنبأ بارتفاع حرارة المحرك وتلف البطارية قبل أيام باستخدام LightGBM؛ ويجيب نموذج لغوي محلي (Qwen 3.5 9B) عن الأسئلة بالعربية والروسية والإنجليزية عبر استعلامات ثابتة للقراءة فقط",
+        "تطبيق للسائقين بـExpo ‏(React Native) يعمل دون اتصال؛ وفي التشغيل: Prometheus وGrafana وقواعد تنبيه مختبَرة واختبار حمل بـk6"
+      ],
+      longDescription:
+        "Depotwin منصة مفتوحة المصدر بنيتُها باستخدام Claude Code لأعرض نظاماً آنياً كاملاً مقيساً على حقيقة مرجعية. يقود محاكٍ مكتوب بلغة Go ‏240 شاحنة صغيرة وشاحنة وحافلة صغيرة على شبكة طرق موسكو من OpenStreetMap، ويرسل القراءات كما تفعل أجهزة تتبّع GPS، ويدسّ أعطالاً: سرقة الوقود، وتلف منظِّم الحرارة والبطارية، وتزييف موقع GPS، والقيادة ليلاً. وما حدث فعلاً يُنشر على حدة، فتُقيَّم أنظمة الكشف دون أن تراه.\n\nتمرّ القراءات عبر NATS JetStream إلى TimescaleDB (‏13.4 مليون قراءة أُعيد تشغيلها دون فجوات أو تكرار رغم إعادة التشغيل) ومنها إلى توأم ثلاثي الأبعاد مبني بـReact وMapLibre وthree.js. وتكتشف خدمة تنبيهات على FastAPI الأعطال لحظة وقوعها، وتنبّه نماذج LightGBM المبنية على خصائص يومية إلى الأعطال قبل وقوعها: على أساطيل لم ترها من قبل التقطت 156 من 157 عطلاً بارتفاع الحرارة قبل 4.5 يوم، مقابل 3.0 أيام لقواعد العتبات، وبإنذارات كاذبة أقل. ولا يستطيع المساعد المبني على Qwen 3.5 9B المحلي إلا استدعاء سبعة استعلامات مُتحقَّق منها للقراءة فقط، ويعرض البيانات وراء كل إجابة؛ وأجاب إجابة صحيحة عن 17 من 18 سؤالاً محجوزاً للاختبار.\n\nويستخدم السائقون تطبيقاً بـExpo يحفظ الورديات والفحوص وبلاغات الأعطال مع الصور دون اتصال، ثم يرسلها بالترتيب دون تكرار، فيظهر العطل في التوأم فوراً. ويراقب Prometheus وGrafana كل مرحلة، وقواعد التنبيه مختبَرة، وكشف اختبار الحمل بـk6 أين كانت الواجهة البرمجية تنهار؛ وبعد الإصلاحات تخدم 200 طلب في الثانية دون أخطاء مع بقاء 200 مشاهد متصلين.",
+      problem:
+        "تعرض لوحات الأساطيل مواقع المركبات، لكنها لا تعرض ما يوشك أن يتعطل، ونادراً ما تُقارَن تنبيهاتها وتوقعاتها بما حدث فعلاً.",
+      solution:
+        "مسار بيانات متدفق إلى توأم حيّ ثلاثي الأبعاد، ونماذج أعطال مقارَنة بقواعد العتبات على أساطيل جديدة، ومساعد بنموذج لغوي يقتصر على استعلامات القراءة، وتطبيق للسائقين يعمل دون اتصال، وكل ذلك مقيس على حقيقة مرجعية مخفية.",
+      result:
+        "التُقط ارتفاع الحرارة قبل 4.5 يوم (القواعد: 3.0) بإنذارات كاذبة أقل؛ و17 من 18 سؤالاً محجوزاً أجاب عنها المساعد بشكل صحيح؛ و200 طلب في الثانية دون أخطاء تحت الحمل؛ وعرض حيّ وتكامل مستمر لكل جزء."
     }
   },
   clearhire: {
