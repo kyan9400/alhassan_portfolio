@@ -151,6 +151,35 @@ export const projects: Project[] = [
     ]
   },
   {
+    slug: "ledgerline",
+    year: 2026,
+    title: "Ledgerline",
+    kind: "open-source",
+    rolePurpose: "Open-source platform, built with Claude Code · Payments platform built like a bank's",
+    description:
+      "A payments platform where money is never created, lost or moved twice — a double-entry ledger on an event log, card payments and payouts as sagas, an outbox into Kafka, in-line fraud scoring, ClickHouse analytics, a gRPC merchants' API, and OpenTelemetry tracing, all proven by breaking it on purpose.",
+    whatItDoes: [
+      "A double-entry ledger in Kotlin and Spring Boot on an append-only event log in PostgreSQL, with idempotent writes, no overdraft under any concurrency, and an audit that recomputes the books",
+      "Card payments, refunds and payouts to a misbehaving simulated bank as state machines and sagas; every change reaches Kafka through a transactional outbox",
+      "Fraud scored in line by a LightGBM model on features kept from Kafka, measured against a simulator's hidden truth; analytics in ClickHouse that agree with the ledger to the kopeck",
+      "A gRPC API, signed webhooks and a TypeScript SDK for merchants; traces that follow a payment through the outbox, the worker and webhooks; SLO alerts proven to fire by injecting each fault"
+    ],
+    longDescription:
+      "Ledgerline is an open-source payments platform I built with Claude Code to show what a bank's core needs: money that is never created, lost or moved twice, even when everything around it fails. A double-entry ledger in Kotlin and Spring Boot keeps an append-only event log in PostgreSQL; balances are projections rebuilt from it, every write is idempotent, and an audit recomputes the books. Card payments, refunds and payouts run as state machines and sagas on top of it, and every change reaches Kafka through a transactional outbox.\n\nIt is proven by breaking it while a client keeps paying: services, PostgreSQL and Kafka killed, networks cut, answers cut off mid-way. Over 11 chaos scenarios and 40,461 requests (4,188 of them sent twice at once), a checker found nothing lost and nothing done twice. Load tests found the hot spots: the ledger does about 430 transfers a second on one CPU, shedding the excess instead of falling over.\n\nA LightGBM model on real-time features from Kafka caught 88% of fraud at 0.7% false declines against 37% for tuned rules, measured against a simulator's hidden truth; ClickHouse analytics agree with the ledger to the kopeck. Merchants get a gRPC API, signed webhooks and a TypeScript SDK: with the service killed mid-payment, all 1,085 changes still reached the example shop. Traces follow a payment through the outbox, the worker and webhooks, and every alert was proven to fire by injecting the fault it watches.",
+    tech: ["Kotlin", "Spring Boot", "PostgreSQL", "Kafka", "ClickHouse", "gRPC", "Python", "LightGBM", "Vue", "OpenTelemetry", "Grafana"],
+    github: "https://github.com/kyan9400/ledgerline",
+    live: "https://ledgerline.149-36-1-90.sslip.io",
+    image: "/images/projects/ledgerline.webp",
+    imageKind: "screenshot",
+    problem:
+      "Payment systems are judged by the day things fail: a lost answer, a dead database or a duplicate request must never create money, lose it or move it twice, and demos rarely show that.",
+    solution:
+      "A double-entry ledger on an event log, sagas that never guess, idempotency everywhere and an outbox into Kafka, then chaos runs, load tests, a fraud model and alerts, each measured instead of assumed.",
+    result:
+      "Nothing lost or done twice over 11 chaos scenarios and 40,461 requests; fraud caught 88% vs 37% for rules; ~430 ledger transfers/s on one CPU; every alert proven to fire; a live demo and CI.",
+    resultLabel: "builtIn"
+  },
+  {
     slug: "depotwin",
     year: 2026,
     title: "Depotwin",
@@ -484,6 +513,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
+    }
+  },
+  ledgerline: {
+    ru: {
+      title: "Ledgerline",
+      rolePurpose: "Open-source-платформа, сделана с Claude Code · Платёжная платформа, устроенная как банковская",
+      description:
+        "Платёжная платформа, в которой деньги никогда не создаются, не теряются и не проводятся дважды: двойная запись на журнале событий, карточные платежи и выплаты как саги, outbox в Kafka, проверка на мошенничество в потоке, аналитика в ClickHouse, gRPC API для мерчантов и трассировка OpenTelemetry — всё доказано намеренными сбоями.",
+      whatItDoes: [
+        "Леджер с двойной записью на Kotlin и Spring Boot поверх неизменяемого журнала событий в PostgreSQL: идемпотентные операции, никакого ухода в минус при любой конкуренции и аудит, пересчитывающий книги",
+        "Карточные платежи, возвраты и выплаты в смоделированный ненадёжный банк — конечные автоматы и саги; каждое изменение попадает в Kafka через транзакционный outbox",
+        "Мошенничество оценивает в потоке модель LightGBM на признаках из Kafka, измеренная по скрытой разметке симулятора; аналитика в ClickHouse сходится с леджером до копейки",
+        "gRPC API, подписанные вебхуки и SDK на TypeScript для мерчантов; трассы, идущие за платежом через outbox, воркер и вебхуки; SLO-оповещения, проверенные внесением каждой неисправности"
+      ],
+      longDescription:
+        "Ledgerline — open-source-платёжная платформа, которую я сделал с Claude Code, чтобы показать, что нужно ядру банка: деньги никогда не создаются, не теряются и не проводятся дважды, даже когда всё вокруг ломается. Леджер с двойной записью на Kotlin и Spring Boot ведёт неизменяемый журнал событий в PostgreSQL; остатки — проекции, восстанавливаемые из него, каждая запись идемпотентна, а аудит пересчитывает книги. Карточные платежи, возвраты и выплаты работают поверх него как конечные автоматы и саги, а каждое изменение попадает в Kafka через транзакционный outbox.\n\nЭто доказано сбоями под нагрузкой: сервисы, PostgreSQL и Kafka убиваются, сеть рвётся, ответы обрываются на середине, а клиент продолжает платить. В 11 сценариях хаоса и 40 461 запросе (4 188 из них отправлены дважды одновременно) проверка не нашла ни потерь, ни двойных проводок. Нагрузочные тесты нашли узкие места: леджер проводит около 430 переводов в секунду на одном ядре и отклоняет лишнее, а не падает.\n\nМодель LightGBM на признаках из Kafka в реальном времени поймала 88% мошенничества при 0,7% ложных отказов против 37% у настроенных правил, по скрытой разметке симулятора; аналитика в ClickHouse сходится с леджером до копейки. Мерчанты получают gRPC API, подписанные вебхуки и SDK на TypeScript: когда сервис убили посреди платежа, все 1 085 изменений всё равно дошли до тестового магазина. Трассы идут за платежом через outbox, воркер и вебхуки, а каждое оповещение проверено внесением той неисправности, за которой оно следит.",
+      problem:
+        "Платёжные системы проверяет день сбоя: потерянный ответ, упавшая база или повторный запрос не должны создать деньги, потерять их или провести дважды — а демо редко это показывают.",
+      solution:
+        "Леджер с двойной записью на журнале событий, саги, которые никогда не гадают, идемпотентность везде и outbox в Kafka, а затем хаос-тесты, нагрузочные тесты, модель мошенничества и оповещения — всё измерено, а не предположено.",
+      result:
+        "Ни потерь, ни двойных проводок в 11 сценариях хаоса и 40 461 запросе; мошенничество поймано на 88% против 37% у правил; ~430 переводов/с на одном ядре; каждое оповещение проверено; онлайн-демо и CI."
+    },
+    ar: {
+      title: "Ledgerline",
+      rolePurpose: "منصة مفتوحة المصدر، بُنيت باستخدام Claude Code · منصة مدفوعات مبنية كأنظمة البنوك",
+      description:
+        "منصة مدفوعات لا تُخلق فيها الأموال ولا تضيع ولا تُنقل مرتين: دفتر قيد مزدوج على سجل أحداث، ومدفوعات البطاقات والتحويلات كمعاملات Saga، وصندوق صادر (outbox) إلى Kafka، وفحص احتيال فوري، وتحليلات في ClickHouse، وواجهة gRPC للتجار، وتتبّع OpenTelemetry، وكل ذلك مُثبت بإحداث الأعطال عمداً.",
+      whatItDoes: [
+        "دفتر قيد مزدوج بلغة Kotlin وSpring Boot على سجل أحداث لا يُعدَّل في PostgreSQL، بعمليات كتابة متساوية الأثر (idempotent)، ودون سحب على المكشوف مهما تزامنت الطلبات، ومراجعة تعيد حساب الدفاتر",
+        "مدفوعات البطاقات والاستردادات والتحويلات إلى بنك محاكى غير موثوق كآلات حالة ومعاملات Saga؛ وكل تغيير يصل إلى Kafka عبر صندوق صادر في المعاملة نفسها",
+        "يقيّم نموذج LightGBM الاحتيال فورياً بخصائص مأخوذة من Kafka، مقيساً على الحقيقة المخفية لمحاكٍ؛ وتحليلات ClickHouse تطابق الدفتر حتى آخر كوبيك",
+        "واجهة gRPC وwebhooks موقّعة وSDK بلغة TypeScript للتجار؛ وتتبّع يلاحق الدفعة عبر الصندوق الصادر والعامل الخلفي والـwebhooks؛ وتنبيهات SLO ثبت أنها تعمل بإحداث كل عطل"
+      ],
+      longDescription:
+        "Ledgerline منصة مدفوعات مفتوحة المصدر بنيتُها باستخدام Claude Code لأعرض ما يحتاجه قلب نظام بنكي: أموال لا تُخلق ولا تضيع ولا تُنقل مرتين، حتى حين يتعطل كل ما حولها. يحفظ دفتر القيد المزدوج المكتوب بـKotlin وSpring Boot سجل أحداث لا يُعدَّل في PostgreSQL؛ والأرصدة إسقاطات يعاد بناؤها منه، وكل عملية كتابة متساوية الأثر، وتعيد المراجعة حساب الدفاتر. وتعمل فوقه مدفوعات البطاقات والاستردادات والتحويلات كآلات حالة ومعاملات Saga، ويصل كل تغيير إلى Kafka عبر صندوق صادر في المعاملة نفسها.\n\nوقد أُثبت ذلك بإحداث الأعطال بينما يواصل عميل الدفع: إيقاف الخدمات وPostgreSQL وKafka قسراً، وقطع الشبكة، وقطع الردود في منتصفها. وعبر 11 سيناريو فوضى و40,461 طلباً (أُرسل 4,188 منها مرتين في آن واحد) لم يجد المدقق شيئاً ضاع ولا شيئاً نُفّذ مرتين. وكشفت اختبارات الحمل نقاط الاختناق: ينفّذ الدفتر نحو 430 تحويلاً في الثانية على نواة واحدة، ويرفض الفائض بدل أن ينهار.\n\nالتقط نموذج LightGBM المبني على خصائص فورية من Kafka ‏88% من الاحتيال مع 0.7% فقط من الرفض الخاطئ، مقابل 37% للقواعد المضبوطة، مقيساً على الحقيقة المخفية للمحاكي؛ وتطابق تحليلات ClickHouse الدفتر حتى آخر كوبيك. ويحصل التجار على واجهة gRPC وwebhooks موقّعة وSDK بلغة TypeScript: وحين أُوقفت الخدمة في منتصف الدفع، وصلت جميع التغييرات الـ1,085 إلى المتجر التجريبي. ويلاحق التتبّع الدفعة عبر الصندوق الصادر والعامل الخلفي والـwebhooks، وثبت عمل كل تنبيه بإحداث العطل الذي يراقبه.",
+      problem:
+        "تُختبر أنظمة الدفع يوم الأعطال: رد ضائع أو قاعدة بيانات متوقفة أو طلب مكرر يجب ألا يخلق أموالاً أو يضيعها أو ينقلها مرتين، ونادراً ما تُظهر العروض ذلك.",
+      solution:
+        "دفتر قيد مزدوج على سجل أحداث، ومعاملات Saga لا تخمّن أبداً، وتساوي الأثر في كل مكان، وصندوق صادر إلى Kafka، ثم اختبارات فوضى وحمل ونموذج احتيال وتنبيهات، كلها مقيسة لا مفترضة.",
+      result:
+        "لا شيء ضاع ولا شيء نُفّذ مرتين عبر 11 سيناريو فوضى و40,461 طلباً؛ التقاط 88% من الاحتيال مقابل 37% للقواعد؛ نحو 430 تحويلاً/ث على نواة واحدة؛ كل تنبيه ثبت عمله؛ عرض حيّ وتكامل مستمر."
     }
   },
   depotwin: {

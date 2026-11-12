@@ -295,6 +295,7 @@
       <p><span class="k">قواعد البيانات:</span> <bdi>MongoDB (Mongoose)</bdi>؛ <bdi>SQLite / PostgreSQL</bdi> — مشروع جامعي (بُني باستخدام <bdi>Codex</bdi>)</p>
       <p><span class="k">البنية التحتية والجودة:</span> <bdi>Linux (Ubuntu, systemd), Docker / Docker Compose</bdi> (مستوى أساسي)، <bdi>GitHub Actions, Git, pytest</bdi></p>
       <p><span class="k">البيانات:</span> <bdi>pandas, NumPy, scikit-learn</bdi> — مشاريع جامعية</p>
+      <p><span class="k">في <bdi>Ledgerline</bdi>:</span> <bdi>Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</bdi></p>
       <p><span class="k">في <bdi>Depotwin</bdi>:</span> <bdi>Go, NATS JetStream, TimescaleDB, three.js / MapLibre, Expo / React Native, LightGBM, Prometheus / Grafana, k6</bdi></p>
       <p><span class="k">في <bdi>Clearhire</bdi>:</span> <bdi>Angular, NestJS, PostgreSQL + pgvector, Redis, Solidity, Kubernetes / Helm</bdi></p>
     </div>
@@ -356,6 +357,17 @@
 
   <section>
     <h2>المشاريع</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3><bdi>Ledgerline</bdi> <span class="org">— منصة مفتوحة المصدر بُنيت بمساعدة <bdi>Claude Code</bdi></span></h3>
+        <span class="dates">نوفمبر 2026</span>
+      </div>
+      <p class="meta"><bdi><a href="https://github.com/kyan9400/ledgerline">github.com/kyan9400/ledgerline</a></bdi> · عرض حيّ: <bdi><a href="https://ledgerline.149-36-1-90.sslip.io">ledgerline.149-36-1-90.sslip.io</a></bdi></p>
+      <ul class="points">
+        <li>منصة مدفوعات مبنية كأنظمة البنوك: دفتر قيد مزدوج على سجل أحداث (<bdi>Kotlin</bdi> و<bdi>Spring Boot</bdi> و<bdi>PostgreSQL</bdi>)، ومدفوعات البطاقات والتحويلات كمعاملات <bdi>Saga</bdi>، وصندوق صادر إلى <bdi>Kafka</bdi>. لا شيء ضاع ولا شيء نُفّذ مرتين عبر 11 سيناريو فوضى (40,461 طلباً)؛ والتقط نموذج <bdi>LightGBM</bdi> ‏88% من الاحتيال (القواعد: 37%)؛ وتحليلات <bdi>ClickHouse</bdi> وواجهة <bdi>gRPC</bdi> مع <bdi>webhooks</bdi> موقّعة وتتبّع <bdi>OpenTelemetry</bdi> وتنبيهات ثبت عملها بإحداث الأعطال.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

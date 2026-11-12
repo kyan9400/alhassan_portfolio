@@ -276,6 +276,7 @@
       <p><span class="k">Databases:</span> MongoDB (Mongoose); SQLite / PostgreSQL — university project (built with Codex)</p>
       <p><span class="k">Infrastructure &amp; quality:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (basic), GitHub Actions, Git, pytest</p>
       <p><span class="k">Data:</span> pandas, NumPy, scikit-learn — university projects</p>
+      <p><span class="k">Ledgerline (built with Claude Code):</span> Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</p>
       <p><span class="k">Depotwin (built with Claude Code):</span> Go, NATS JetStream, TimescaleDB, three.js / MapLibre, Expo / React Native, LightGBM, Prometheus / Grafana, k6</p>
       <p><span class="k">Clearhire (built with Claude Code):</span> Angular, NestJS, PostgreSQL + pgvector, Redis, Solidity / Foundry, Kubernetes / Helm</p>
     </div>
@@ -338,6 +339,17 @@
 
   <section>
     <h2>Projects</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Ledgerline <span class="org">— open-source platform, built with Claude Code</span></h3>
+        <span class="dates">Nov 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/ledgerline">github.com/kyan9400/ledgerline</a> · live demo: <a href="https://ledgerline.149-36-1-90.sslip.io">ledgerline.149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>Payments platform built like a bank's: a double-entry ledger on an event log (Kotlin, Spring Boot, PostgreSQL), card payments and payouts as sagas, an outbox into Kafka. Nothing lost or done twice over 11 chaos scenarios (40,461 requests); a LightGBM fraud model caught 88% (rules: 37%); ClickHouse analytics, a gRPC API with signed webhooks, OpenTelemetry tracing and alerts proven by fault injection.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">
