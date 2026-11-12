@@ -136,6 +136,33 @@
 <priority>0.7</priority>
 </url>
 <url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/ledgerline</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/ledgerline</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/ledgerline" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/ledgerline" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
 <loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/depotwin</loc>
 <xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/depotwin" />
 <xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/depotwin" />
