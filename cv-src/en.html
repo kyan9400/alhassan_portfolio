@@ -276,6 +276,7 @@
       <p><span class="k">Databases:</span> MongoDB (Mongoose); SQLite / PostgreSQL — university project (built with Codex)</p>
       <p><span class="k">Infrastructure &amp; quality:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (basic), GitHub Actions, Git, pytest</p>
       <p><span class="k">Data:</span> pandas, NumPy, scikit-learn — university projects</p>
+      <p><span class="k">Proofbench (built with Claude Code):</span> Python, FastAPI, Pydantic, Ollama (local LLM), LLM evaluation (deterministic graders, LLM-as-judge, Cohen's kappa, bootstrap intervals), Docker</p>
       <p><span class="k">Ledgerline (built with Claude Code):</span> Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</p>
       <p><span class="k">Depotwin (built with Claude Code):</span> Go, NATS JetStream, TimescaleDB, three.js / MapLibre, Expo / React Native, LightGBM, Prometheus / Grafana, k6</p>
       <p><span class="k">Clearhire (built with Claude Code):</span> Angular, NestJS, PostgreSQL + pgvector, Redis, Solidity / Foundry, Kubernetes / Helm</p>
@@ -339,6 +340,17 @@
 
   <section>
     <h2>Projects</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Proofbench <span class="org">— open-source platform, built with Claude Code</span></h3>
+        <span class="dates">Nov 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/proofbench">github.com/kyan9400/proofbench</a> · live dashboard: <a href="https://proofbench.149-36-1-90.sslip.io">proofbench.149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>Evaluation platform for a tool-using LLM agent that moves money (Python, FastAPI, a local 9B model via Ollama): deterministic graders read an effect log, so refunds, forbidden attempts, data leaks and malformed tool calls are decided exactly; 75.0% fully correct and 95.8% safe on 24 cases. The one LLM judge was measured against a blind panel of five model raters (Cohen's kappa 0.93, 95% CI 0.78–1.0); recorded runs re-grade in 4 s instead of 18 minutes of GPU, and the CI gate fails when any grader's verdicts move.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

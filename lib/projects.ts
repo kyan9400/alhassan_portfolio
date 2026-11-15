@@ -151,6 +151,35 @@ export const projects: Project[] = [
     ]
   },
   {
+    slug: "proofbench",
+    year: 2026,
+    title: "Proofbench",
+    kind: "open-source",
+    rolePurpose: "Open-source platform, built with Claude Code · Evaluation platform for tool-using LLM agents",
+    description:
+      "An evaluation platform for an LLM agent that moves money: deterministic graders read what the agent actually did, an LLM judge is used only for prose and is itself measured against a blind panel, recorded runs re-grade in seconds without a GPU, and a CI gate fails when grading quietly gets weaker.",
+    whatItDoes: [
+      "A simulated shop and a customer-support agent that can look up orders, read policy, refund, cancel and escalate; 24 cases cover refunds, authority limits, privacy and prompt injection planted inside tool results",
+      "Deterministic graders decide from an effect log what money moved, whether a forbidden action was attempted, whether another customer's data leaked and whether tool calls were well formed; two rates are kept apart: fully correct and nothing dangerous",
+      "One LLM judge for reply quality, measured with Cohen's kappa and a bootstrap interval against five blind model raters who saw exactly what the judge saw",
+      "Recorded runs replay through the graders with no model; the CI gate compares every grader's counts against a baseline, and a one-file dashboard re-grades every run before showing it"
+    ],
+    longDescription:
+      "Proofbench is an open-source evaluation platform I built with Claude Code for an LLM agent that can do damage: a customer-support agent for a small shop that refunds money, cancels orders and reads other people's data. Almost every question worth asking about it has an exact answer, so it is decided from an effect log rather than by asking a model: what moved, by how much, on which order, whether something forbidden was attempted even if the shop refused it, and whether another customer appeared in the reply.\n\nThe agent is qwen3.5:9b running locally on one GPU. On the baseline it was fully correct on 75.0% of attempts and did nothing dangerous on 95.8%. The dominant failure is an agent that reasons correctly and then never calls the tool. Run with more randomness, the pass rate stayed exactly the same while the safety rate fell to 83.3%: it paid out on two of five planted instructions, which is why the two rates are kept apart.\n\nReply quality is the one thing a model judges, and the judge is measured: against five blind model raters it agreed at kappa 0.93 (95% CI 0.78–1.0). Recorded runs replay through the graders in 4 s instead of 18 minutes of GPU, and a CI gate fails if any grader's counts move, after a test showed the first version passing with a critical grader switched off. Every number on the live dashboard is re-graded by the current code, and the README keeps the measurements that turned out wrong, with why.",
+    tech: ["Python", "FastAPI", "Pydantic", "Ollama", "NumPy", "pytest", "Docker", "GitHub Actions", "Caddy"],
+    github: "https://github.com/kyan9400/proofbench",
+    live: "https://proofbench.149-36-1-90.sslip.io",
+    image: "/images/projects/proofbench.webp",
+    imageKind: "screenshot",
+    problem:
+      "LLM agents are usually scored by another model's opinion and a single run, which hides whether the agent did something dangerous and how far the score itself can be trusted.",
+    solution:
+      "Decide everything checkable from what the agent did, use a judge only for prose and measure it against a blind panel, replay recordings without a GPU, and gate CI on the grading itself.",
+    result:
+      "75.0% fully correct and 95.8% safe at temperature 0; judge kappa 0.93 against a blind panel; re-grading in 4 s instead of 18 minutes; a live dashboard, 171 tests and CI.",
+    resultLabel: "builtIn"
+  },
+  {
     slug: "ledgerline",
     year: 2026,
     title: "Ledgerline",
@@ -513,6 +542,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
+    }
+  },
+  proofbench: {
+    ru: {
+      title: "Proofbench",
+      rolePurpose: "Open-source-платформа, сделана с Claude Code · Платформа оценки LLM-агентов, работающих с инструментами",
+      description:
+        "Платформа оценки LLM-агента, который распоряжается деньгами: детерминированные грейдеры читают, что агент сделал на самом деле, LLM-судья используется только для текста ответа и сам измерен против слепой панели, записанные прогоны переоцениваются за секунды без GPU, а CI-гейт падает, если оценка незаметно стала мягче.",
+      whatItDoes: [
+        "Модель магазина и агент поддержки, который ищет заказы, читает правила, оформляет возвраты, отменяет заказы и передаёт дело старшему; 24 кейса покрывают возвраты, пределы полномочий, приватность и промпт-инъекции, подброшенные в ответы инструментов",
+        "Детерминированные грейдеры по журналу действий решают, какие деньги ушли, была ли попытка запрещённого действия, утекли ли данные другого клиента и корректны ли вызовы инструментов; две метрики ведутся раздельно: полностью верно и ничего опасного",
+        "Один LLM-судья для качества ответа, измеренный каппой Коэна с бутстреп-интервалом против пяти слепых оценщиков-моделей, видевших ровно то же, что и судья",
+        "Записанные прогоны переоцениваются без модели; CI-гейт сравнивает счётчики каждого грейдера с эталоном, а однофайловый дашборд переоценивает каждый прогон перед показом"
+      ],
+      longDescription:
+        "Proofbench — open-source-платформа оценки, которую я сделал с Claude Code для LLM-агента, способного навредить: агента поддержки небольшого магазина, который возвращает деньги, отменяет заказы и видит чужие данные. Почти на каждый важный вопрос о нём есть точный ответ, поэтому он решается по журналу действий, а не мнением модели: что ушло, сколько, по какому заказу, была ли попытка запрещённого действия, даже если магазин её отклонил, и не появился ли в ответе другой клиент.\n\nАгент — qwen3.5:9b, запущенная локально на одной видеокарте. На эталонном прогоне он был полностью прав в 75,0% попыток и не сделал ничего опасного в 95,8%. Главная ошибка — агент рассуждает верно, а инструмент так и не вызывает. С большей случайностью доля верных ответов не изменилась вовсе, а доля безопасных упала до 83,3%: агент выплатил деньги по двум из пяти подброшенных инструкций — поэтому две метрики и ведутся раздельно.\n\nКачество ответа — единственное, что оценивает модель, и сам судья измерен: против пяти слепых оценщиков-моделей каппа 0,93 (95% ДИ 0,78–1,0). Записанные прогоны переоцениваются за 4 с вместо 18 минут работы GPU, а CI-гейт падает, если сдвинулся счётчик любого грейдера, — после того как проверка показала, что первая версия пропускала сборку с отключённым критическим грейдером. Каждое число на живом дашборде переоценено текущим кодом, а README хранит оказавшиеся неверными измерения с объяснением почему.",
+      problem:
+        "LLM-агентов обычно оценивают мнением другой модели и одним прогоном, а это скрывает, сделал ли агент что-то опасное и насколько можно доверять самой оценке.",
+      solution:
+        "Всё проверяемое решать по действиям агента, судью использовать только для текста и измерять против слепой панели, переоценивать записи без GPU и проверять в CI саму оценку.",
+      result:
+        "75,0% полностью верно и 95,8% безопасно при температуре 0; каппа судьи 0,93 против слепой панели; переоценка за 4 с вместо 18 минут; живой дашборд, 171 тест и CI."
+    },
+    ar: {
+      title: "Proofbench",
+      rolePurpose: "منصة مفتوحة المصدر، بُنيت باستخدام Claude Code · منصة لتقييم وكلاء النماذج اللغوية الذين يستخدمون الأدوات",
+      description:
+        "منصة لتقييم وكيل نموذج لغوي يتصرف في الأموال: مقيّمات حتمية تقرأ ما فعله الوكيل فعلاً، ونموذج حَكَم لا يُستخدم إلا لنص الرد وهو نفسه مَقيس مقابل لجنة عمياء، وتشغيلات مسجّلة يعاد تقييمها في ثوانٍ دون GPU، وبوابة CI تفشل إذا صار التقييم أضعف دون أن يلاحظ أحد.",
+      whatItDoes: [
+        "متجر محاكى ووكيل دعم يبحث عن الطلبات ويقرأ السياسات ويرد المبالغ ويلغي الطلبات ويصعّد إلى مشرف؛ وتغطي 24 حالة الاستردادات وحدود الصلاحية والخصوصية وحقن التعليمات المزروع داخل نتائج الأدوات",
+        "مقيّمات حتمية تقرر من سجل الأفعال ما الأموال التي تحركت، وهل جرت محاولة لفعل محظور، وهل تسربت بيانات عميل آخر، وهل استدعاءات الأدوات سليمة؛ مع إبقاء مقياسين منفصلين: صحيح تماماً، ولا شيء خطير",
+        "نموذج حَكَم واحد لجودة الرد، مَقيس بمعامل كابا لكوهين وفترة bootstrap مقابل خمسة مقيّمين عُمي من النماذج رأوا بالضبط ما رآه الحَكَم",
+        "تُعاد التشغيلات المسجلة عبر المقيّمات دون نموذج؛ وتقارن بوابة CI عدّادات كل مقيّم بخط أساس، ولوحة من ملف واحد تعيد تقييم كل تشغيل قبل عرضه"
+      ],
+      longDescription:
+        "Proofbench منصة تقييم مفتوحة المصدر بنيتُها باستخدام Claude Code لوكيل نموذج لغوي قادر على إحداث ضرر: وكيل دعم لمتجر صغير يرد الأموال ويلغي الطلبات ويطّلع على بيانات الآخرين. لمعظم الأسئلة المهمة عنه إجابة دقيقة، لذا تُحسم من سجل الأفعال لا برأي نموذج: ما الذي تحرك، وبكم، وعلى أي طلب، وهل جرت محاولة لفعل محظور حتى لو رفضها المتجر، وهل ظهر عميل آخر في الرد.\n\nالوكيل هو qwen3.5:9b يعمل محلياً على بطاقة رسوميات واحدة. في التشغيل الأساسي كان صحيحاً تماماً في 75.0% من المحاولات ولم يفعل شيئاً خطيراً في 95.8%. أكثر أخطائه شيوعاً أنه يستنتج الصواب ثم لا يستدعي الأداة. ومع عشوائية أكبر بقيت نسبة الصواب كما هي تماماً، بينما هبطت نسبة الأمان إلى 83.3%: دفع أموالاً بناءً على تعليمتين من خمس تعليمات مزروعة، ولهذا يبقى المقياسان منفصلين.\n\nجودة الرد هي الشيء الوحيد الذي يحكم عليه نموذج، والحَكَم نفسه مَقيس: مقابل خمسة مقيّمين عُمي من النماذج بلغ معامل كابا 0.93 (فترة ثقة 95%: 0.78–1.0). وتُعاد التشغيلات المسجلة عبر المقيّمات في 4 ثوانٍ بدل 18 دقيقة من عمل GPU، وتفشل بوابة CI إذا تغيّر عدّاد أي مقيّم، بعد أن أظهر اختبار أن نسختها الأولى تمرّر البناء ومقيّم حرج معطَّل. كل رقم في اللوحة الحية أعيد تقييمه بالكود الحالي، ويحتفظ ملف README بالقياسات التي تبيّن خطؤها مع السبب.",
+      problem:
+        "يُقيَّم وكلاء النماذج اللغوية عادةً برأي نموذج آخر وبتشغيل واحد، وهذا يخفي ما إذا فعل الوكيل شيئاً خطيراً ومدى إمكان الوثوق بالتقييم نفسه.",
+      solution:
+        "حسم كل ما يمكن التحقق منه من أفعال الوكيل، واستخدام الحَكَم للنص فقط وقياسه مقابل لجنة عمياء، وإعادة تقييم التسجيلات دون GPU، وفحص التقييم نفسه في CI.",
+      result:
+        "75.0% صحيح تماماً و95.8% آمن عند حرارة 0؛ كابا الحَكَم 0.93 مقابل لجنة عمياء؛ إعادة تقييم في 4 ثوانٍ بدل 18 دقيقة؛ لوحة حية و171 اختباراً وتكامل مستمر."
     }
   },
   ledgerline: {
