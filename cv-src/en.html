@@ -276,6 +276,7 @@
       <p><span class="k">Databases:</span> MongoDB (Mongoose); SQLite / PostgreSQL — university project (built with Codex)</p>
       <p><span class="k">Infrastructure &amp; quality:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (basic), GitHub Actions, Git, pytest</p>
       <p><span class="k">Data:</span> pandas, NumPy, scikit-learn — university projects</p>
+      <p><span class="k">Switchyard (built with Claude Code):</span> Go (standard library: net/http, SSE streaming, concurrency), llama.cpp, Ollama, Prometheus, load testing, Docker</p>
       <p><span class="k">Proofbench (built with Claude Code):</span> Python, FastAPI, Pydantic, Ollama (local LLM), LLM evaluation (deterministic graders, LLM-as-judge, Cohen's kappa, bootstrap intervals), Docker</p>
       <p><span class="k">Ledgerline (built with Claude Code):</span> Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</p>
       <p><span class="k">Depotwin (built with Claude Code):</span> Go, NATS JetStream, TimescaleDB, three.js / MapLibre, Expo / React Native, LightGBM, Prometheus / Grafana, k6</p>
@@ -340,6 +341,17 @@
 
   <section>
     <h2>Projects</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Switchyard <span class="org">— open-source platform, built with Claude Code</span></h3>
+        <span class="dates">Nov 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/switchyard">github.com/kyan9400/switchyard</a> · live dashboard: <a href="https://switchyard.149-36-1-90.sslip.io">switchyard.149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>Gateway in Go (standard library only) in front of LLM inference servers: slot-aware scheduling, load shedding with Retry-After, retries only before the first byte, token-based rate limits, circuit breakers. Measured on an RTX A4000 with two replicas (Ollama, llama.cpp) against a plain round-robin proxy: at 1.0 req/s, 78 of 212 requests got a first token within 10 s against 6, with no failures against 150; with a replica killed under load, no client errors against 15.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

@@ -276,6 +276,7 @@
       <p><span class="k">Базы данных:</span> MongoDB (Mongoose); SQLite / PostgreSQL — учебный проект (сделан с Codex)</p>
       <p><span class="k">Инфраструктура и качество:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (базовый), GitHub Actions, Git, pytest</p>
       <p><span class="k">Данные:</span> pandas, NumPy, scikit-learn — учебные проекты</p>
+      <p><span class="k">Switchyard (сделан с Claude Code):</span> Go (стандартная библиотека: net/http, SSE-стриминг, конкурентность), llama.cpp, Ollama, Prometheus, нагрузочное тестирование, Docker</p>
       <p><span class="k">Proofbench (сделан с Claude Code):</span> Python, FastAPI, Pydantic, Ollama (локальная LLM), оценка LLM (детерминированные грейдеры, LLM-as-judge, каппа Коэна, бутстреп-интервалы), Docker</p>
       <p><span class="k">Ledgerline (сделан с Claude Code):</span> Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</p>
       <p><span class="k">Depotwin (сделан с Claude Code):</span> Go, NATS JetStream, TimescaleDB, three.js / MapLibre, Expo / React Native, LightGBM, Prometheus / Grafana, k6</p>
@@ -340,6 +341,17 @@
 
   <section>
     <h2>Проекты</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Switchyard <span class="org">— open-source-платформа, сделана с Claude Code</span></h3>
+        <span class="dates">нояб. 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/switchyard">github.com/kyan9400/switchyard</a> · онлайн-дашборд: <a href="https://switchyard.149-36-1-90.sslip.io">switchyard.149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>Шлюз на Go (только стандартная библиотека) перед серверами инференса LLM: планирование по слотам, сброс нагрузки с Retry-After, повторы только до первого байта, лимиты по токенам, автоматические выключатели. Измерено на RTX A4000 с двумя репликами (Ollama, llama.cpp) против обычного round-robin-прокси: при 1,0 запроса/с первый токен за 10 с получили 78 запросов из 212 против 6, без сбоев против 150; при убитой под нагрузкой реплике — ни одной ошибки у клиентов против 15.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

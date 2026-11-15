@@ -151,6 +151,35 @@ export const projects: Project[] = [
     ]
   },
   {
+    slug: "switchyard",
+    year: 2026,
+    title: "Switchyard",
+    kind: "open-source",
+    rolePurpose: "Open-source platform, built with Claude Code · Gateway in front of LLM inference servers",
+    description:
+      "A gateway in Go, standard library only, that sits in front of LLM inference servers: it never sends a replica more than it can run, refuses work it cannot serve in time with a retry time instead of a timeout, and retries a failed request on another replica only while the client has seen nothing - measured on a real GPU against a plain load balancer.",
+    whatItDoes: [
+      "Keeps the queue in front of the servers instead of inside them, ordered by priority, and refuses a request at the door when its expected wait is longer than its deadline: a 429 with Retry-After in milliseconds instead of a timeout a minute later",
+      "Retries a failed or stuck request on another replica only before the first byte reaches the client; a stream that breaks mid-answer ends with an error event instead of another model's text spliced on",
+      "Routes a conversation back to the replica holding its prompt cache, meters each API key in tokens as well as requests, and takes a failing replica out of rotation with a circuit breaker that probes it back in",
+      "A live dashboard served by the gateway itself, Prometheus metrics, a simulated inference server for GPU-free tests, and a benchmark harness whose every table is recomputed from raw per-request logs"
+    ],
+    longDescription:
+      "Switchyard is an open-source gateway I built with Claude Code for a few GPUs serving many users. An inference server can run only a few requests at once and queues the rest out of sight, where nothing can reorder or refuse them; a plain load balancer spreads that overload evenly and hides it everywhere. Switchyard keeps the queue in front of the servers, sends each replica only as many requests as it has slots, and refuses what cannot be served in time with a retry time. It is written in Go with no dependencies outside the standard library.\n\nMeasured on one RTX A4000 serving qwen3.5:9b through two replicas, Ollama and llama.cpp on the same weights, against a plain round-robin proxy fed identical open-loop chat traffic: at 1.0 requests a second the proxy got 6 of 212 requests a first token within 10 seconds and 150 failed; Switchyard got 78, failed none, and refused the rest in at most 3 ms. With a replica killed under load the proxy returned 15 errors to clients and Switchyard none, finishing 7 of the affected requests on the live replica. Routing conversations back to their cache made no measurable difference at this scale, and the write-up says so.\n\nThe first benchmark run found three bugs in the gateway, all of them making it look worse, and getting the second GPU replica running found a Docker and NVIDIA interaction that silently moved another service's model onto the CPU; both are fixed and written up. A live dashboard and the real-GPU results page are public, and every table is recomputed from the raw logs in the repository.",
+    tech: ["Go", "llama.cpp", "Ollama", "Prometheus", "Docker", "Caddy", "Python", "GitHub Actions"],
+    github: "https://github.com/kyan9400/switchyard",
+    live: "https://switchyard.149-36-1-90.sslip.io",
+    image: "/images/projects/switchyard.webp",
+    imageKind: "screenshot",
+    problem:
+      "A GPU runs only a few requests at once; past that, a plain load balancer keeps forwarding, the excess waits invisibly inside the servers, and almost every user ends up waiting behind requests that are already late.",
+    solution:
+      "Hold the queue in the gateway, never exceed a replica's slots, refuse at the door when a request would miss its deadline, and retry only while the client has seen nothing.",
+    result:
+      "78 of 212 requests on time at 1.0/s against 6 for a plain proxy, no failures against 150; no client errors with a replica killed under load; a live dashboard, 47 tests and CI.",
+    resultLabel: "builtIn"
+  },
+  {
     slug: "proofbench",
     year: 2026,
     title: "Proofbench",
@@ -542,6 +571,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
+    }
+  },
+  switchyard: {
+    ru: {
+      title: "Switchyard",
+      rolePurpose: "Open-source-платформа, сделана с Claude Code · Шлюз перед серверами инференса LLM",
+      description:
+        "Шлюз на Go, только стандартная библиотека, перед серверами инференса LLM: никогда не отправляет реплике больше, чем она может выполнить, отказывает в работе, которую не успеет выполнить, с указанием времени повтора вместо таймаута, и повторяет упавший запрос на другой реплике только пока клиент ещё ничего не получил — измерено на реальной GPU против обычного балансировщика.",
+      whatItDoes: [
+        "Держит очередь перед серверами, а не внутри них, упорядочивает по приоритету и отказывает запросу сразу, если ожидание дольше его дедлайна: 429 с Retry-After за миллисекунды вместо таймаута через минуту",
+        "Повторяет упавший или зависший запрос на другой реплике только до первого байта клиенту; поток, оборвавшийся на середине ответа, завершается событием об ошибке, а не склейкой с текстом другой модели",
+        "Возвращает диалог на реплику, хранящую его кэш промпта, лимитирует ключи API по токенам и запросам и выводит сбоящую реплику из ротации автоматическим выключателем с пробными запросами",
+        "Живой дашборд, который отдаёт сам шлюз, метрики Prometheus, симулятор сервера инференса для тестов без GPU и стенд, где каждая таблица пересчитывается из сырых логов запросов"
+      ],
+      longDescription:
+        "Switchyard — open-source-шлюз, который я сделал с Claude Code для нескольких GPU, обслуживающих многих пользователей. Сервер инференса выполняет одновременно лишь несколько запросов, а остальные ставит в невидимую очередь, где их нельзя ни переупорядочить, ни отклонить; обычный балансировщик равномерно размазывает перегрузку и прячет её везде. Switchyard держит очередь перед серверами, отправляет каждой реплике не больше запросов, чем у неё слотов, и отказывает в том, что не успеет выполнить, с указанием времени повтора. Написан на Go без зависимостей вне стандартной библиотеки.\n\nИзмерено на одной RTX A4000 с qwen3.5:9b на двух репликах — Ollama и llama.cpp на одних весах — против обычного round-robin-прокси при одинаковом открытом потоке чат-запросов: при 1,0 запроса в секунду прокси дал первый токен за 10 секунд 6 запросам из 212, а 150 упали; Switchyard — 78, ни одного сбоя, остальным отказал не дольше чем за 3 мс. При убитой под нагрузкой реплике прокси вернул клиентам 15 ошибок, Switchyard — ни одной, дообслужив 7 затронутых запросов на живой реплике. Возврат диалога к его кэшу на этом масштабе измеримого эффекта не дал, и это так и написано.\n\nПервый прогон стенда нашёл в шлюзе три ошибки, и все занижали его результат, а запуск второй реплики на GPU вскрыл взаимодействие Docker и NVIDIA, которое незаметно перевело модель другого сервиса на CPU; всё исправлено и описано. Живой дашборд и страница результатов на реальной GPU открыты, а каждая таблица пересчитывается из сырых логов в репозитории.",
+      problem:
+        "GPU выполняет одновременно лишь несколько запросов; сверх этого обычный балансировщик продолжает пересылать, лишнее невидимо ждёт внутри серверов, и почти каждый пользователь стоит за запросами, которые уже опоздали.",
+      solution:
+        "Держать очередь в шлюзе, не превышать слоты реплики, отказывать сразу, если запрос не успеет к дедлайну, и повторять только пока клиент ничего не получил.",
+      result:
+        "78 из 212 запросов вовремя при 1,0/с против 6 у обычного прокси, ноль сбоев против 150; ни одной ошибки у клиентов при убитой реплике; живой дашборд, 47 тестов и CI."
+    },
+    ar: {
+      title: "Switchyard",
+      rolePurpose: "منصة مفتوحة المصدر، بُنيت باستخدام Claude Code · بوابة أمام خوادم استدلال النماذج اللغوية",
+      description:
+        "بوابة بلغة Go بالمكتبة القياسية وحدها، تقف أمام خوادم استدلال النماذج اللغوية: لا ترسل إلى أي نسخة أكثر مما تستطيع تشغيله، وترفض العمل الذي لن تنجزه في وقته مع موعد لإعادة المحاولة بدل انتهاء المهلة، ولا تعيد الطلب الفاشل على نسخة أخرى إلا ما دام العميل لم يتلقَّ شيئاً — مَقيسة على GPU حقيقية مقابل موزّع أحمال عادي.",
+      whatItDoes: [
+        "تُبقي الطابور أمام الخوادم لا داخلها، مرتباً حسب الأولوية، وترفض الطلب فوراً إذا كان انتظاره المتوقع أطول من مهلته: ‏429 مع Retry-After خلال أجزاء من الثانية بدل انتهاء المهلة بعد دقيقة",
+        "تعيد الطلب الفاشل أو العالق على نسخة أخرى فقط قبل وصول أول بايت إلى العميل؛ والبث الذي ينقطع في منتصف الإجابة ينتهي بحدث خطأ لا بنص نموذج آخر ملصوق به",
+        "تعيد المحادثة إلى النسخة التي تحتفظ بذاكرة موجّهاتها المؤقتة، وتحدّ مفاتيح API بالرموز والطلبات معاً، وتُخرج النسخة المتعثرة من التدوير بقاطع دائرة يختبر عودتها",
+        "لوحة حية تقدمها البوابة نفسها، ومقاييس Prometheus، ومحاكي لخادم الاستدلال لاختبارات بلا GPU، ومنصة قياس تُعاد كل جداولها من السجلات الخام لكل طلب"
+      ],
+      longDescription:
+        "Switchyard بوابة مفتوحة المصدر بنيتُها باستخدام Claude Code لبضع بطاقات GPU تخدم مستخدمين كثيرين. لا يشغّل خادم الاستدلال إلا طلبات قليلة في آن واحد ويضع الباقي في طابور خفي لا يمكن فيه إعادة ترتيبها ولا رفضها؛ أما موزّع الأحمال العادي فيوزّع الضغط بالتساوي ويخفيه في كل مكان. تُبقي Switchyard الطابور أمام الخوادم، ولا ترسل إلى كل نسخة أكثر من عدد خاناتها، وترفض ما لن تنجزه في وقته مع موعد لإعادة المحاولة. وهي مكتوبة بلغة Go دون أي اعتماد خارج المكتبة القياسية.\n\nقيست على بطاقة RTX A4000 واحدة تشغّل qwen3.5:9b عبر نسختين — Ollama وllama.cpp على الأوزان نفسها — مقابل وكيل round-robin عادي يتلقى حركة محادثات مفتوحة متطابقة: عند طلب واحد في الثانية أوصل الوكيل أول رمز خلال 10 ثوانٍ إلى 6 طلبات من 212 وفشل 150؛ وأوصلته Switchyard إلى 78 دون أي فشل، ورفضت الباقي خلال 3 أجزاء من الألف من الثانية على الأكثر. وحين أُوقفت نسخة تحت الحمل أعاد الوكيل 15 خطأ إلى العملاء ولم تُعِد Switchyard أي خطأ، وأكملت 7 من الطلبات المتأثرة على النسخة السليمة. أما إعادة المحادثة إلى ذاكرتها المؤقتة فلم يظهر لها أثر قابل للقياس على هذا الحجم، وقد كُتب ذلك كما هو.\n\nكشف أول تشغيل للقياس ثلاثة أخطاء في البوابة كلها تُظهرها أسوأ مما هي، وكشف تشغيل النسخة الثانية على GPU تفاعلاً بين Docker وNVIDIA نقل نموذج خدمة أخرى إلى المعالج دون أي إنذار؛ وكلها أُصلحت ووُثّقت. اللوحة الحية وصفحة نتائج GPU الحقيقية متاحتان للجميع، وكل جدول يُعاد حسابه من السجلات الخام في المستودع.",
+      problem:
+        "لا تشغّل بطاقة GPU إلا طلبات قليلة في آن واحد؛ وبعد ذلك يواصل موزّع الأحمال العادي التمرير، فينتظر الفائض خفياً داخل الخوادم، وينتهي كل مستخدم تقريباً خلف طلبات متأخرة أصلاً.",
+      solution:
+        "إبقاء الطابور في البوابة، وعدم تجاوز خانات أي نسخة، والرفض فوراً إن كان الطلب سيتجاوز مهلته، وإعادة المحاولة فقط ما دام العميل لم يتلقَّ شيئاً.",
+      result:
+        "78 من 212 طلباً في الوقت عند طلب/ث مقابل 6 للوكيل العادي، ولا فشل مقابل 150؛ لا أخطاء للعملاء مع إيقاف نسخة؛ لوحة حية و47 اختباراً وتكامل مستمر."
     }
   },
   proofbench: {
