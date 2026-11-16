@@ -136,6 +136,33 @@
 <priority>0.7</priority>
 </url>
 <url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ru/projects/quorum</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://alhassan-portfolio-sigma.vercel.app/ar/projects/quorum</loc>
+<xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="ar" href="https://alhassan-portfolio-sigma.vercel.app/ar/projects/quorum" />
+<xhtml:link rel="alternate" hreflang="x-default" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/quorum" />
+<changefreq>yearly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
 <loc>https://alhassan-portfolio-sigma.vercel.app/en/projects/switchyard</loc>
 <xhtml:link rel="alternate" hreflang="en" href="https://alhassan-portfolio-sigma.vercel.app/en/projects/switchyard" />
 <xhtml:link rel="alternate" hreflang="ru" href="https://alhassan-portfolio-sigma.vercel.app/ru/projects/switchyard" />
