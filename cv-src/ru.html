@@ -276,6 +276,7 @@
       <p><span class="k">Базы данных:</span> MongoDB (Mongoose); SQLite / PostgreSQL — учебный проект (сделан с Codex)</p>
       <p><span class="k">Инфраструктура и качество:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (базовый), GitHub Actions, Git, pytest</p>
       <p><span class="k">Данные:</span> pandas, NumPy, scikit-learn — учебные проекты</p>
+      <p><span class="k">Quorum (сделан с Claude Code):</span> Go (стандартная библиотека), консенсус Raft, журнал упреждающей записи (fsync, CRC), детерминированное симуляционное тестирование, проверка линеаризуемости, внесение сбоев в стиле Jepsen, Docker</p>
       <p><span class="k">Switchyard (сделан с Claude Code):</span> Go (стандартная библиотека: net/http, SSE-стриминг, конкурентность), llama.cpp, Ollama, Prometheus, нагрузочное тестирование, Docker</p>
       <p><span class="k">Proofbench (сделан с Claude Code):</span> Python, FastAPI, Pydantic, Ollama (локальная LLM), оценка LLM (детерминированные грейдеры, LLM-as-judge, каппа Коэна, бутстреп-интервалы), Docker</p>
       <p><span class="k">Ledgerline (сделан с Claude Code):</span> Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</p>
@@ -341,6 +342,17 @@
 
   <section>
     <h2>Проекты</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Quorum <span class="org">— open-source-проект, сделан с Claude Code</span></h3>
+        <span class="dates">нояб. 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/quorum">github.com/kyan9400/quorum</a> · живой кластер: <a href="https://quorum.149-36-1-90.sslip.io">quorum.149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>Реплицированное хранилище ключ-значение с Raft, написанным с нуля на Go (только стандартная библиотека), журналом упреждающей записи с fsync и проверкой линеаризуемости. Детерминированный симулятор прогнал 2000 seed'ов через 78 099 падений и 77 959 разделений сети; три прогона в стиле Jepsen на реальных процессах провели 151 083 операции через 111 разделений и kill -9; каждая история линеаризуема. Из пяти намеренно внесённых ошибок Raft симуляция поймала 3, тесты — все 5.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

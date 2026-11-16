@@ -151,6 +151,35 @@ export const projects: Project[] = [
     ]
   },
   {
+    slug: "quorum",
+    year: 2026,
+    title: "Quorum",
+    kind: "open-source",
+    rolePurpose: "Open-source project, built with Claude Code · Raft consensus and a replicated key-value store",
+    description:
+      "A replicated key-value store with the Raft consensus algorithm written from scratch in Go, standard library only, and the machinery to show it is correct: a deterministic simulator, a linearizability checker, Jepsen-style runs against real processes, and a public live cluster anyone can break.",
+    whatItDoes: [
+      "Raft as a pure state machine - elections, log replication, snapshots, linearizable reads through ReadIndex - with a write-ahead log that fsyncs every write and tells a crash-torn last record from damage in the middle of the file",
+      "A deterministic simulator that runs a whole five-node cluster in one process on virtual time under crashes, partitions, and dropped, delayed, duplicated and reordered messages; any failing seed replays exactly",
+      "A linearizability checker run on every history the clients saw, including operations whose outcome is unknown, and a Jepsen-style harness that kill -9s real processes and cuts the links between them",
+      "A live dashboard: a five-node cluster that visitors can partition and kill nodes in, its clients' history checked ten seconds at a time, and replays of the recorded runs"
+    ],
+    longDescription:
+      "Quorum is a replicated key-value store I built with Claude Code to learn distributed consensus by implementing it: Raft written from scratch in Go with nothing outside the standard library, an exactly-once client protocol, and a write-ahead log on disk. The point of the project is the evidence that it is correct, not the store itself.\n\nA deterministic simulator ran 2,000 seeds of a five-node cluster through 78,099 crashes and 77,959 partitions; all 1,587,823 client operations were linearizable. Three Jepsen-style runs on Linux, five real processes with fsync on and a fault every five seconds, put 151,083 operations through 111 partitions, isolated leaders and kill -9s, every history linearizable, and every node came back from disk at the same commit index. Three nodes on a shared four-core VM sustain about 2,300 writes and 7,500 linearizable reads a second at 64 clients.\n\nThe tests were tested too: five bugs known to break Raft were planted one at a time. Random simulation caught three and missed two that need an exact sequence of events, so those got scripted tests; the first Jepsen harness missed a stale-read bug until half its clients were pinned to single nodes. The live demo is public and has checked over half a million operations since it went up.",
+    tech: ["Go", "Raft", "Linearizability checking", "Deterministic simulation", "Docker", "Caddy", "GitHub Actions"],
+    github: "https://github.com/kyan9400/quorum",
+    live: "https://quorum.149-36-1-90.sslip.io",
+    image: "/images/projects/quorum.webp",
+    imageKind: "screenshot",
+    problem:
+      "Consensus code that passes its tests can still lose acknowledged writes or serve stale reads under exactly the crash and partition that nobody wrote a test for, and a test suite that never fails proves nothing.",
+    solution:
+      "Run the whole cluster under randomised faults in a deterministic simulator, check every client history for linearizability, repeat against real processes with kill -9 and cut links, and plant known bugs to see which tests catch them.",
+    result:
+      "2,000 simulated seeds and 151,083 operations on real processes through 111 faults, all linearizable; 3 of 5 planted bugs caught by simulation and all 5 by the tests; a live cluster to break, 35 tests and CI.",
+    resultLabel: "builtIn"
+  },
+  {
     slug: "switchyard",
     year: 2026,
     title: "Switchyard",
@@ -571,6 +600,48 @@ const translations: Record<string, Record<Exclude<Locale, "en">, ProjectText>> =
         { label: "الفهرسة", nodes: [{ name: "الفهرس المقلوب", note: "الكلمات · التسميات" }, { name: "sentence-transformers" }, { name: "FAISS" }] },
         { label: "الاستعلام", nodes: [{ name: "FastAPI", note: "ترتيب هجين" }, { name: "HTML / JS", note: "واجهة البحث" }] }
       ]
+    }
+  },
+  quorum: {
+    ru: {
+      title: "Quorum",
+      rolePurpose: "Open-source-проект, сделан с Claude Code · Консенсус Raft и реплицированное хранилище ключ-значение",
+      description:
+        "Реплицированное хранилище ключ-значение с алгоритмом консенсуса Raft, написанным с нуля на Go только на стандартной библиотеке, и всё, чтобы доказать его корректность: детерминированный симулятор, проверка линеаризуемости, прогоны в стиле Jepsen на реальных процессах и публичный живой кластер, который может сломать любой.",
+      whatItDoes: [
+        "Raft как чистый автомат состояний — выборы, репликация лога, снимки, линеаризуемые чтения через ReadIndex — с журналом упреждающей записи, который делает fsync каждой записи и отличает оборванную при сбое последнюю запись от повреждения в середине файла",
+        "Детерминированный симулятор, который запускает весь кластер из пяти узлов в одном процессе в виртуальном времени при падениях, разделениях сети и потерянных, задержанных, задублированных и переупорядоченных сообщениях; любой упавший seed воспроизводится точно",
+        "Проверка линеаризуемости каждой истории, которую видели клиенты, включая операции с неизвестным исходом, и стенд в стиле Jepsen, который убивает реальные процессы через kill -9 и режет связи между ними",
+        "Живой дашборд: кластер из пяти узлов, где посетители могут разделять сеть и убивать узлы, история его клиентов проверяется каждые десять секунд, плюс повтор записанных прогонов"
+      ],
+      longDescription:
+        "Quorum — реплицированное хранилище ключ-значение, которое я сделал с Claude Code, чтобы разобраться в распределённом консенсусе, реализовав его: Raft с нуля на Go без чего-либо вне стандартной библиотеки, клиентский протокол с применением ровно один раз и журнал упреждающей записи на диске. Смысл проекта — доказательства корректности, а не само хранилище.\n\nДетерминированный симулятор прогнал 2000 seed'ов кластера из пяти узлов через 78 099 падений и 77 959 разделений сети; все 1 587 823 клиентские операции оказались линеаризуемыми. Три прогона в стиле Jepsen на Linux — пять реальных процессов с fsync и сбой в среднем каждые пять секунд — провели 151 083 операции через 111 разделений, изоляций лидера и kill -9, каждая история линеаризуема, и все узлы поднялись с диска с одинаковым индексом коммита. Три узла на общей четырёхъядерной ВМ держат около 2300 записей и 7500 линеаризуемых чтений в секунду при 64 клиентах.\n\nТесты тоже проверены: по одной были внесены пять ошибок, заведомо ломающих Raft. Случайная симуляция поймала три и пропустила две, требующие точной последовательности событий, — для них написаны сценарные тесты; первая версия стенда Jepsen пропускала ошибку с устаревшими чтениями, пока половину клиентов не закрепили за отдельными узлами. Живое демо открыто и с момента запуска проверило больше полумиллиона операций.",
+      problem:
+        "Код консенсуса, проходящий свои тесты, всё равно может потерять подтверждённые записи или отдать устаревшее чтение именно при том падении и разделении сети, на которое никто не написал тест, а набор тестов, который никогда не падает, ничего не доказывает.",
+      solution:
+        "Гонять весь кластер под случайными сбоями в детерминированном симуляторе, проверять каждую историю клиентов на линеаризуемость, повторять на реальных процессах с kill -9 и разрезанными связями и вносить известные ошибки, чтобы увидеть, какие тесты их ловят.",
+      result:
+        "2000 симулированных seed'ов и 151 083 операции на реальных процессах через 111 сбоев — всё линеаризуемо; 3 из 5 внесённых ошибок поймала симуляция, все 5 — тесты; живой кластер для экспериментов, 35 тестов и CI."
+    },
+    ar: {
+      title: "Quorum",
+      rolePurpose: "مشروع مفتوح المصدر، بُني باستخدام Claude Code · إجماع Raft ومخزن مفتاح-قيمة مُكرَّر",
+      description:
+        "مخزن مفتاح-قيمة مُكرَّر بخوارزمية الإجماع Raft مكتوبة من الصفر بلغة Go بالمكتبة القياسية وحدها، ومعه كل ما يثبت صحته: محاكٍ حتمي، وفاحص لقابلية الخطية، وتشغيلات على نمط Jepsen على عمليات حقيقية، وعنقود حي متاح للجميع يستطيع أي زائر أن يكسره.",
+      whatItDoes: [
+        "Raft كآلة حالات خالصة — الانتخابات وتكرار السجل واللقطات والقراءات الخطية عبر ReadIndex — مع سجل كتابة مسبقة يستدعي fsync لكل كتابة ويميّز آخر سجل ممزق بسبب انهيار من تلف في منتصف الملف",
+        "محاكٍ حتمي يشغّل عنقوداً كاملاً من خمس عقد داخل عملية واحدة بزمن افتراضي تحت الانهيارات وانقسامات الشبكة والرسائل المفقودة والمتأخرة والمكررة والمعاد ترتيبها؛ وأي بذرة فاشلة تُعاد حرفياً",
+        "فاحص لقابلية الخطية يمر على كل تاريخ رآه العملاء بما فيه العمليات مجهولة النتيجة، وأداة على نمط Jepsen تُنهي عمليات حقيقية بـ kill -9 وتقطع الروابط بينها",
+        "لوحة حية: عنقود من خمس عقد يستطيع الزوار تقسيم شبكته وإيقاف عقده، ويُفحص تاريخ عملائه كل عشر ثوانٍ، مع إعادة عرض للتشغيلات المسجلة"
+      ],
+      longDescription:
+        "Quorum مخزن مفتاح-قيمة مُكرَّر بنيتُه باستخدام Claude Code لأفهم الإجماع الموزّع بتنفيذه بنفسي: Raft من الصفر بلغة Go دون أي شيء خارج المكتبة القياسية، وبروتوكول عميل يطبّق كل عملية مرة واحدة بالضبط، وسجل كتابة مسبقة على القرص. والغاية من المشروع هي الأدلة على صحته لا المخزن نفسه.\n\nشغّل المحاكي الحتمي 2000 بذرة لعنقود من خمس عقد عبر 78,099 انهياراً و77,959 انقساماً للشبكة، وكانت كل عمليات العملاء البالغة 1,587,823 خطية. وفي ثلاثة تشغيلات على نمط Jepsen على Linux — خمس عمليات حقيقية مع fsync وعطل كل خمس ثوانٍ في المتوسط — مرّت 151,083 عملية عبر 111 انقساماً وعزلاً للقائد وإنهاءً بـ kill -9، وكان كل تاريخ خطياً، وعادت كل العقد من القرص عند فهرس الإيداع نفسه. وتتحمل ثلاث عقد على آلة افتراضية مشتركة بأربع أنوية نحو 2,300 كتابة و7,500 قراءة خطية في الثانية مع 64 عميلاً.\n\nواختُبرت الاختبارات أيضاً: زُرعت خمسة أخطاء معروفة بأنها تكسر Raft واحداً تلو الآخر. التقطت المحاكاة العشوائية ثلاثة وفاتها اثنان يحتاجان تسلسلاً دقيقاً من الأحداث، فكُتبت لهما اختبارات سيناريو؛ وفاتت النسخةَ الأولى من أداة Jepsen ثغرةُ القراءة القديمة حتى رُبط نصف العملاء بعقد منفردة. والعرض الحي متاح للجميع وقد فحص أكثر من نصف مليون عملية منذ إطلاقه.",
+      problem:
+        "قد يجتاز كود الإجماع اختباراته ثم يفقد كتابات مؤكَّدة أو يعيد قراءة قديمة عند الانهيار أو الانقسام الذي لم يكتب له أحد اختباراً، ومجموعة اختبارات لا تفشل أبداً لا تثبت شيئاً.",
+      solution:
+        "تشغيل العنقود كله تحت أعطال عشوائية في محاكٍ حتمي، وفحص كل تاريخ للعملاء من حيث قابلية الخطية، وتكرار ذلك على عمليات حقيقية مع kill -9 وروابط مقطوعة، وزرع أخطاء معروفة لمعرفة أي الاختبارات تلتقطها.",
+      result:
+        "2000 بذرة محاكاة و151,083 عملية على عمليات حقيقية عبر 111 عطلاً، كلها خطية؛ التقطت المحاكاة 3 من 5 أخطاء مزروعة والتقطتها الاختبارات كلها؛ عنقود حي للتجربة و35 اختباراً وتكامل مستمر."
     }
   },
   switchyard: {

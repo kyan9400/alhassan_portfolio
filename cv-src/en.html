@@ -276,6 +276,7 @@
       <p><span class="k">Databases:</span> MongoDB (Mongoose); SQLite / PostgreSQL — university project (built with Codex)</p>
       <p><span class="k">Infrastructure &amp; quality:</span> Linux (Ubuntu, systemd), Docker / Docker Compose (basic), GitHub Actions, Git, pytest</p>
       <p><span class="k">Data:</span> pandas, NumPy, scikit-learn — university projects</p>
+      <p><span class="k">Quorum (built with Claude Code):</span> Go (standard library), Raft consensus, write-ahead logging (fsync, CRC), deterministic simulation testing, linearizability checking, Jepsen-style fault injection, Docker</p>
       <p><span class="k">Switchyard (built with Claude Code):</span> Go (standard library: net/http, SSE streaming, concurrency), llama.cpp, Ollama, Prometheus, load testing, Docker</p>
       <p><span class="k">Proofbench (built with Claude Code):</span> Python, FastAPI, Pydantic, Ollama (local LLM), LLM evaluation (deterministic graders, LLM-as-judge, Cohen's kappa, bootstrap intervals), Docker</p>
       <p><span class="k">Ledgerline (built with Claude Code):</span> Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</p>
@@ -341,6 +342,17 @@
 
   <section>
     <h2>Projects</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Quorum <span class="org">— open-source project, built with Claude Code</span></h3>
+        <span class="dates">Nov 2026</span>
+      </div>
+      <p class="meta"><a href="https://github.com/kyan9400/quorum">github.com/kyan9400/quorum</a> · live cluster: <a href="https://quorum.149-36-1-90.sslip.io">quorum.149-36-1-90.sslip.io</a></p>
+      <ul class="points">
+        <li>Replicated key-value store with Raft written from scratch in Go (standard library only), a write-ahead log with fsync, and a linearizability checker. A deterministic simulator ran 2,000 seeds through 78,099 crashes and 77,959 partitions; three Jepsen-style runs on real processes put 151,083 operations through 111 partitions and kill -9s; every history was linearizable. Of five deliberately planted Raft bugs, simulation caught 3 and the tests all 5.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

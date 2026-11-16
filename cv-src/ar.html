@@ -295,6 +295,7 @@
       <p><span class="k">قواعد البيانات:</span> <bdi>MongoDB (Mongoose)</bdi>؛ <bdi>SQLite / PostgreSQL</bdi> — مشروع جامعي (بُني باستخدام <bdi>Codex</bdi>)</p>
       <p><span class="k">البنية التحتية والجودة:</span> <bdi>Linux (Ubuntu, systemd), Docker / Docker Compose</bdi> (مستوى أساسي)، <bdi>GitHub Actions, Git, pytest</bdi></p>
       <p><span class="k">البيانات:</span> <bdi>pandas, NumPy, scikit-learn</bdi> — مشاريع جامعية</p>
+      <p><span class="k">في <bdi>Quorum</bdi>:</span> <bdi>Go</bdi> (المكتبة القياسية)، وإجماع <bdi>Raft</bdi>، وسجل الكتابة المسبقة (<bdi>fsync, CRC</bdi>)، واختبار المحاكاة الحتمية، وفحص قابلية الخطية، وحقن الأعطال على نمط <bdi>Jepsen</bdi>، و<bdi>Docker</bdi></p>
       <p><span class="k">في <bdi>Switchyard</bdi>:</span> <bdi>Go</bdi> (المكتبة القياسية: <bdi>net/http</bdi> وبث <bdi>SSE</bdi> والتزامن)، <bdi>llama.cpp, Ollama, Prometheus</bdi>، واختبارات الحمل، <bdi>Docker</bdi></p>
       <p><span class="k">في <bdi>Proofbench</bdi>:</span> <bdi>Python, FastAPI, Pydantic, Ollama</bdi>، وتقييم النماذج اللغوية (مقيّمات حتمية، نموذج حَكَم، معامل كابا لكوهين، فترات <bdi>bootstrap</bdi>)، <bdi>Docker</bdi></p>
       <p><span class="k">في <bdi>Ledgerline</bdi>:</span> <bdi>Kotlin, Spring Boot, Kafka, PostgreSQL (event sourcing), ClickHouse, gRPC, OpenTelemetry / Tempo, Vue 3</bdi></p>
@@ -359,6 +360,17 @@
 
   <section>
     <h2>المشاريع</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3><bdi>Quorum</bdi> <span class="org">— مشروع مفتوح المصدر بُني بمساعدة <bdi>Claude Code</bdi></span></h3>
+        <span class="dates">نوفمبر 2026</span>
+      </div>
+      <p class="meta"><bdi><a href="https://github.com/kyan9400/quorum">github.com/kyan9400/quorum</a></bdi> · عنقود حيّ: <bdi><a href="https://quorum.149-36-1-90.sslip.io">quorum.149-36-1-90.sslip.io</a></bdi></p>
+      <ul class="points">
+        <li>مخزن مفتاح-قيمة مُكرَّر بخوارزمية <bdi>Raft</bdi> مكتوبة من الصفر بلغة <bdi>Go</bdi> (بالمكتبة القياسية وحدها)، مع سجل كتابة مسبقة بـ <bdi>fsync</bdi> وفاحص لقابلية الخطية. شغّل محاكٍ حتمي 2000 بذرة عبر 78,099 انهياراً و77,959 انقساماً للشبكة، ومرّت في ثلاثة تشغيلات على نمط <bdi>Jepsen</bdi> على عمليات حقيقية 151,083 عملية عبر 111 انقساماً وإنهاءً بـ <bdi>kill -9</bdi>؛ وكان كل تاريخ خطياً. ومن خمسة أخطاء في <bdi>Raft</bdi> زُرعت عمداً التقطت المحاكاة 3 والاختبارات كلها.</li>
+      </ul>
+    </article>
 
     <article class="entry">
       <div class="entry-head">
